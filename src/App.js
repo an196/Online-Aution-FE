@@ -9,6 +9,8 @@ import { Container, Row, Col } from 'react-bootstrap';
 
 import HomePage from './pages/HomePage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 
 
 
@@ -34,7 +36,13 @@ function App() {
               <Route path="/" exact>
                 <HomePage />
               </Route>
-              <Route path="/productdetail">
+              <Route path="/login" exact>
+                <LoginPage/>
+              </Route>
+              <Route path="/sigup" exact>
+                <SignupPage/>
+              </Route>
+              <Route path="/product/detail" exact>
                 <ProductDetailPage/>
               </Route>
             </Switch>

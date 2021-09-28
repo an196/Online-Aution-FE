@@ -48,7 +48,7 @@ export default function Home() {
                                         <br />
                                         Lượt đấu giá: 2
                                         <br />
-                                        <Card.Link href="/productdetail" style ={{fontSize: '0.6rem'}}>Xem chi tiết</Card.Link>
+                                        <Card.Link href="/product/detail" style ={{fontSize: '0.6rem'}}>Xem chi tiết</Card.Link>
                                     </Card.Text>
                                 </Card.Body>
                             </Card>
