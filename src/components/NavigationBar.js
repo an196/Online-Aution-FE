@@ -5,7 +5,7 @@ import { FaShoppingCart } from 'react-icons/fa';
 export default function NavigationBar(){
     return(
         <Navbar bg="light" expand="lg">
-            <Navbar.Brand href="#">OnAution</Navbar.Brand>
+            <Navbar.Brand className="mr-auto " href="#">OnAution</Navbar.Brand>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
                 <Nav
