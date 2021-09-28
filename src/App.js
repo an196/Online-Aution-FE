@@ -8,13 +8,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col } from 'react-bootstrap';
 
 import HomePage from './pages/HomePage';
+import ProductDetailPage from './pages/ProductDetailPage';
+
 
 
 function App() {
   return (
-
     <Router>
-
       <script src="https://unpkg.com/react/umd/react.production.min.js" crossorigin></script>
       <script
         src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"
@@ -24,18 +24,18 @@ function App() {
         src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js"
         crossorigin>
       </script>
-
       <script>var Alert = ReactBootstrap.Alert;</script>
-
-
 
       <Container>
         <Row>
           <Col></Col>
           <Col xs={8}>
             <Switch>
-              <Route path="/">
+              <Route path="/" exact>
                 <HomePage />
+              </Route>
+              <Route path="/productdetail">
+                <ProductDetailPage/>
               </Route>
             </Switch>
           </Col>

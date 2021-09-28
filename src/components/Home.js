@@ -47,6 +47,8 @@ export default function Home() {
                                         <text className="text-danger">Hạn: 5:30:22</text>
                                         <br />
                                         Lượt đấu giá: 2
+                                        <br />
+                                        <Card.Link href="/productdetail" style ={{fontSize: '0.6rem'}}>Xem chi tiết</Card.Link>
                                     </Card.Text>
                                 </Card.Body>
                             </Card>
