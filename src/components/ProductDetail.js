@@ -47,13 +47,18 @@ export default function ProductDetail() {
                         <Col className="col-md-7 m-2">
                             <div >
                                 <div className="card-body">
-                                    <h5 className="card-title">Card title</h5>
+                                    <h5 className="card-title">Cậu vàng</h5>
                                     <p className="card-text">
-                                        Card Text
+                                        Giá hiện tại: 1000₫ <br/>
+                                        Mua ngay: 10 000₫ <br/>
+                                        Người bán: Lê Văn A &nbsp;&nbsp;&nbsp;&nbsp;  Đánh giá: 6 điểm
+                                        <br/>
+                                        Đăng: 20:30:00 Ngày 10/10/2021
+                                        <br/>
+                                        Kết thúc: <text className="text-danger">5:30:22</text>
                                     </p>
-                                    <p className="card-text">
-                                        <small className="text-muted">Card Text 2</small>
-                                    </p>
+                                    <b>Thông tin sản phẩm</b>
+                                    <p>Cậu vàng nhưng màu trắng, có tuổi đời 5 tháng, đã cai sữa.</p>
                                 </div>
                             </div>
                         </Col >
