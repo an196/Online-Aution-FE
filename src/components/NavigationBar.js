@@ -1,6 +1,6 @@
 import { Navbar, Nav, NavDropdown, Form, FormControl, Button   } from 'react-bootstrap';
 import { FaShoppingCart } from 'react-icons/fa';
-
+import { AiFillHeart,AiOutlineHeart } from "react-icons/ai";
 
 export default function NavigationBar(){
     return(
