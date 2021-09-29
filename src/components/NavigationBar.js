@@ -5,6 +5,7 @@ import { AiFillHeart,AiOutlineHeart } from "react-icons/ai";
 export default function NavigationBar(){
     return(
         <Navbar bg="light" expand="lg">
+            <div style={{width:10}}></div>
             <Navbar.Brand className="mr-auto " href="/">OnAution</Navbar.Brand>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
