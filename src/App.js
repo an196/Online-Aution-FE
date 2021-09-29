@@ -9,10 +9,14 @@ import { Container, Row, Col } from 'react-bootstrap';
 
 import HomePage from './pages/HomePage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import CategoryPage from './pages/CategoryPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
-
-
+import Dashboard from '../src/features/Admin/Dashboard';
+import ProductTable from '../src/features/Admin/ProductTable';
+import CategoryTable from '../src/features/Admin/CategoryTable';
+import UserTable from '../src/features/Admin/UserTable';
+import FavoriteProducts from '../src/features/User/FavoriteProducts';
 
 function App() {
   return (
@@ -44,6 +48,24 @@ function App() {
               </Route>
               <Route path="/product/detail" exact>
                 <ProductDetailPage/>
+              </Route>
+              <Route path="/category" exact>
+                <CategoryPage/>
+              </Route>
+              <Route path="/user/favorite" exact>
+                <FavoriteProducts/>
+              </Route>
+              <Route path="/admin" exact>
+                <Dashboard/>
+              </Route>
+              <Route path="/admin/product" exact>
+                <ProductTable/>
+              </Route>
+              <Route path="/admin/category" exact>
+                <CategoryTable/>
+              </Route>
+              <Route path="/admin/user" exact>
+                <UserTable/>
               </Route>
             </Switch>
           </Col>
