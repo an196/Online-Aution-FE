@@ -11,8 +11,16 @@ export default function SignUp() {
             <form className ='p-2'>
                 <h3 className ='d-flex justify-content-center'>Đăng ký</h3>
                 <div className="form-group ">
-                    <label>Tài khoản</label>
-                    <input type="email" className="form-control" placeholder="Enter email" />
+                    <label>Họ và tên:</label>
+                    <input type="email" className="form-control" placeholder="Họ và tên" />
+                </div>
+                <div className="form-group ">
+                    <label>Địa chỉ:</label>
+                    <input type="email" className="form-control" placeholder="Địa chỉ" />
+                </div>
+                <div className="form-group ">
+                    <label>Email:</label>
+                    <input type="email" className="form-control" placeholder="Email" />
                 </div>
                 <div className="form-group mt-2">
                     <label>Mật khẩu</label>
