@@ -17,20 +17,14 @@ import ProductTable from '../src/features/Admin/ProductTable';
 import CategoryTable from '../src/features/Admin/CategoryTable';
 import UserTable from '../src/features/Admin/UserTable';
 import FavoriteProducts from '../src/features/User/FavoriteProducts';
+import UserProfile from './features/User/UserProfile';
+import AutionProducts from './features/User/AutionProducts';
+import ShefProducts from './features/User/ShefProducts';
 
 function App() {
   return (
     <Router>
-      <script src="https://unpkg.com/react/umd/react.production.min.js" ></script>
-      <script
-        src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"
-        >
-      </script>
-      <script
-        src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js"
-        >
-      </script>
-      <script>var Alert = ReactBootstrap.Alert;</script>
+     
 
       <Container>
         <Row>
@@ -54,6 +48,15 @@ function App() {
               </Route>
               <Route path="/user/favorite" exact>
                 <FavoriteProducts/>
+              </Route>
+              <Route path="/user/aution" exact>
+                <AutionProducts/>
+              </Route>
+              <Route path="/user/profile" exact>
+                <UserProfile/>
+              </Route>
+              <Route path="/user/shef" exact>
+                <ShefProducts/>
               </Route>
               <Route path="/admin" exact>
                 <Dashboard/>

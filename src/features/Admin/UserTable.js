@@ -1,4 +1,4 @@
-import { Container, Nav, Navbar,Table } from 'react-bootstrap';
+import {  Nav, Navbar,Table } from 'react-bootstrap';
 import { FaUser } from 'react-icons/fa';
 
 export default function Dashboard() {

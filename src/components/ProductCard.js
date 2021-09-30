@@ -1,6 +1,6 @@
-import { Row, Col } from 'react-bootstrap';
+import {  Col } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card'
-import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineHeart } from "react-icons/ai";
 import { Link } from 'react-router-dom';
 
 const styles = {
@@ -37,7 +37,7 @@ export default function ProductCard({ item }) {
                     <Card.Text style={styles.cardText} >
                         Đấu giá: 1000
                         <br />
-                        Người mua: Lê Văn A
+                        Người bán: Lê Văn A
                         <br />
                         Mua Ngay: 10000
                         <br />
