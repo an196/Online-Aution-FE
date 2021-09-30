@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-export const axiosInstance = axios.create({
-    baseUrl: 'http://localhost:3030/api/',
-    timeout: 500,
-})
+const axiosClient = axios.create({
+  baseURL: 'http://localhost:3030/api/',
+  timeout: 5000,
+});
 
 export function parseJwt(token) {
     var base64Url = token.split('.')[1];

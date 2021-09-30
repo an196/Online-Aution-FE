@@ -27,7 +27,7 @@ export default function Category() {
     return (
         <div className="container mt-4" >
             <Row xs={1}>
-                <h5>Danh mục: <text className="text-danger">Thú cưng</text> </h5>
+                <h5>Danh mục: <a role='text' style={{textDecoration: 'none' }} className="text-danger">Hạn: 5:30:22</a> </h5>
                 <Row xs={1} md={5} className="g-4 m-auto" >
                     {Array.from({ length: 10 }).map((_, idx) => (
                         <Col>
@@ -44,7 +44,7 @@ export default function Category() {
                                         <br />
                                         Ngày đăng: 20/09/2021
                                         <br />
-                                        <text className="text-danger">Hạn: 5:30:22</text>
+                                        <a role='text' style={{textDecoration: 'none' }} className="text-danger">Hạn: 5:30:22</a>
                                         <br />
                                         Lượt đấu giá: 2
                                         <br />
