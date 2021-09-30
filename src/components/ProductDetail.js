@@ -59,7 +59,7 @@ export default function ProductDetail() {
                             <div style={{ height: 20 }}></div>
                             <Row>
                                 <p role='button' className='d-flex justify-content-center' onClick={handleLike}>
-                                    {like ? <AiFillHeart style={{ color: 'red' }}/> : <AiOutlineHeart />}
+                                    {like ? <AiFillHeart style={{ color: 'red'}}/> : <AiOutlineHeart />}
                                 </p>
                             </Row>
                         </Col >
@@ -97,7 +97,7 @@ export default function ProductDetail() {
             <div className="card mb-3 mt-4 no-gutters" >
                 <div className="row no-gutters m-auto p-auto">
                     <Row xs={1} className=" mt-4 m-auto p-auto">
-                        <h5 >Sản phẩm gần kết thúc</h5>
+                        <h5 >Sản phẩm cùng mục</h5>
                         <Row xs={1} md={5} className="g-4 m-auto mb-3" >
                             {Array.from({ length: 5 }).map((_, idx) => (
                                 <ProductCard key={idx}/>

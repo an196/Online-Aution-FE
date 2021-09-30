@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
-import Card from 'react-bootstrap/Card'
-import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import {Link} from 'react-router-dom';
 import ProductCard from './ProductCard';
 
