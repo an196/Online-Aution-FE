@@ -61,7 +61,7 @@ export default function FavoriteProducts() {
                                                 <br />
                                                 Ngày đăng: 20/09/2021
                                                 <br />
-                                                <text className="text-danger">Hạn: 5:30:22</text>
+                                                <a role='text' style={{textDecoration: 'none' }} className="text-danger">Hạn: 5:30:22</a>
                                                 <br />
                                                 Lượt đấu giá: 2
                                                 <br />

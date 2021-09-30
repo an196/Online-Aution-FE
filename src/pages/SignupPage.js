@@ -1,3 +1,4 @@
+import {Link} from 'react-router-dom';
 
 const styles = {
     a: {
@@ -33,7 +34,7 @@ export default function SignUp() {
                 <div className = 'd-flex justify-content-center mt-2'>
                 <button type="submit" className="btn btn-primary btn-block mt-2">Đăng ký</button>
                 </div>
-                <a href="/login" style={styles.a}>Đăng nhập</a>
+                <Link to="/login" style={styles.a}>Đăng nhập</Link>
             </form>
         </div>
     </div>

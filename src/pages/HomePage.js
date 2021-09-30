@@ -4,7 +4,7 @@ import NavigationBar from '../components/NavigationBar.js';
 
 export default function HomePage(props) {
     return (
-        <div className = 'container'>
+        <div >
             <NavigationBar/>
             <Home/>
             <Footer/>

@@ -1,6 +1,7 @@
 import { Navbar, Nav, NavDropdown, Form, FormControl, Button   } from 'react-bootstrap';
 import { FaShoppingCart } from 'react-icons/fa';
 import { AiFillHeart,AiOutlineHeart } from "react-icons/ai";
+import {Link} from 'react-router-dom';
 
 export default function NavigationBar(){
     return(
@@ -50,7 +51,7 @@ export default function NavigationBar(){
                 </Form>
             </Navbar.Collapse>
             <Button  variant="outline-success" >Search</Button>
-            <Nav.Link href="#action1"> < FaShoppingCart/></Nav.Link>
+            <Link to="/login" className="m-3"> < FaShoppingCart/></Link>
         </Navbar>
     )
    };

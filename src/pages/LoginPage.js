@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import {Link} from 'react-router-dom';
 
 const styles = {
     a: {
@@ -36,7 +37,7 @@ export default function Login() {
                     <p className="forgot-password text-right mt-3" style={styles.a}>
                         Quên <a href="sigup" >mật khẩu?</a>
                         &nbsp;
-                        <a href="sigup">Đăng ký</a>
+                        <Link to="/sigup">Đăng ký</Link>
                     </p>
                     
                 </form>
