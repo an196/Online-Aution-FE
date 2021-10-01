@@ -1,6 +1,7 @@
 import { Navbar, Nav, NavDropdown, Form, FormControl, Button   } from 'react-bootstrap';
 import { FaShoppingCart } from 'react-icons/fa';
 import {Link} from 'react-router-dom';
+import {LinkContainer} from 'react-router-bootstrap'
 
 export default function NavigationBar(){
     return(
@@ -14,8 +15,8 @@ export default function NavigationBar(){
                     style={{ maxHeight: '100px' }}
                     navbarScroll
                 >
-                    <NavDropdown title="Link 1" id="navbarScrollingDropdown">
-                        <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
+                    <NavDropdown title="Thú cưng" id="navbarScrollingDropdown">
+                        <LinkContainer to='/category'><NavDropdown.Item >Action</NavDropdown.Item></LinkContainer>
                         <NavDropdown.Item href="#action4">Another action</NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item href="#action5">Something else here</NavDropdown.Item>
