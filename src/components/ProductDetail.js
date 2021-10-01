@@ -1,5 +1,5 @@
 
-import { Image, Row, Col, Card, Button } from 'react-bootstrap';
+import { Image, Row, Col,Button } from 'react-bootstrap';
 import { AiFillHeart, AiOutlineHeart, AiOutlineShoppingCart, AiOutlineHistory } from "react-icons/ai";
 import { ImHammer2 } from "react-icons/im";
 import { useState } from 'react';

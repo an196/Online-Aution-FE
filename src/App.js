@@ -18,14 +18,14 @@ import CategoryTable from '../src/features/Admin/CategoryTable';
 import UserTable from '../src/features/Admin/UserTable';
 import FavoriteProducts from '../src/features/User/FavoriteProducts';
 import UserProfile from './features/User/UserProfile';
+import AutionProductsHisory from './features/User/AutionProductsHisory';
 import AutionProducts from './features/User/AutionProducts';
-import ShefProducts from './features/User/ShefProducts';
+import ReviewProduct from './features/User/ReviewProducts';
+import PostProduct from './features/User/PostProduct';
 
 function App() {
   return (
     <Router>
-     
-
       <Container>
         <Row>
           <Col></Col>
@@ -49,14 +49,20 @@ function App() {
               <Route path="/user/favorite" exact>
                 <FavoriteProducts/>
               </Route>
-              <Route path="/user/aution" exact>
-                <AutionProducts/>
+              <Route path="/user/aution-history" exact>
+                <AutionProductsHisory/>
               </Route>
               <Route path="/user/profile" exact>
                 <UserProfile/>
               </Route>
-              <Route path="/user/shef" exact>
-                <ShefProducts/>
+              <Route path="/user/aution" exact>
+                <AutionProducts/>
+              </Route>
+              <Route path="/user/review" exact>
+                <ReviewProduct/>
+              </Route>
+              <Route path="/user/post" exact>
+                <PostProduct/>
               </Route>
               <Route path="/admin" exact>
                 <Dashboard/>
