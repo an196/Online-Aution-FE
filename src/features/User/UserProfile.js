@@ -18,6 +18,13 @@ const styles = {
     linkNav: {
         textDecoration: 'none',
         color: 'grey'
+    },
+    logoText: {
+        textDecoration: 'none',
+        color: 'white'
+    },
+    space: {
+        width: 10,
     }
 }
 
@@ -27,17 +34,22 @@ export default function UserProfile() {
             <div >
                 <Navbar bg="dark" variant="dark">
                     <Navbar.Collapse id="responsive-navbar-nav">
-                        <div style={{ width: 10 }}></div>
-                        <Navbar.Brand href="/">OnAution</Navbar.Brand>
+                        <div style={styles.space} />
+                        <Navbar.Brand ><Link to='/' style={styles.logoText}>OnAution</Link></Navbar.Brand>
                         <Nav className="me-auto">
-                            <Link to="/user/favorite" style={styles.linkNav}> SP ưa thích</Link>
-                            <div style={{ width: 10 }} />
-                            <Link to="/user/aution" style={styles.linkNav}> SP đấu giá</Link>
-                            <div style={{ width: 10 }} />
-                            <Link to="/user/shef" style={styles.linkNav}> SP lên kệ</Link>
+                            <Link to="/user/favorite" style={styles.linkNav}> Ưa thích</Link>
+                            <div style={styles.space} />
+                            <Link to="/user/aution-history" style={styles.linkNav}> Lịch sử đấu giá</Link>
+                            <div style={styles.space} />
+                            <Link to="/user/aution" style={styles.linkNav}> Đấu giá</Link>
+                            <div style={styles.space} />
+                            <Link to="/user/review" style={styles.linkNav}> Đánh giá</Link>
+                            <div style={styles.space} />
+                            <Link to="/user/post" style={styles.linkNav}> Đăng bài</Link>
                         </Nav>
                     </Navbar.Collapse>
-                    <Link to="#" className='m-3' ><CgProfile size={24} style={{ color: 'white' }} /></Link>
+                    <Link to="#" ><CgProfile size={24} style={{ color: 'white' }} /></Link>
+                    <div style={styles.space} />
                 </Navbar>
                 <h5 className="d-flex justify-content-center mt-4">Thông tin của bạn!</h5>
             </div>

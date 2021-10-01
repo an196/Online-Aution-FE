@@ -1,28 +1,17 @@
-import { Nav, Navbar,Tabs, Tab } from 'react-bootstrap';
-import { CgProfile } from 'react-icons/cg';
+
+import {  Navbar, Nav, Tabs, Tab } from 'react-bootstrap';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import ProductAutioning from '../../components/ProductAutioning';
-import ProductShefing from '../../components/ProductShefing';
+import { CgProfile } from 'react-icons/cg';
+import BiddenReview from '../../components/BidderReview';
+import SellerReview from '../../components/SellerReview';
 
 const styles = {
-    card: {
-        //backgroundColor: '#B7E0F2',
-        borderRadius: 5,
-        width: '8.8rem'
+    text: {
+        fontSize: '0.7rem'
     },
-    cardImage: {
-        objectFit: 'cover',
-        borderRadius: 55,
-        with: '8.8rem',
-    },
-    cardTitle: {
-        fontSize: '0.8rem'
-    },
-    cardBody: {
-        width: '8.8rem'
-    },
-    cardText: {
-        fontSize: '0.6rem'
+    space: {
+        width: 10,
     },
     link: {
         textDecoration: 'none',
@@ -36,51 +25,46 @@ const styles = {
         textDecoration: 'none',
         color: 'grey'
     },
-    logoText:{
+    logoText: {
         textDecoration: 'none',
         color: 'white'
-    },
-    space:{
-        width:10,
     }
 }
 
-export default function AutionProducts() {
+export default function ReviewProduct() {
+    const [key, setKey] = useState('home');
+
     return (
         <>
             <div >
                 <Navbar bg="dark" variant="dark">
                     <Navbar.Collapse id="responsive-navbar-nav">
-                        <div style={{ width: 10 }}></div>
+                        <div style={styles.space} />
                         <Navbar.Brand><Link to='/' style={styles.logoText}>OnAution</Link></Navbar.Brand>
                         <Nav className="me-auto">
                             <Link to="/user/favorite" style={styles.linkNav}> Ưa thích</Link>
                             <div style={styles.space}/>
                             <Link to="/user/aution-history" style={styles.linkNav}> Lịch sử đấu giá</Link>
                             <div style={styles.space}/>
-                            <Link to="/user/aution" style={styles.linkNavActive}> Đấu giá</Link>
+                            <Link to="/user/aution" style={styles.linkNav}> Đấu giá</Link>
                             <div style={styles.space}/>
-                            <Link to="/user/review" style={styles.linkNav}> Đánh giá</Link>
+                            <Link to="/user/review" style={styles.linkNavActive}> Đánh giá</Link>
                             <div style={styles.space}/>
                             <Link to="/user/post" style={styles.linkNav}> Đăng bài</Link>
                         </Nav>
                     </Navbar.Collapse>
-                    <Link to="/user/profile" ><CgProfile size={24} style={{ color: 'grey' }} /></Link>
-                    <div style={{ width: 10 }} />
+                    <Link to="/user/profile"  ><CgProfile size={24} style={{ color: 'grey' }} /></Link>
+                    <div style={styles.space} />
                 </Navbar>
-                
             </div>
             <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="">
                 <Tab eventKey="home" title="Mua">
-                    <h5 className="d-flex justify-content-center mt-4">Sản phẩm đang bạn đang đấu giá !</h5>
-                    <ProductAutioning />
+                    <SellerReview />
                 </Tab>
                 <Tab eventKey="profile" title="Bán">
-                <h5 className="d-flex justify-content-center mt-4">Sản phẩm đang bán của bạn!</h5>
-                    <ProductShefing />
+                    <BiddenReview />
                 </Tab>
             </Tabs>
-           
         </>
-    )
+    );
 }

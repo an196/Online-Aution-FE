@@ -1,4 +1,4 @@
-import { Modal, Col, Container, Row, Button,Table } from 'react-bootstrap';
+import { Modal, Container, Row, Button,Table } from 'react-bootstrap';
 
 
 export default function AutionHistory(props) {
