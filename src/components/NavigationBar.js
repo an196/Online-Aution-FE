@@ -2,8 +2,24 @@ import { Navbar, Nav, NavDropdown, Form, FormControl, Button   } from 'react-boo
 import { FaShoppingCart } from 'react-icons/fa';
 import {Link} from 'react-router-dom';
 import {LinkContainer} from 'react-router-bootstrap'
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from 'react';
+import { 
+    selectTypeList,
+    getTypeList,
+   
+} from '../features/product/categorySlice';
 
 export default function NavigationBar(){
+    const typeList = useSelector(selectTypeList);
+    const dispath = useDispatch();
+
+    useEffect(() => {
+        dispath(getTypeList());
+    },[dispath]);
+
+   
+    console.log(typeList);
     return(
         <Navbar bg="light" expand="lg">
             <div style={{width:10}}></div>
@@ -15,6 +31,7 @@ export default function NavigationBar(){
                     style={{ maxHeight: '100px' }}
                     navbarScroll
                 >
+                    
                     <NavDropdown title="Thú cưng" id="navbarScrollingDropdown">
                         <LinkContainer to='/category'><NavDropdown.Item >Action</NavDropdown.Item></LinkContainer>
                         <NavDropdown.Item href="#action4">Another action</NavDropdown.Item>

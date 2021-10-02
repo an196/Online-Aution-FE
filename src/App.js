@@ -40,8 +40,8 @@ function App() {
               <Route path="/sigup" exact>
                 <SignupPage/>
               </Route>
-              <Route path="/product/detail" exact>
-                <ProductDetailPage/>
+              <Route path="/product/detail/:id" exact component={ProductDetailPage}>
+                {/* <ProductDetailPage/> */}
               </Route>
               <Route path="/category" exact>
                 <CategoryPage/>

@@ -14,6 +14,10 @@ const productApi = {
     getTopHighestAutions(){
         const url = `/${prefix}/home/top-5-highest-auctions`;
         return axiosClient.get(url);
+    },
+    getInfoProduct(id){
+        const url = `/${prefix}/info/${id}`;
+        return axiosClient.get(url);
     }
 }
 

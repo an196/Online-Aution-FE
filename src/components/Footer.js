@@ -5,7 +5,7 @@ export default function Footer() {
         <footer className="page-footer font-small blue pt-4">
             <div className="footer-copyright text-center py-3">
                 © 2020 Copyright:
-                <a role='text' style={{textDecoration: 'none' }}>Hạn: 5:30:22</a>
+                <a role='text' style={{textDecoration: 'none' }}>TTAD</a>
             </div>
         </footer>
     )
