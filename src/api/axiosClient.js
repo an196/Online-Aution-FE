@@ -1,4 +1,11 @@
+import axios from 'axios';
+import queryString from "querystring";
 
+const axiosClient = axios.create({
+  baseURL: 'http://localhost:3002/api/',
+  timeout: 5000,
+  paramsSerializer: (params) => queryString.stringify(params),
+});
 
 export function parseJwt(token) {
     var base64Url = token.split('.')[1];
@@ -9,3 +16,4 @@ export function parseJwt(token) {
   
     return JSON.parse(jsonPayload);
 };
+export default axiosClient;
