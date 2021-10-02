@@ -115,7 +115,7 @@ export default function ProductDetail(props) {
                                         <AutionHistory show={modalShow} onHide={() => setModalShow(false)} />
                                         <br /><br />
                                         <b >Thông tin sản phẩm</b>
-                                        <p> {ReactHtmlParser(data.description)}</p>
+                                        {ReactHtmlParser(data.description)}
                                     </div>
                                 </div>
                             </Col >
@@ -128,11 +128,14 @@ export default function ProductDetail(props) {
                 <div className="row no-gutters m-auto p-auto">
                     <Row xs={1} className=" mt-4 m-auto p-auto">
                         <h5 >Sản phẩm cùng mục</h5>
-                        <Row xs={1} md={5} className="g-4 m-auto mb-3" >
-                            {realationProduct ? realationProduct.map((item) => (
+                        {
+                            realationProduct ?
+                            <Row xs={1} md={realationProduct.length } className="g-4 m-auto mb-3" >
+                            {realationProduct.map((item) => (
                                 <ProductCard key={item.product_id} item={item} />
-                            )) : null}
+                            )) }
                         </Row>
+                        :null}
                     </Row>
                 </div>
             </div>

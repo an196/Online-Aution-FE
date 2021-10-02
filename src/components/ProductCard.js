@@ -34,7 +34,7 @@ export default function ProductCard({ item}) {
         buy_now: item.buy_now? dateFormat(item.buy_now, "dd/mm/yyyy hh:mm:ss") : "Không có",
         end_day: item.end_day?dateFormat( item.end_day, "dd/mm/yyyy hh:mm:ss"): "Không có",
     };
-    console.log(data)
+    
     return (
         <Col>{data?
             <Card style={styles.card}>
