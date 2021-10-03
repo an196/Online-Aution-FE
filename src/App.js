@@ -43,8 +43,8 @@ function App() {
               <Route path="/product/detail/:id" exact component={ProductDetailPage}>
                 {/* <ProductDetailPage/> */}
               </Route>
-              <Route path="/category" exact>
-                <CategoryPage/>
+              <Route path="/category/:id" exact exact component={CategoryPage}>
+                {/* <CategoryPage/> */}
               </Route>
               <Route path="/user/favorite" exact>
                 <FavoriteProducts/>

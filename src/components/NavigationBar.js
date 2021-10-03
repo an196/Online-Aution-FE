@@ -53,7 +53,7 @@ export default function NavigationBar() {
                         {typeInfo ? typeInfo.map((type) =>
                             <NavDropdown title={type.types.name} id="navbarScrollingDropdown" key={type.types.type_id}>
                                 {type.categorys ? type.categorys.map((category) =>
-                                    <LinkContainer title={category.name} to={`/categorys/${category.category_id}`} key={category.category_id}>
+                                    <LinkContainer title={category.name} to={`/category/${category.category_id}`} key={category.category_id}>
                                         <NavDropdown.Item >{category.name}</NavDropdown.Item>
                                     </LinkContainer>
 

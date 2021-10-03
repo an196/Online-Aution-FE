@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import categoryApi from "../../api/categoryApi";
 
 const initialState = {
-   typeList: []
+   typeList: [],
+  
 }
 
 export const getTypeList = createAsyncThunk("product/getTypeList",
@@ -12,6 +13,7 @@ export const getTypeList = createAsyncThunk("product/getTypeList",
             return response.data;
         return 0;
 });
+
 
 
 
