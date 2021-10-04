@@ -1,4 +1,4 @@
-
+import dateFormat from 'dateformat';
 
 export function parseJwt(token) {
     var base64Url = token.split('.')[1];
@@ -9,3 +9,14 @@ export function parseJwt(token) {
   
     return JSON.parse(jsonPayload);
 };
+
+
+export function formatProductName(name){
+  return name.substring(0, 22) +'...';
+
+}
+
+
+export function formatDateTime(dateTime){
+  return dateTime ? dateFormat(dateTime, "dd/mm/yyyy hh:mm:ss") : "Không có";
+}

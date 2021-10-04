@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import AutionHistory from '../components/AutionHistory';
 import ProductCard from './ProductCard';
 import ReactHtmlParser from "react-html-parser";
-import dateFormat from 'dateformat';
+import {formatDateTime,formatProductName } from '../utils/utils';
 
 import {
     selectInfoProduct,
@@ -57,9 +57,9 @@ export default function ProductDetail(props) {
 
     const data = {
         ...infoProduct,
-        start_day: infoProduct.created_at ? dateFormat(infoProduct.created_at, "dd/mm/yyyy hh:mm:ss") : "Không có",
-        buy_now: infoProduct.buy_now ? dateFormat(infoProduct.buy_now, "dd/mm/yyyy hh:mm:ss") : "Không có",
-        end_day: infoProduct.end_day ? dateFormat(infoProduct.end_day, "dd/mm/yyyy hh:mm:ss") : "Không có",
+        start_day:formatDateTime(infoProduct.created_at),
+        buy_now: formatDateTime(infoProduct.buy_now),
+        end_day: formatDateTime(infoProduct.end_day),
     }
 
     return (
@@ -115,7 +115,7 @@ export default function ProductDetail(props) {
                                         <AutionHistory show={modalShow} onHide={() => setModalShow(false)} />
                                         <br /><br />
                                         <b >Thông tin sản phẩm</b>
-                                        <p> {ReactHtmlParser(data.description)}</p>
+                                        {ReactHtmlParser(data.description)}
                                     </div>
                                 </div>
                             </Col >
@@ -128,11 +128,14 @@ export default function ProductDetail(props) {
                 <div className="row no-gutters m-auto p-auto">
                     <Row xs={1} className=" mt-4 m-auto p-auto">
                         <h5 >Sản phẩm cùng mục</h5>
-                        <Row xs={1} md={5} className="g-4 m-auto mb-3" >
-                            {realationProduct ? realationProduct.map((item) => (
+                        {
+                            realationProduct ?
+                            <Row xs={1} md={realationProduct.length } className="g-4 m-auto mb-3" >
+                            {realationProduct.map((item) => (
                                 <ProductCard key={item.product_id} item={item} />
-                            )) : null}
+                            )) }
                         </Row>
+                        :null}
                     </Row>
                 </div>
             </div>
