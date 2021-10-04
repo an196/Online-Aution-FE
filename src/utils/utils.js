@@ -12,9 +12,10 @@ export function parseJwt(token) {
 
 
 export function formatProductName(name){
-  return name.substring(0, 25) +'...';
+  return name.substring(0, 22) +'...';
 
 }
+
 
 export function formatDateTime(dateTime){
   return dateTime ? dateFormat(dateTime, "dd/mm/yyyy hh:mm:ss") : "Không có";

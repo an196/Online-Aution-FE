@@ -3,8 +3,13 @@ import { Col, Row } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card'
 import { AiOutlineHeart } from "react-icons/ai";
 import { Link } from 'react-router-dom';
+import ReactHtmlParser from "react-html-parser";
 
-import { formatDateTime, formatProductName } from '../utils/utils';
+import { 
+    formatDateTime, 
+    formatProductName,
+    formatUserName 
+} from '../utils/utils';
 
 const styles = {
     card: {
@@ -14,8 +19,8 @@ const styles = {
     },
     cardImage: {
         objectFit: 'cover',
-        borderRadius: 55,
         width: '8.8rem',
+        height: '8.8rem',
     },
     cardTitle: {
         fontSize: '0.8rem'
@@ -44,14 +49,19 @@ export default function ProductCard({ item }) {
         <Col>{data ?
             <div>
                 <Card style={styles.card}>
-                    <Card.Img variant="top" src={data.image} />
+                    <Card.Img variant="top" src={data.image} style={styles.cardImage} />
                     <Card.Body style={styles.cardBody}>
                         <Card.Title style={styles.cardTitle} className='mt-1'> {data.name} &nbsp;&nbsp;&nbsp;&nbsp;
                         </Card.Title>
                         <Card.Text style={styles.cardText} >
                             Đấu giá: {data.start_cost}₫
                             <br />
-                            Người bán:  {data.seller_name}
+                            Người bán:  {data.seller_name.length >13 ? data.seller_name : 
+                            <>
+                            {data.seller_name} 
+                            {ReactHtmlParser('&nbsp;')}
+                            </>
+                            }
                             <br />
                             Mua Ngay: {data.buy_now}
                             <br />

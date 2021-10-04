@@ -20,7 +20,6 @@ export default function Category(props) {
 
     }, [dispath,id]);
 
-    console.log(products);
     return (
         <div className="container mt-4" >
             <h5>Danh mục:</h5>
