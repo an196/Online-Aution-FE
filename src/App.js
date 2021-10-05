@@ -12,7 +12,6 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import CategoryPage from './pages/CategoryPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
-import Dashboard from '../src/features/Admin/Dashboard';
 import ProductTable from '../src/features/Admin/ProductTable';
 import CategoryTable from '../src/features/Admin/CategoryTable';
 import UserTable from '../src/features/Admin/UserTable';
@@ -22,6 +21,7 @@ import AutionProductsHisory from './features/User/AutionProductsHisory';
 import AutionProducts from './features/User/AutionProducts';
 import ReviewProduct from './features/User/ReviewProducts';
 import PostProduct from './features/User/PostProduct';
+import AdminPage from './pages/AdminPage';
 
 function App() {
   return (
@@ -65,7 +65,7 @@ function App() {
                 <PostProduct/>
               </PrivateRoute>
               <PrivateRoute path="/admin" exact>
-                <Dashboard/>
+                <AdminPage/>
               </PrivateRoute>
               <PrivateRoute path="/admin/product" exact>
                 <ProductTable/>

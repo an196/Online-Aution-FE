@@ -52,7 +52,7 @@ export default function Login() {
 
                 })
                 .then(function (res) {
-                    console.log(user)
+                    
                     if(user){
                         switch(user.role_id){
                             case 1:
