@@ -5,6 +5,8 @@ import { useHistory } from "react-router";
 import jwt_decode from "jwt-decode";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser, setUser } from "../features/User/UserSlice";
+import { Link } from "react-router-dom";
+import { NotifyHelper } from "../helper/NotifyHelper";
 
 export default function Login() {
     const [validated, setValidated] = useState(false);
@@ -13,11 +15,12 @@ export default function Login() {
     const dispatch = useDispatch();
 
     const handleSubmit = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         const form = event.currentTarget;
         if (form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-            
+
+
             const email = event.target.email.value;
             const pwd = event.target.password.value;
             getUsers({ email, pwd });
@@ -45,37 +48,40 @@ export default function Login() {
                             const { accessToken, refreshToken } = res.data;
                             localStorage.setItem('x_accessToken', accessToken);
                             localStorage.setItem('x_refreshToken', refreshToken);
-                            
+
                             const user = jwt_decode(accessToken);
                             dispatch(setUser(user));
                         }
 
                 })
                 .then(function (res) {
-                    
-                    if(user){
-                        switch(user.role_id){
+
+                    if (user) {
+                        switch (user.role_id) {
                             case 1:
                             case 2:
                                 history.push("/user/favorite");
+                                NotifyHelper.success("Đăng nhập thành công", "Thông báo");
                                 break;
                             case 3:
                                 history.push("/admin")
+                                NotifyHelper.success("Đăng nhập thành công", "Thông báo");
                                 break;
                             default:
                                 break;
                         }
                     }
-                    
-                    
                 })
                 .catch(function (error) {
                     console.log(error);
-                    alert('Sai mật khẩu hoặc cú pháp')
+                    NotifyHelper.error("Đăng nhập thất bại", "Thông báo");
                 });
         }
     }
 
+    const info = () => {
+        NotifyHelper.success("Đăng ký thành công", "Thông báo");
+      };
     return (
 
         <div className='container col-md-5'>
@@ -115,13 +121,18 @@ export default function Login() {
                         // verifyCallback={verifyCallback}
                         onloadCallback={callback}
                     />, */}
-                    <Row >
-                        <Form.Group className='d-flex justify-content-center'>
-                            <Button type="submit" >Đăng nhập</Button>
+                    <Row className='mb-2 h-1' >
+                        <Form.Group >
+                            <Button type="submit" className='col-md-12'>Đăng nhập</Button>
                         </Form.Group>
 
                     </Row>
-
+                    <Row >
+                        <Form.Group >
+                            <Link to='/sigup'> <Button type="submit" className='col-md-12'>Đăng ký</Button></Link>
+                        </Form.Group>
+                    </Row>
+                    <Link to='/' style={{fontSize:'0.72rem', textDecoration: 'underline'}}>Quay về trang chủ</Link>
                 </Form>
             </div>
         </div>

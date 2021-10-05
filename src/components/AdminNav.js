@@ -1,8 +1,19 @@
 import { Nav, Navbar } from 'react-bootstrap';
 import { FaUser } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
+import { FaSignOutAlt } from 'react-icons/fa';
+import { useHistory } from "react-router";
 
 export default function AdminNav() {
+    const history = useHistory();
+
+    const handleLogout = function (e) {
+        e.preventDefault();
+        delete localStorage.x_accessToken;
+        delete localStorage.x_refreshToken;
+        history.push('/login')
+      }
+
     return (
         <Navbar bg="dark" variant="dark">
             <Navbar.Collapse id="responsive-navbar-nav">
@@ -15,7 +26,7 @@ export default function AdminNav() {
                 </Nav>
                 <Nav className="mr-5">
                     <LinkContainer to="#"><Nav.Link className="mr-1"> < FaUser /></Nav.Link></LinkContainer>
-                    <div style={{ width: 10 }}></div>
+                    <LinkContainer to='/' onClick={handleLogout} ><Nav.Link ><FaSignOutAlt  className='m-2'/></Nav.Link></LinkContainer>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

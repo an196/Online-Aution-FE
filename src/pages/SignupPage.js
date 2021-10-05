@@ -1,43 +1,66 @@
-import React from 'react';
-import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap';
+import React,{ Button, Col, Form,  Row } from 'react-bootstrap';
 import { useState } from 'react';
-//import Recaptcha from 'react-recaptcha';
-import authApi from '../api/authApi';
+import {  useDispatch } from "react-redux";
+import axios from "axios";
+import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
+import { NotifyHelper } from "../helper/NotifyHelper";
 
 export default function SignupPage(){
     const [validated, setValidated] = useState(false);
+    const history = useHistory();
     
+    const dispatch = useDispatch();
 
-    const [nameUser, setNameUser] = useState('');
     const handleSubmit = (event) => {
-        
-
+        event.preventDefault();
+        event.stopPropagation();
         const form = event.currentTarget;
         if (form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-            // if(event.target.password.value === event.target.repassword.value){
-
-            // }
-            const data = {
-                full_name: event.target.username.value,
-                address: event.target.address.value,
-                email: event.target.email.value,
-                password: event.target.password.value,
+            if(event.target.password.value === event.target.repassword.value){
+                
+                
+                
+                const email = event.target.email.value;
+                const pwd = event.target.password.value;
+                const address = event.target.address.value;
+                const full_name = event.target.fullname.value;
+               
+                getUsers({ email, pwd,address, full_name });
             }
-            alert(event.target.username.value)
+            else{
+                NotifyHelper.error("Mật khẩu nhập lại không trùng khớp", "Thông báo");
+            }
             
-            const response =  authApi.signUp(data);
-            console.log(response);
         }
-        else{
-            alert("sssss")
-        }
-
         setValidated(true);
+
     };
-    function onChange(value) {
-        console.log("Captcha value:", value);
+
+
+    function getUsers(data) {
+        // With error handling
+
+        if (data) {
+            const body = {
+                email: data.email,
+                pass_word: data.pwd,
+                address: data.address,
+                full_name: data.full_name
+            };
+            console.log(body);
+            axios
+                .post("http://localhost:3002/api/accounts", body)
+                .then(function (res) {
+                    if (res.status === 200)
+                        console.log(res.data.message);
+                        NotifyHelper.success(res.data.message, "Thông báo");
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    NotifyHelper.error("Đăng ký thất bại! Tài khoản đã có người sử dụng", "Thông báo");
+                });
+        }
     }
 
     return (
@@ -48,12 +71,13 @@ export default function SignupPage(){
                     <Row className="">
                         <Form.Group as={Col} controlId="validationCustom01">
                             <Form.Label column="sm">Họ và tên</Form.Label>
-                            <Form.Control size="sm"
+                            <Form.Control size="sm" 
                                 required
                                 type="text"
                                 placeholder="Họ và tên"
                                 defaultValue=""
-                                name="username"
+                                name="fullname"
+                                
                             />
                             <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
                         </Form.Group>
@@ -61,7 +85,7 @@ export default function SignupPage(){
                     <Row className="">
                         <Form.Group as={Col} controlId="validationCustom01">
                             <Form.Label column="sm">Địa chỉ</Form.Label>
-                            <Form.Control size="sm"
+                            <Form.Control size="sm" 
                                 required
                                 type="text"
                                 placeholder="Địa chỉ"
@@ -76,7 +100,6 @@ export default function SignupPage(){
                             <Form.Label column="sm">Email</Form.Label>
                             <Form.Control size="sm"
                                 required
-                                type="text"
                                 placeholder="Email"
                                 defaultValue=""
                                 type="email"
@@ -90,7 +113,6 @@ export default function SignupPage(){
                             <Form.Label column="sm">Mật khẩu</Form.Label>
                             <Form.Control size="sm"
                                 required
-                                type="text"
                                 placeholder="Mật khẩu"
                                 defaultValue=""
                                 type="password"
@@ -104,7 +126,6 @@ export default function SignupPage(){
                             <Form.Label column="sm">Lập lại mật khẩu</Form.Label>
                             <Form.Control size="sm"
                                 required
-                                type="text"
                                 placeholder="Lập lại mật khẩu"
                                 defaultValue=""
                                 type="password"
@@ -118,8 +139,20 @@ export default function SignupPage(){
                         render="explicit"
                         // verifyCallback={verifyCallback}
                         onloadCallback={callback}
+                        
                     />, */}
-                    <Button type="submit">Submit form</Button>
+                    <Row className='mb-3 mt-3' >
+                        <Form.Group >
+                            <Button type="submit" className='col-md-12'>Đăng ký</Button>
+                        </Form.Group>
+
+                    </Row>
+                    <Row >
+                        <Form.Group >
+                            <Link to='/login'> <Button type="submit" className='col-md-12'>Quay về đăng nhập</Button></Link>
+                        </Form.Group>
+                    </Row>
+                    <Link to='/' style={{fontSize:'0.72rem', textDecoration: 'underline'}}>Quay về trang chủ</Link>
                 </Form>
             </div>
         </div>
