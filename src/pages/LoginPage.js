@@ -1,46 +1,128 @@
-import React, { Component } from "react";
-import {Link} from 'react-router-dom';
-
-const styles = {
-    a: {
-        fontSize: '0.8rem',
-    }
-}
+import React, { Col, Form, Row, Button } from "react-bootstrap";
+import { useState } from 'react';
+import axios from "axios";
+import { useHistory } from "react-router";
+import jwt_decode from "jwt-decode";
+import { useSelector, useDispatch } from "react-redux";
+import { selectUser, setUser } from "../features/User/UserSlice";
 
 export default function Login() {
+    const [validated, setValidated] = useState(false);
+    const history = useHistory();
+    const user = useSelector(selectUser);
+    const dispatch = useDispatch();
+
+    const handleSubmit = (event) => {
+        const form = event.currentTarget;
+        if (form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const email = event.target.email.value;
+            const pwd = event.target.password.value;
+            getUsers({ email, pwd });
+        }
+        setValidated(true);
+
+    };
+
+
+    function getUsers(data) {
+        // With error handling
+
+        if (data) {
+            const body = {
+                email: data.email,
+                pass_word: data.pwd
+            };
+
+            axios
+                .post("http://localhost:3002/api/accounts/signin", body)
+                .then(function (res) {
+                    if (res.status === 200)
+                        if (res.data.authenticated === true) {
+
+                            const { accessToken, refreshToken } = res.data;
+                            localStorage.setItem('x_accessToken', accessToken);
+                            localStorage.setItem('x_refreshToken', refreshToken);
+                            
+                            const user = jwt_decode(accessToken);
+                            dispatch(setUser(user));
+                        }
+
+                })
+                .then(function (res) {
+                    console.log(user)
+                    if(user){
+                        switch(user.role_id){
+                            case 1:
+                            case 2:
+                                history.push("/user/favorite");
+                                break;
+                            case 3:
+                                history.push("/admin")
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert('Sai mật khẩu hoặc cú pháp')
+                });
+        }
+    }
+
     return (
 
-        <div  className = 'container col-md-5'>
-            <div className = 'card  mt-5 p-4'  >
-                <form className ='p-2'>
-                    <h3 className ='d-flex justify-content-center'>Đăng nhập</h3>
-                    <div className="form-group ">
-                        <label>Tài khoản</label>
-                        <input type="email" className="form-control" placeholder="Enter email" />
-                    </div>
+        <div className='container col-md-5'>
+            <div className='card  mt-5 p-4'  >
+                <h3 className='d-flex justify-content-center'>Đăng nhập</h3>
+                <Form className='p-2' noValidate validated={validated} onSubmit={handleSubmit} >
+                    <Row className="">
+                        <Form.Group as={Col} controlId="validationCustom01">
+                            <Form.Label column="sm">Email</Form.Label>
+                            <Form.Control size="sm"
+                                required
+                                type="text"
+                                placeholder="Email"
+                                defaultValue=""
+                                name="email"
+                            />
+                            <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
+                        </Form.Group>
+                    </Row>
+                    <Row className="mb-4">
+                        <Form.Group as={Col} controlId="validationCustom01">
+                            <Form.Label column="sm">Mật khẩu</Form.Label>
+                            <Form.Control
+                                required
+                                placeholder="Mật khẩu"
+                                defaultValue=""
+                                type="password"
+                                name="password"
+                            />
+                            <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
+                        </Form.Group>
+                    </Row >
 
-                    <div className="form-group mt-2">
-                        <label>Mật khẩu</label>
-                        <input type="password" className="form-control" placeholder="Enter password" />
-                    </div>
+                    {/* <Recaptcha
+                        sitekey="xxxxxxxxxxxxxxxxxxxx"
+                        render="explicit"
+                        // verifyCallback={verifyCallback}
+                        onloadCallback={callback}
+                    />, */}
+                    <Row >
+                        <Form.Group className='d-flex justify-content-center'>
+                            <Button type="submit" >Đăng nhập</Button>
+                        </Form.Group>
 
-                    {/* <div className="form-group mt-2">
-                        <div className="custom-control custom-checkbox">
-                            <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                            <label className="custom-control-label" htmlFor="customCheck1">Nhớ mật khẩu</label>
-                        </div>
-                    </div> */}
-                    <div className = 'd-flex justify-content-center mt-4'>
-                    <button type="submit" className="btn btn-primary btn-block ">Đăng nhập</button>
-                    </div>
-                    
-                    <p className="forgot-password text-right mt-3" style={styles.a}>
-                        Quên <a href="sigup" >mật khẩu?</a>
-                        &nbsp;
-                        <Link to="/sigup">Đăng ký</Link>
-                    </p>
-                    
-                </form>
+                    </Row>
+
+                </Form>
             </div>
         </div>
     );

@@ -4,6 +4,7 @@ import { useParams } from 'react-router';
 import { 
     selectProductsByCategory,
     getProductsByCategory,
+    selectCategoryName,
 } from '../features/product/productSlice';
 import { formatDateTime, formatProductName } from '../utils/utils';
 import ProductCard from './ProductCard';
@@ -12,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function Category(props) {
     const products = useSelector(selectProductsByCategory);
+    const category = useSelector(selectCategoryName);
     const { id } = useParams();
     const dispath = useDispatch();
 
@@ -21,9 +23,9 @@ export default function Category(props) {
     }, [dispath,id]);
 
     return (
-        <div className="container mt-4" >
-            <h5>Danh mục:</h5>
-            <Row xs={1} md={5} className="g-4" >
+        <div className="container mt-4" fluid>
+            <h5 className='mb-4'>Danh mục: {products? category : null}</h5>
+            <Row xs={1} md={5} className="g-4 "  >
                     {products.map((item) => (
                         <ProductCard key={item.auction_id} item={item}/>
                     ))}

@@ -39,7 +39,8 @@ export default function NavigationBar() {
                 </Form>
                 <div style={{ width: 10 }}></div>
                 <Button variant="outline-success" >Search</Button>
-                <Link to="/login" className="m-3"> < FaShoppingCart /></Link>
+                
+                <Link to={localStorage.x_accessToken? '/user/favorite' : '/login'} className="m-3"> < FaShoppingCart /></Link>
             </Navbar>
             <Navbar bg="dark" variant="dark" expand="lg">
                 <div style={{ width: 10 }}></div>
@@ -52,7 +53,7 @@ export default function NavigationBar() {
                     >
                         {typeInfo ? typeInfo.map((type) =>
                             <NavDropdown title={type.types.name} id="navbarScrollingDropdown" key={type.types.type_id}>
-                                {type.categorys ? type.categorys.map((category) =>
+                                {type.categories ? type.categories.map((category) =>
                                     <LinkContainer title={category.name} to={`/category/${category.category_id}`} key={category.category_id}>
                                         <NavDropdown.Item >{category.name}</NavDropdown.Item>
                                     </LinkContainer>

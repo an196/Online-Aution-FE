@@ -46,36 +46,36 @@ function App() {
               <Route path="/category/:id" exact exact component={CategoryPage}>
                 {/* <CategoryPage/> */}
               </Route>
-              <Route path="/user/favorite" exact>
+              <PrivateRoute path="/user/favorite" exact>
                 <FavoriteProducts/>
-              </Route>
-              <Route path="/user/aution-history" exact>
+              </PrivateRoute>
+              <PrivateRoute path="/user/aution-history" exact>
                 <AutionProductsHisory/>
-              </Route>
-              <Route path="/user/profile" exact>
+              </PrivateRoute>
+              <PrivateRoute path="/user/profile" exact>
                 <UserProfile/>
-              </Route>
-              <Route path="/user/aution" exact>
+              </PrivateRoute>
+              <PrivateRoute path="/user/aution" exact>
                 <AutionProducts/>
-              </Route>
-              <Route path="/user/review" exact>
+              </PrivateRoute>
+              <PrivateRoute path="/user/review" exact>
                 <ReviewProduct/>
-              </Route>
-              <Route path="/user/post" exact>
+              </PrivateRoute>
+              <PrivateRoute path="/user/post" exact>
                 <PostProduct/>
-              </Route>
-              <Route path="/admin" exact>
+              </PrivateRoute>
+              <PrivateRoute path="/admin" exact>
                 <Dashboard/>
-              </Route>
-              <Route path="/admin/product" exact>
+              </PrivateRoute>
+              <PrivateRoute path="/admin/product" exact>
                 <ProductTable/>
-              </Route>
-              <Route path="/admin/category" exact>
+              </PrivateRoute>
+              <PrivateRoute path="/admin/category" exact>
                 <CategoryTable/>
-              </Route>
-              <Route path="/admin/user" exact>
+              </PrivateRoute>
+              <PrivateRoute path="/admin/user" exact>
                 <UserTable/>
-              </Route>
+              </PrivateRoute>
             </Switch>
           </Col>
           <Col></Col>
@@ -89,7 +89,7 @@ function App() {
 function PrivateRoute({ children, ...rest }) {
   return (
     <Route {...rest} render={function () {
-      return localStorage.todoApp_accessToken ?
+      return localStorage.x_accessToken ?
         children :
         <Redirect to={{ pathname: '/login' }} />;
     }} />

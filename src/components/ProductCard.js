@@ -8,7 +8,7 @@ import ReactHtmlParser from "react-html-parser";
 import { 
     formatDateTime, 
     formatProductName,
-    formatUserName 
+    formatPrice, 
 } from '../utils/utils';
 
 const styles = {
@@ -39,8 +39,9 @@ export default function ProductCard({ item }) {
     const data = {
         ...item,
         name: formatProductName(item.name),
+        start_cost:  formatPrice(item.start_cost),
+        buy_now: formatPrice(item.buy_now),
         created_at: formatDateTime(item.created_at),
-        buy_now: formatDateTime(item.buy_now),
         end_day: formatDateTime(item.end_day),
         image: item.image ? item.image : defaultImg
     };
@@ -54,7 +55,7 @@ export default function ProductCard({ item }) {
                         <Card.Title style={styles.cardTitle} className='mt-1'> {data.name} &nbsp;&nbsp;&nbsp;&nbsp;
                         </Card.Title>
                         <Card.Text style={styles.cardText} >
-                            Đấu giá: {data.start_cost}₫
+                            Đấu giá: {data.start_cost}
                             <br />
                             Người bán:  {data.seller_name.length >13 ? data.seller_name : 
                             <>
@@ -78,7 +79,6 @@ export default function ProductCard({ item }) {
                         </Row>
                     </Card.Body>
                 </Card>
-                <Col className='col-md-1'></Col>
             </div>
             : null}
         </Col>

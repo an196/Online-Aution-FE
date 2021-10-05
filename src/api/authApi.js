@@ -1,15 +1,18 @@
-import axiosClient from '../utils/utils';
+import axiosClient from "./axiosClient";
 
-export default authApi = {
+const prefix = 'accounts'
+const authApi = {
     signUp(data) {
-        const url = "/auth/sign-up";
+        const url = `/${prefix}/signup`;
     
         return axiosClient.post(url, data);
       },
     
       signIn(data) {
-        const url = "/auth/sign-in";
+        const url = `/${prefix}/signin`;
     
         return axiosClient.post(url, data);
       },
-}
+};
+
+export default authApi;
