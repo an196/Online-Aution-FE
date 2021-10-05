@@ -1,8 +1,19 @@
 import { LinkContainer } from 'react-router-bootstrap';
 import { Nav, Navbar } from 'react-bootstrap';
 import { CgProfile } from 'react-icons/cg';
+import { FaSignOutAlt } from 'react-icons/fa';
+import { useHistory } from "react-router";
 
 export default function UserNavBar() {
+    const history = useHistory();
+
+    const handleLogout = function (e) {
+        e.preventDefault();
+        delete localStorage.x_accessToken;
+        delete localStorage.x_refreshToken;
+        history.push('/login')
+      }
+
     return (
         <div >
             <Navbar bg="dark" variant="dark">
@@ -18,6 +29,7 @@ export default function UserNavBar() {
                     </Nav>
                     <Nav>
                     <LinkContainer to="/user/profile" ><Nav.Link ><CgProfile className='m-2'/></Nav.Link></LinkContainer>
+                    <LinkContainer to='/' onClick={handleLogout} ><Nav.Link ><FaSignOutAlt  className='m-2'/></Nav.Link></LinkContainer>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

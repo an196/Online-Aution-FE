@@ -8,6 +8,7 @@ const initialState = {
     infoProduct: {},
     relationProduct: [],
     productsByCategory: [],
+    categoryName: '',
 }
 
 export const getTopItemRunOut = createAsyncThunk("product/getTopItemRunOut",
@@ -73,6 +74,7 @@ export const productSlice = createSlice({
             })
             .addCase(getProductsByCategory.fulfilled, (state, { payload }) => {
                 state.productsByCategory = payload.info_types;
+                state.categoryName = payload.name;
             })
 
     },
@@ -86,4 +88,5 @@ export const selectTopHighestAutions = state => state.product.topHighestAutions;
 export const selectInfoProduct = state => state.product.infoProduct;
 export const selectRelationProduct = state => state.product.relationProduct;
 export const selectProductsByCategory = state => state.product.productsByCategory;
+export const selectCategoryName = state => state.product.categoryName;
 export default productSlice.reducer;

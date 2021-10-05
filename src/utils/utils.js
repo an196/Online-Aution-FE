@@ -16,6 +16,10 @@ export function formatProductName(name){
 
 }
 
+export function formatPrice(price){
+  return price ? price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") +'₫' : 'Không có';
+
+}
 
 export function formatDateTime(dateTime){
   return dateTime ? dateFormat(dateTime, "dd/mm/yyyy hh:mm:ss") : "Không có";

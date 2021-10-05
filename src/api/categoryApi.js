@@ -1,6 +1,6 @@
 import axiosClient from './axiosClient';
 
-const prefix='categorys';
+const prefix='categories';
 
 const productApi = {
     getTypeList(){
