@@ -8,19 +8,22 @@ import { selectUser, setUser } from "../features/User/UserSlice";
 import { Link } from "react-router-dom";
 import { NotifyHelper } from "../helper/NotifyHelper";
 
+
 export default function Login() {
     const [validated, setValidated] = useState(false);
+    const [errors, setErrors] = useState({});
+
     const history = useHistory();
     const user = useSelector(selectUser);
     const dispatch = useDispatch();
+
+    //validate form
 
     const handleSubmit = (event) => {
         event.preventDefault();
         event.stopPropagation();
         const form = event.currentTarget;
         if (form.checkValidity()) {
-
-
             const email = event.target.email.value;
             const pwd = event.target.password.value;
             getUsers({ email, pwd });
@@ -73,15 +76,47 @@ export default function Login() {
                     }
                 })
                 .catch(function (error) {
-                    console.log(error);
                     NotifyHelper.error("Đăng nhập thất bại", "Thông báo");
                 });
         }
     }
 
-    const info = () => {
-        NotifyHelper.success("Đăng ký thành công", "Thông báo");
-      };
+    function handleEmail(e) {
+        const mail = e.target.value;
+        if (mail.length === 0 || mail === "") {
+            //formIsValid = false;
+            setErrors({ email: 'Email không được trống!' });
+        }
+        else {
+            setErrors({ email: '' });
+            if (typeof mail !== "undefined") {
+                const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                if (!re.test(String(mail).toLowerCase())) {
+                    setErrors({ email: 'Email không hợp lệ!' });
+                }else{
+                    setErrors({ email: '' });
+                }
+            }
+        }
+    }
+
+    function handlePassword(e){
+        const pws = e.target.value;
+        console.log(pws.length);
+        if(pws.length === 0){
+            setErrors({ password: 'Mật khẩu không được trống!' });
+        }else{
+            setErrors({ password: '' });
+            if(pws.length <6 ){
+                setErrors({ password: 'Mật khẩu không được ít hơn 6 ký tự' });
+            }else{
+                if(pws.length >20){
+                    setErrors({ password: 'Mật khẩu không được dài hơn 20 ký tự' });
+                }
+            }
+        }
+    }
+
     return (
 
         <div className='container col-md-5'>
@@ -93,11 +128,13 @@ export default function Login() {
                             <Form.Label column="sm">Email</Form.Label>
                             <Form.Control size="sm"
                                 required
-                                type="text"
+                                type="email"
                                 placeholder="Email"
                                 defaultValue=""
                                 name="email"
+                                onChange={handleEmail}
                             />
+                            <span style={{ color: "red" }}>{errors.email}</span>
                             <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
                         </Form.Group>
                     </Row>
@@ -110,17 +147,13 @@ export default function Login() {
                                 defaultValue=""
                                 type="password"
                                 name="password"
+                                onChange={handlePassword}
                             />
+                            <span style={{ color: "red" }}>{errors.password}</span>
                             <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
                         </Form.Group>
                     </Row >
 
-                    {/* <Recaptcha
-                        sitekey="xxxxxxxxxxxxxxxxxxxx"
-                        render="explicit"
-                        // verifyCallback={verifyCallback}
-                        onloadCallback={callback}
-                    />, */}
                     <Row className='mb-2 h-1' >
                         <Form.Group >
                             <Button type="submit" className='col-md-12'>Đăng nhập</Button>
@@ -129,11 +162,12 @@ export default function Login() {
                     </Row>
                     <Row >
                         <Form.Group >
-                            <Link to='/sigup'> <Button type="submit" className='col-md-12'>Đăng ký</Button></Link>
+                            <Link to='/signup'> <Button type="submit" className='col-md-12'>Đăng ký</Button></Link>
                         </Form.Group>
                     </Row>
-                    <Link to='/' style={{fontSize:'0.72rem', textDecoration: 'underline'}}>Quay về trang chủ</Link>
+                    <Link to='/' style={{ fontSize: '0.72rem', textDecoration: 'underline' }}>Quay về trang chủ</Link>
                 </Form>
+
             </div>
         </div>
     );

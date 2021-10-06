@@ -22,6 +22,7 @@ import AutionProducts from './features/User/AutionProducts';
 import ReviewProduct from './features/User/ReviewProducts';
 import PostProduct from './features/User/PostProduct';
 import AdminPage from './pages/AdminPage';
+import OtpPage from './pages/OtpPage';
 
 function App() {
   return (
@@ -37,8 +38,11 @@ function App() {
               <Route path="/login" exact>
                 <LoginPage/>
               </Route>
-              <Route path="/sigup" exact>
+              <Route path="/signup" exact>
                 <SignupPage/>
+              </Route>
+              <Route path="/signup/otp" exact>
+                <OtpPage/>
               </Route>
               <Route path="/product/detail/:id" exact component={ProductDetailPage}>
                 {/* <ProductDetailPage/> */}
