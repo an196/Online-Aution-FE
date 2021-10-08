@@ -19,8 +19,8 @@ const styles = {
     },
     cardImage: {
         objectFit: 'cover',
-        width: '8.8rem',
-        height: '8.8rem',
+        width: '8.6rem',
+        height: '8.6rem',
     },
     cardTitle: {
         fontSize: '0.8rem'

@@ -6,10 +6,11 @@ import { useEffect } from 'react';
 import {
     selectTypeInfo,
     getTypeInfo,
-
+    
 } from '../features/product/typeSlice';
 import { useHistory } from "react-router";
 import { selectUser, setUser } from "../features/User/UserSlice";
+
 
 export default function NavigationBar() {
     const typeInfo = useSelector(selectTypeInfo);
@@ -36,13 +37,25 @@ export default function NavigationBar() {
         else{
             history.push("/login")
         }
-      }
+    }
+    
 
+    function handleSearch(e){
+        e.preventDefault()
+        e.stopPropagation();
+        const search = e.target.search.value;
+
+        if(search.length > 2){
+            history.push(`/product/search?search=${search}`);
+        }
+        
+    }
+      
     useEffect(() => {
         dispath(getTypeInfo());
     }, [dispath]);
 
-
+    
     return (
         <>
             <Navbar bg="light" expand="lg">
@@ -52,16 +65,18 @@ export default function NavigationBar() {
                 <Navbar.Collapse id="navbarScroll">
 
                 </Navbar.Collapse>
-                <Form className="d-flex justify-content-around">
+                <Form className="d-flex justify-content-around" onSubmit={handleSearch}>
                     <FormControl
                         type="search"
                         placeholder="Search"
                         className="mr-2"
                         aria-label="Search"
+                        name='search'
                     />
+                    <div style={{ width: 10 }}></div>
+                    <Button variant="outline-success" type='submit'>Search</Button>
                 </Form>
-                <div style={{ width: 10 }}></div>
-                <Button variant="outline-success" >Search</Button>
+                
                 <LinkContainer to='/' onClick={handleClick} ><Nav.Link ><FaShoppingCart  className='m-2'/></Nav.Link></LinkContainer>
             </Navbar>
             <Navbar bg="dark" variant="dark" expand="lg">

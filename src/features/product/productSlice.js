@@ -9,6 +9,7 @@ const initialState = {
     relationProduct: [],
     productsByCategory: [],
     categoryName: '',
+    searchResult: []
 }
 
 export const getTopItemRunOut = createAsyncThunk("product/getTopItemRunOut",
@@ -51,6 +52,15 @@ export const getProductsByCategory = createAsyncThunk("product/getProductsByCate
         return 0;
 });
 
+export const getSearchResult = createAsyncThunk("product/getSearchResult",
+    async (search) => {
+        const response = await productApi.getSearchResult(search); 
+        if(response.status === 200)
+            return response.data;
+        return 0;
+});
+
+
 export const productSlice = createSlice({
     name: 'product',
     initialState,
@@ -76,6 +86,9 @@ export const productSlice = createSlice({
                 state.productsByCategory = payload.info_types;
                 state.categoryName = payload.name;
             })
+            .addCase(getSearchResult.fulfilled, (state, { payload }) => {
+                state.searchResult = payload;
+            })
 
     },
 })
@@ -89,4 +102,5 @@ export const selectInfoProduct = state => state.product.infoProduct;
 export const selectRelationProduct = state => state.product.relationProduct;
 export const selectProductsByCategory = state => state.product.productsByCategory;
 export const selectCategoryName = state => state.product.categoryName;
+export const selectSearchResult = state => state.product.searchResult;
 export default productSlice.reducer;

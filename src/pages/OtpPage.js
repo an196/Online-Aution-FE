@@ -3,7 +3,7 @@ import {
     useState,
     useEffect
 } from "react";
-import { Row } from "react-bootstrap";
+import { Row,Container,Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { selectOTP, setOTP, selectRegisterInfo } from '../features/User/UserSlice';
 import { useHistory } from "react-router";
@@ -49,7 +49,7 @@ export default function OtpPage() {
 
             if (timeout > 0) {
                 setTimeOut(timeout - 1);
-                
+
             }
             else {
                 setErrors({ otpOver: 'Đã hết thời gian nhập OTP' })
@@ -63,28 +63,36 @@ export default function OtpPage() {
         };
     })
 
-   
-    return (
-        <div className='container col-md-5'>
-            <div className='card  mt-5 p-4' >
-                <h3 className='d-flex justify-content-center'>Nhập mã OTP</h3>
-                <span className='d-flex justify-content-center'>OTP hết hạn trong:{timeout} giây </span>
-                <span className='d-flex justify-content-center mb-2' style={{ color: "red" }}>{errors.otpOver}</span>
-                <Row className='m-auto'>
-                    <OtpInput
-                        value={otp}
-                        onChange={handleChange}
-                        numInputs={6}
-                        separator={<span className='w-4'>-</span>}
-                    />
 
-                </Row>
-                <Link to='/signup'>
-                    <span className='d-flex justify-content-center mt-2' style={{ color: "green", textDecoration: 'underline' }}>
-                        Quay lại đăng ký
-                    </span>
-                </Link>
-            </div>
-        </div>
+    return (
+        <Container>
+            <Row>
+                <Col></Col>
+                <Col xs={8}>
+                    <div className='container col-md-5'>
+                        <div className='card  mt-5 p-4' >
+                            <h3 className='d-flex justify-content-center'>Nhập mã OTP</h3>
+                            <span className='d-flex justify-content-center'>OTP hết hạn trong:{timeout} giây </span>
+                            <span className='d-flex justify-content-center mb-2' style={{ color: "red" }}>{errors.otpOver}</span>
+                            <Row className='m-auto'>
+                                <OtpInput
+                                    value={otp}
+                                    onChange={handleChange}
+                                    numInputs={6}
+                                    separator={<span className='w-4'>-</span>}
+                                />
+                            </Row>
+                            <Link to='/signup'>
+                                <span className='d-flex justify-content-center mt-2' style={{ color: "green", textDecoration: 'underline' }}>
+                                    Quay lại đăng ký
+                                </span>
+                            </Link>
+                        </div>
+                    </div>
+
+                </Col>
+                <Col></Col>
+            </Row>
+        </Container>
     )
 }
