@@ -23,68 +23,65 @@ import ReviewProduct from './features/User/ReviewProducts';
 import PostProduct from './features/User/PostProduct';
 import AdminPage from './pages/AdminPage';
 import OtpPage from './pages/OtpPage';
+import NotFoundPage from './pages/NotFoundPage';
+import SearchResultPage from './pages/SearchResultPage';
 
 function App() {
   return (
     <Router>
-      <Container>
-        <Row>
-          <Col></Col>
-          <Col xs={8}>
-            <Switch>
-              <Route path="/" exact>
-                <HomePage />
-              </Route>
-              <Route path="/login" exact>
-                <LoginPage/>
-              </Route>
-              <Route path="/signup" exact>
-                <SignupPage/>
-              </Route>
-              <Route path="/signup/otp" exact>
-                <OtpPage/>
-              </Route>
-              <Route path="/product/detail/:id" exact component={ProductDetailPage}>
-                {/* <ProductDetailPage/> */}
-              </Route>
-              <Route path="/category/:id" exact exact component={CategoryPage}>
-                {/* <CategoryPage/> */}
-              </Route>
-              <PrivateRoute path="/user/favorite" exact>
-                <FavoriteProducts/>
-              </PrivateRoute>
-              <PrivateRoute path="/user/aution-history" exact>
-                <AutionProductsHisory/>
-              </PrivateRoute>
-              <PrivateRoute path="/user/profile" exact>
-                <UserProfile/>
-              </PrivateRoute>
-              <PrivateRoute path="/user/aution" exact>
-                <AutionProducts/>
-              </PrivateRoute>
-              <PrivateRoute path="/user/review" exact>
-                <ReviewProduct/>
-              </PrivateRoute>
-              <PrivateRoute path="/user/post" exact>
-                <PostProduct/>
-              </PrivateRoute>
-              <PrivateRoute path="/admin" exact>
-                <AdminPage/>
-              </PrivateRoute>
-              <PrivateRoute path="/admin/product" exact>
-                <ProductTable/>
-              </PrivateRoute>
-              <PrivateRoute path="/admin/category" exact>
-                <CategoryTable/>
-              </PrivateRoute>
-              <PrivateRoute path="/admin/user" exact>
-                <UserTable/>
-              </PrivateRoute>
-            </Switch>
-          </Col>
-          <Col></Col>
-        </Row>
-      </Container>
+      <Switch>
+        <Route path="/" exact>
+          <HomePage />
+        </Route>
+        <Route path="/login" exact>
+          <LoginPage />
+        </Route>
+        <Route path="/signup" exact>
+          <SignupPage />
+        </Route>
+        <Route path="/signup/otp" exact>
+          <OtpPage />
+        </Route>
+        <Route path="/product/search" exact component={SearchResultPage}>
+        </Route>
+        <Route path="/product/detail/:id" exact component={ProductDetailPage}>
+        </Route>
+        <Route path="/category/:id" exact exact component={CategoryPage}>
+        </Route>
+        <PrivateRoute path="/user/favorite" exact>
+          <FavoriteProducts />
+        </PrivateRoute>
+        <PrivateRoute path="/user/aution-history" exact>
+          <AutionProductsHisory />
+        </PrivateRoute>
+        <PrivateRoute path="/user/profile" exact>
+          <UserProfile />
+        </PrivateRoute>
+        <PrivateRoute path="/user/aution" exact>
+          <AutionProducts />
+        </PrivateRoute>
+        <PrivateRoute path="/user/review" exact>
+          <ReviewProduct />
+        </PrivateRoute>
+        <PrivateRoute path="/user/post" exact>
+          <PostProduct />
+        </PrivateRoute>
+        <PrivateRoute path="/admin" exact>
+          <AdminPage />
+        </PrivateRoute>
+        <PrivateRoute path="/admin/product" exact>
+          <ProductTable />
+        </PrivateRoute>
+        <PrivateRoute path="/admin/category" exact>
+          <CategoryTable />
+        </PrivateRoute>
+        <PrivateRoute path="/admin/user" exact>
+          <UserTable />
+        </PrivateRoute>
+        <Route path="*" component={NotFoundPage}>
+          {/* <CategoryPage/> */}
+        </Route>
+      </Switch>
     </Router>
 
   );

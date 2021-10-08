@@ -1,8 +1,15 @@
 import axios from 'axios';
 import queryString from "querystring";
 
+
+let headers = {};
+headers['x-access-token'] = localStorage.x_accessToken? localStorage.x_accessToken : null;
+headers['x-refresh-token'] = localStorage.x_refreshToken? localStorage.x_refreshToken : null;
+
+
 const axiosClient = axios.create({
   baseURL: 'http://localhost:3002/api/',
+  headers: headers,
   timeout: 5000,
   paramsSerializer: (params) => queryString.stringify(params),
 });

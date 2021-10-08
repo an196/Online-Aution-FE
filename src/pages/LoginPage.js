@@ -1,4 +1,4 @@
-import React, { Col, Form, Row, Button } from "react-bootstrap";
+import React, { Col, Form, Row, Button, Container } from "react-bootstrap";
 import { useState } from 'react';
 import axios from "axios";
 import { useHistory } from "react-router";
@@ -55,7 +55,9 @@ export default function Login() {
                             const user = jwt_decode(accessToken);
                             dispatch(setUser(user));
                         }
-
+                    if (res.status === 400) {
+                        console.log(res.data)
+                    }
                 })
                 .then(function (res) {
 
@@ -93,24 +95,24 @@ export default function Login() {
                 const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                 if (!re.test(String(mail).toLowerCase())) {
                     setErrors({ email: 'Email không hợp lệ!' });
-                }else{
+                } else {
                     setErrors({ email: '' });
                 }
             }
         }
     }
 
-    function handlePassword(e){
+    function handlePassword(e) {
         const pws = e.target.value;
         console.log(pws.length);
-        if(pws.length === 0){
+        if (pws.length === 0) {
             setErrors({ password: 'Mật khẩu không được trống!' });
-        }else{
+        } else {
             setErrors({ password: '' });
-            if(pws.length <6 ){
+            if (pws.length < 6) {
                 setErrors({ password: 'Mật khẩu không được ít hơn 6 ký tự' });
-            }else{
-                if(pws.length >20){
+            } else {
+                if (pws.length > 20) {
                     setErrors({ password: 'Mật khẩu không được dài hơn 20 ký tự' });
                 }
             }
@@ -118,58 +120,66 @@ export default function Login() {
     }
 
     return (
+        <Container>
+            <Row>
+                <Col></Col>
+                <Col xs={8}>
+                    <div className='container col-md-5'>
+                        <div className='card  mt-5 p-4'  >
+                            <h3 className='d-flex justify-content-center'>Đăng nhập</h3>
+                            <Form className='p-2' noValidate validated={validated} onSubmit={handleSubmit} >
+                                <Row className="">
+                                    <Form.Group as={Col} controlId="validationCustom01">
+                                        <Form.Label column="sm">Email</Form.Label>
+                                        <Form.Control size="sm"
+                                            required
+                                            type="email"
+                                            placeholder="Email"
+                                            defaultValue=""
+                                            name="email"
+                                            onChange={handleEmail}
+                                        />
+                                        <span style={{ color: "red" }}>{errors.email}</span>
+                                        <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
+                                    </Form.Group>
+                                </Row>
+                                <Row className="mb-4">
+                                    <Form.Group as={Col} controlId="validationCustom01">
+                                        <Form.Label column="sm">Mật khẩu</Form.Label>
+                                        <Form.Control
+                                            required
+                                            placeholder="Mật khẩu"
+                                            defaultValue=""
+                                            type="password"
+                                            name="password"
+                                            onChange={handlePassword}
+                                        />
+                                        <span style={{ color: "red" }}>{errors.password}</span>
+                                        <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
+                                    </Form.Group>
+                                </Row >
 
-        <div className='container col-md-5'>
-            <div className='card  mt-5 p-4'  >
-                <h3 className='d-flex justify-content-center'>Đăng nhập</h3>
-                <Form className='p-2' noValidate validated={validated} onSubmit={handleSubmit} >
-                    <Row className="">
-                        <Form.Group as={Col} controlId="validationCustom01">
-                            <Form.Label column="sm">Email</Form.Label>
-                            <Form.Control size="sm"
-                                required
-                                type="email"
-                                placeholder="Email"
-                                defaultValue=""
-                                name="email"
-                                onChange={handleEmail}
-                            />
-                            <span style={{ color: "red" }}>{errors.email}</span>
-                            <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
-                        </Form.Group>
-                    </Row>
-                    <Row className="mb-4">
-                        <Form.Group as={Col} controlId="validationCustom01">
-                            <Form.Label column="sm">Mật khẩu</Form.Label>
-                            <Form.Control
-                                required
-                                placeholder="Mật khẩu"
-                                defaultValue=""
-                                type="password"
-                                name="password"
-                                onChange={handlePassword}
-                            />
-                            <span style={{ color: "red" }}>{errors.password}</span>
-                            <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
-                        </Form.Group>
-                    </Row >
+                                <Row className='mb-2 h-1' >
+                                    <Form.Group >
+                                        <Button type="submit" className='col-md-12'>Đăng nhập</Button>
+                                    </Form.Group>
 
-                    <Row className='mb-2 h-1' >
-                        <Form.Group >
-                            <Button type="submit" className='col-md-12'>Đăng nhập</Button>
-                        </Form.Group>
+                                </Row>
+                                <Row >
+                                    <Form.Group >
+                                        <Link to='/signup'> <Button type="submit" className='col-md-12'>Đăng ký</Button></Link>
+                                    </Form.Group>
+                                </Row>
+                                <Link to='/' style={{ fontSize: '0.72rem', textDecoration: 'underline' }}>Quay về trang chủ</Link>
+                            </Form>
 
-                    </Row>
-                    <Row >
-                        <Form.Group >
-                            <Link to='/signup'> <Button type="submit" className='col-md-12'>Đăng ký</Button></Link>
-                        </Form.Group>
-                    </Row>
-                    <Link to='/' style={{ fontSize: '0.72rem', textDecoration: 'underline' }}>Quay về trang chủ</Link>
-                </Form>
+                        </div>
+                    </div>
 
-            </div>
-        </div>
+                </Col>
+                <Col></Col>
+            </Row>
+        </Container>
     );
 
 }

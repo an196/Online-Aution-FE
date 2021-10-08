@@ -23,6 +23,10 @@ const productApi = {
         const url = `/${prefix}/category/${id}`;
         return axiosClient.get(url);
     },
+    getSearchResult(search){
+        const url = `/${prefix}//search?textSearch=${search}`;
+        return axiosClient.get(url);
+    },
 }
 
 export default productApi;
