@@ -4,14 +4,12 @@ const prefix='admin';
 
 const adminApi = {
     getProduct(){
-        const data={};
         const url = `/${prefix}/product`;
         return axiosClient.get(url);
     },
-    removeProductp(){
-        const data={};
-        const url = `/${prefix}/product`;
-        return axiosClient.get(url);
+    removeProduct(id){
+        const url = `/${prefix}/product/removeProduct?id=${id}`;
+        return axiosClient.patch(url);
     },
 
 }
