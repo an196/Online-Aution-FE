@@ -3,10 +3,19 @@ import { Nav, Navbar } from 'react-bootstrap';
 import { CgProfile } from 'react-icons/cg';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { useHistory } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
+import { selectUser } from '../features/User/UserSlice';
+import { useState } from 'react';
 
 export default function UserNavBar() {
     const history = useHistory();
+    const user = useSelector(selectUser);
+    const dispatch = useDispatch();
+    const [buyer,setBuyer] = useState(false);
 
+    if(user && user.role_id == 2){
+        setBuyer(true);
+    }
     const handleLogout = function (e) {
         e.preventDefault();
         delete localStorage.x_accessToken;
@@ -25,7 +34,7 @@ export default function UserNavBar() {
                         <LinkContainer to="/user/aution-history" ><Nav.Link > Lịch sử đấu giá</Nav.Link></LinkContainer>
                         <LinkContainer to="/user/aution"><Nav.Link > Đấu giá</Nav.Link></LinkContainer>
                         <LinkContainer to="/user/review"><Nav.Link > Đánh giá</Nav.Link></LinkContainer>
-                        <LinkContainer to="/user/post"><Nav.Link > Đăng bài</Nav.Link></LinkContainer>
+                        <LinkContainer to="/user/post" disabled={!buyer}><Nav.Link > Đăng bài</Nav.Link></LinkContainer>
                     </Nav>
                     <Nav>
                     <LinkContainer to="/user/profile" ><Nav.Link ><CgProfile className='m-2'/></Nav.Link></LinkContainer>

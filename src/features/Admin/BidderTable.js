@@ -4,17 +4,16 @@ import {getAccount,
     selectAccounts, 
     refreshAccount,
     selectBidders,
-    selectSellers 
+    selectSellers, 
+    upgradeAccount
 } from './AdminSlice';
 import {  Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import React, { useEffect } from 'react';
 import DataTable  from 'react-data-table-component';
 import memoize from 'memoize-one';
-import BidderTable from './BidderTable';
 
-export default function UserTable() {
-    const accounts = useSelector(selectAccounts);
+export default function BidderTable() {
     const sellers = useSelector(selectSellers);
     const biiders = useSelector(selectBidders);
     const dispatch = useDispatch();
@@ -51,15 +50,13 @@ export default function UserTable() {
 
     function clickHandler(e){
         console.log(e)
-        
-        dispatch(inferiorAccount(e));
+        dispatch(upgradeAccount(e));
         dispatch(refreshAccount(e));
-       
     }
 
     const columns=[
         {
-            cell: (row) => row.role_id === 2? <button onClick={()=>clickHandler(row.account_id)}>Hạ cấp</button>: null,
+            cell: (row) => row.role_id === 1? <button onClick={()=>clickHandler(row.account_id)}>Nâng cấp</button>: null,
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
@@ -106,9 +103,9 @@ export default function UserTable() {
         <div className="container">
             <AdminNav/>
             <DataTable
-                title="Danh sách tài khoản người bán"
+                title="Danh sách tài khoản người mua"
                 columns={columns}
-                data={sellers}
+                data={biiders}
                 selectableRows
                 contextActions={contextActions}
                 onSelectedRowsChange={handleRowSelected}

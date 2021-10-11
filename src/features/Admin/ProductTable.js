@@ -1,14 +1,9 @@
-import { Table, Button } from 'react-bootstrap';
+import {  Button } from 'react-bootstrap';
 import AdminNav from '../../components/AdminNav';
-import { selectProducts, getProduct, selectRemoveResult, removeProduct, remove } from './AdminSlice';
+import { selectProducts, getProduct,  removeProduct, remove } from './AdminSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import React, { useEffect, useState } from 'react';
-import { useTable, usePagination } from 'react-table';
-import { FaTrashAlt } from 'react-icons/fa';
-import axios from 'axios';
+import React, { useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-import { NotifyHelper } from '../../helper/NotifyHelper';
-import { useHistory } from 'react-router';
 
 export default function ProductTable() {
     const products = useSelector(selectProducts);
@@ -16,10 +11,16 @@ export default function ProductTable() {
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [toggleCleared, setToggleCleared] = React.useState(false);
 
+
+    useEffect(() => {
+        dispatch(getProduct());
+    }, [dispatch]);
+
     const handleRowSelected = React.useCallback(state => {
         setSelectedRows(state.selectedRows);
     }, []);
 
+    
     
 
     const contextActions = React.useMemo(() => {
@@ -39,18 +40,16 @@ export default function ProductTable() {
         );
     }, [products, selectedRows, toggleCleared]);
 
-
-   
-
-
     const columns = [
         {
-            name: '#',
+            name: 'id',
             selector: row => row.product_id,
+            sortable: true,
         },
         {
             name: 'Tên sản phẩm',
             selector: row => row.name,
+            sortable: true,
         },
         {
             name: 'Người bán',
@@ -59,23 +58,23 @@ export default function ProductTable() {
         {
             name: 'Ngày tạo',
             selector: row => row.created_at,
+            sortable: true,
         },
         {
             name: 'Danh mục',
             selector: row => row.type_name,
+            sortable: true,
         },
     ];
 
    
-    useEffect(() => {
-        dispatch(getProduct());
-    }, [dispatch]);
-   
+    
+   console.log(products);
     return (
         <div className="container">
             <AdminNav />
 
-            <DataTable
+            <DataTable name='product-table'
                 title="Danh sách các sản phẩm"
                 columns={columns}
                 data={products}
@@ -84,7 +83,7 @@ export default function ProductTable() {
                 onSelectedRowsChange={handleRowSelected}
                 clearSelectedRows={toggleCleared}
                 pagination
-
+               
             />
            
         </div>
