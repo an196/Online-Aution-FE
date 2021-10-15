@@ -1,29 +1,18 @@
 import AdminNav from '../../components/AdminNav';
-import {getAccount, 
-    inferiorAccount, 
-    selectAccounts, 
-    refreshAccount,
-    selectBidders,
-    selectSellers 
-} from './AdminSlice';
+import { getWaitUpgrade, selectWaitUpgrade, upgradeAccount,removeWaitAccount } from './AdminSlice';
 import {  Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import React, { useEffect } from 'react';
-import DataTable  from 'react-data-table-component';
+import DataTable from 'react-data-table-component';
 import memoize from 'memoize-one';
-import BidderTable from './BidderTable';
 
-export default function UserTable() {
-    const accounts = useSelector(selectAccounts);
-    const sellers = useSelector(selectSellers);
-    const biiders = useSelector(selectBidders);
+export default function WaitUpgrade() {
+    const accounts = useSelector(selectWaitUpgrade);
     const dispatch = useDispatch();
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [toggleCleared, setToggleCleared] = React.useState(false);
 
-    useEffect(() => {
-        dispatch(getAccount());
-    }, [dispatch]);
+   
 
 
     const handleRowSelected = React.useCallback(state => {
@@ -46,20 +35,18 @@ export default function UserTable() {
                 Gỡ sản phẩm
             </Button>
         );
-    }, [sellers, selectedRows, toggleCleared]);
-
+    }, [accounts, selectedRows, toggleCleared]);
 
     function clickHandler(e){
         console.log(e)
-        
-        dispatch(inferiorAccount(e));
-        dispatch(refreshAccount(e));
+        dispatch(upgradeAccount(e));
+        dispatch(removeWaitAccount(e));
        
     }
 
     const columns=[
         {
-            cell: (row) => row.role_id === 2? <button onClick={()=>clickHandler(row.account_id)}>Hạ cấp</button>: null,
+            cell: (row) => <button key='upgrade' onClick={()=>clickHandler(row.account_id)}>Nâng cấp</button>,
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
@@ -95,26 +82,30 @@ export default function UserTable() {
             selector: row => row.evaluation_score,
             sortable: true,
         },
-        {
-            name: 'Loại tài khoản',
-            selector: row => row.role_name,
-            sortable: true,
-        },
+        
     ];
 
+
+
+    useEffect(() => {
+        dispatch(getWaitUpgrade());
+    }, [dispatch]);
+    
     return (
         <div className="container">
             <AdminNav/>
-            <DataTable
-                title="Danh sách tài khoản người bán"
+            <DataTable name='wait-upgrade-table'
+                title="Danh sách tài khoản bidder chờ nâng cấp thành seller"
                 columns={columns}
-                data={sellers}
+                data={accounts}
                 selectableRows
                 contextActions={contextActions}
                 onSelectedRowsChange={handleRowSelected}
                 clearSelectedRows={toggleCleared}
                 pagination
             />
+           
         </div>
+        
     )
 }

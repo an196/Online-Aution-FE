@@ -10,18 +10,22 @@ import {
 } from '../features/product/typeSlice';
 import { useHistory } from "react-router";
 import { selectUser, setUser } from "../features/User/UserSlice";
+import jwt_decode from "jwt-decode";
 
 
 export default function NavigationBar() {
     const typeInfo = useSelector(selectTypeInfo);
-    const dispath = useDispatch();
     const history = useHistory();
     const user = useSelector(selectUser);
+    const dispatch = useDispatch();
+   
 
     const handleClick = function (e) {
         e.preventDefault();
         
-        if(localStorage.x_accessToken){
+        if(user.role_id !== undefined){
+            
+            
             switch(user.role_id){
                 case 1:
                 case 2:
@@ -52,10 +56,10 @@ export default function NavigationBar() {
     }
       
     useEffect(() => {
-        dispath(getTypeInfo());
-    }, [dispath]);
-
+        dispatch(getTypeInfo());
     
+    }, [dispatch]);
+   
     return (
         <>
             <Navbar bg="light" expand="lg">

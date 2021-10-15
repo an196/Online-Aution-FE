@@ -2,7 +2,7 @@ import {  Nav, Navbar,Table,Button } from 'react-bootstrap';
 import { FaUser, FaRegTrashAlt, FaPencilAlt} from 'react-icons/fa';
 import AdminNav from '../../components/AdminNav';
 
-export default function Dashboard() {
+export default function CategoryTable() {
     return (
         <div className="container">
             <AdminNav/>

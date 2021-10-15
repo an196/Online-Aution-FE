@@ -25,6 +25,9 @@ import AdminPage from './pages/AdminPage';
 import OtpPage from './pages/OtpPage';
 import NotFoundPage from './pages/NotFoundPage';
 import SearchResultPage from './pages/SearchResultPage';
+import WaitUpgrade from '../src/features/Admin/WaitUpgrade';
+import BidderTable from './features/Admin/BidderTable';
+import SellerTable from './features/Admin/SellerTable';
 
 function App() {
   return (
@@ -75,8 +78,14 @@ function App() {
         <PrivateRoute path="/admin/category" exact>
           <CategoryTable />
         </PrivateRoute>
-        <PrivateRoute path="/admin/user" exact>
-          <UserTable />
+        <PrivateRoute path="/admin/seller" exact>
+          <SellerTable />
+        </PrivateRoute>
+        <PrivateRoute path="/admin/bidder" exact>
+          <BidderTable />
+        </PrivateRoute>
+        <PrivateRoute path="/admin/upgrade" exact>
+          <WaitUpgrade/>
         </PrivateRoute>
         <Route path="*" component={NotFoundPage}>
           {/* <CategoryPage/> */}

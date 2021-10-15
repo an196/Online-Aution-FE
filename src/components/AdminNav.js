@@ -22,7 +22,9 @@ export default function AdminNav() {
                 <Nav className="me-auto">
                     <LinkContainer to="/admin/category"><Nav.Link >Danh mục</Nav.Link></LinkContainer>
                     <LinkContainer to="/admin/product"><Nav.Link >Sản phẩm</Nav.Link></LinkContainer>
-                    <LinkContainer to="/admin/user"><Nav.Link >Người dùng</Nav.Link></LinkContainer>
+                    <LinkContainer to="/admin/seller"><Nav.Link >Seller</Nav.Link></LinkContainer>
+                    <LinkContainer to="/admin/bidder"><Nav.Link >Bidder</Nav.Link></LinkContainer>
+                    <LinkContainer to="/admin/upgrade"><Nav.Link >Nâng cấp TK</Nav.Link></LinkContainer>
                 </Nav>
                 <Nav className="mr-5">
                     <LinkContainer to="#"><Nav.Link className="mr-1"> < FaUser /></Nav.Link></LinkContainer>

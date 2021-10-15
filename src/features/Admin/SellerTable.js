@@ -1,9 +1,7 @@
 import AdminNav from '../../components/AdminNav';
 import {getAccount, 
     inferiorAccount, 
-    selectAccounts, 
     refreshAccount,
-    selectBidders,
     selectSellers 
 } from './AdminSlice';
 import {  Button } from 'react-bootstrap';
@@ -11,12 +9,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import React, { useEffect } from 'react';
 import DataTable  from 'react-data-table-component';
 import memoize from 'memoize-one';
-import BidderTable from './BidderTable';
 
 export default function UserTable() {
-    const accounts = useSelector(selectAccounts);
     const sellers = useSelector(selectSellers);
-    const biiders = useSelector(selectBidders);
+   
     const dispatch = useDispatch();
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [toggleCleared, setToggleCleared] = React.useState(false);

@@ -2,6 +2,9 @@ import { Card, Row, Col } from 'react-bootstrap';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import UserNavBar from '../../components/UserNavBar';
+import { useState, useEffect} from 'react';
+import { useSelector, useDispatch } from "react-redux";
+import { selectUser } from './UserSlice';
 
 const styles = {
     card: {
@@ -27,7 +30,7 @@ const styles = {
 
 export default function FavoriteProducts() {
     return (
-        <>
+        <div className="container">
             <UserNavBar/>
             <h5 className="d-flex justify-content-center mt-4">Sản phẩm yêu thích của bạn!</h5>
             <div className="card mb-3 mt-4 no-gutters" >
@@ -66,6 +69,6 @@ export default function FavoriteProducts() {
                     </Row>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
