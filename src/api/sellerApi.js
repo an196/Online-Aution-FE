@@ -5,7 +5,8 @@ const prefix='seller';
 const productApi = {
     postProduct(data){
         const url = `/${prefix}/product`;
-        return axiosClient.post(url,data);
+        console('ap')
+        return axiosClient.post(url, { ...data });
     },
 }
 
