@@ -92,11 +92,6 @@ export default function BidderTable() {
             selector: row => row.evaluation_score,
             sortable: true,
         },
-        {
-            name: 'Loại tài khoản',
-            selector: row => row.role_name,
-            sortable: true,
-        },
     ];
 
     return (

@@ -1,5 +1,5 @@
 import React, { Col, Form, Row, Button, Container } from "react-bootstrap";
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import axios from "axios";
 import { useHistory } from "react-router";
 import jwt_decode from "jwt-decode";
@@ -10,6 +10,7 @@ import { NotifyHelper } from "../helper/NotifyHelper";
 
 
 export default function Login() {
+    
     const [validated, setValidated] = useState(false);
     const [errors, setErrors] = useState({});
 
@@ -47,34 +48,35 @@ export default function Login() {
                 .then(function (res) {
                     if (res.status === 200)
                         if (res.data.authenticated === true) {
-
                             const { accessToken, refreshToken } = res.data;
+                           
                             localStorage.setItem('x_accessToken', accessToken);
                             localStorage.setItem('x_refreshToken', refreshToken);
 
                             const user = jwt_decode(accessToken);
                             dispatch(setUser(user));
+                            if (user.role_id !== undefined) {
+                                switch (user.role_id) {
+                                    case 1:
+                                    case 2:
+                                        console.log(user);
+                                        NotifyHelper.success("Đăng nhập thành công", "Thông báo");
+                                        history.push("/user/favorite");
+                                        
+                                       
+                                        break;
+                                    case 3:
+                                        history.push("/admin")
+                                        NotifyHelper.success("Đăng nhập thành công", "Thông báo");
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                           
                         }
                     if (res.status === 400) {
                         console.log(res.data)
-                    }
-                })
-                .then(function (res) {
-
-                    if (user) {
-                        switch (user.role_id) {
-                            case 1:
-                            case 2:
-                                history.push("/user/favorite");
-                                NotifyHelper.success("Đăng nhập thành công", "Thông báo");
-                                break;
-                            case 3:
-                                history.push("/admin")
-                                NotifyHelper.success("Đăng nhập thành công", "Thông báo");
-                                break;
-                            default:
-                                break;
-                        }
                     }
                 })
                 .catch(function (error) {
@@ -104,7 +106,6 @@ export default function Login() {
 
     function handlePassword(e) {
         const pws = e.target.value;
-        console.log(pws.length);
         if (pws.length === 0) {
             setErrors({ password: 'Mật khẩu không được trống!' });
         } else {
@@ -119,6 +120,7 @@ export default function Login() {
         }
     }
 
+
     return (
         <Container>
             <Row>
@@ -127,7 +129,7 @@ export default function Login() {
                     <div className='container col-md-5'>
                         <div className='card  mt-5 p-4'  >
                             <h3 className='d-flex justify-content-center'>Đăng nhập</h3>
-                            <Form className='p-2' noValidate validated={validated} onSubmit={handleSubmit} >
+                            <Form className='p-2' noValidate validated={validated} onSubmit={handleSubmit} method="get" >
                                 <Row className="">
                                     <Form.Group as={Col} controlId="validationCustom01">
                                         <Form.Label column="sm">Email</Form.Label>

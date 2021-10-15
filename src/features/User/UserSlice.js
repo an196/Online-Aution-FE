@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import jwt_decode from 'jwt-decode';
 import productApi from "../../api/productApi";
 
 const initialState = {
@@ -21,6 +22,9 @@ export const userSlice = createSlice({
         },
         setRegisterInfo:(state, action)=>{
             state.registerInfo = action.payload;
+        },
+        getUserInfo:(state, action)=>{
+            state.userInfo = jwt_decode(localStorage.x_accessToken);
         }
     },
     extraReducers: (builder) => {
@@ -29,7 +33,7 @@ export const userSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {setUser,setOTP,setRegisterInfo } = userSlice.actions;
+export const {setUser,setOTP,setRegisterInfo,getUserInfo } = userSlice.actions;
 export const selectUser = state => state.user.userInfo;
 export const selectOTP = state => state.user.OTP;
 export const selectRegisterInfo = state => state.user.registerInfo;

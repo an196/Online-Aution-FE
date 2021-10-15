@@ -1,14 +1,333 @@
-import { Nav, Navbar } from 'react-bootstrap';
-import { CgProfile } from 'react-icons/cg';
-import { Link } from 'react-router-dom';
+import { Form, Row, Col, Button, InputGroup, Container } from 'react-bootstrap';
 import UserNavBar from '../../components/UserNavBar';
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { Formik, Field } from 'formik';
+import * as yup from 'yup';
+import 'react-quill/dist/quill.snow.css';
+import ReactQuill from "react-quill";
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import storage from '../../firebase';
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getCategories, selectCategories } from '../product/categorySlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from "react-router";
+import { formatDateTime } from '../../utils/utils';
 
+const step_cost_default = [1000, 2000, 3000];
+
+const schema = yup.object().shape({
+    productName: yup.string().required(),
+
+});
+
+const modules = {
+    toolbar: [
+        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+        [{ size: [] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' },
+        { 'indent': '-1' }, { 'indent': '+1' }],
+        ['link', 'image', 'video'],
+        ['clean']
+    ],
+    clipboard: {
+        // toggle to add extra line breaks when pasting HTML:
+        matchVisual: false,
+    }
+}
+/* 
+ * Quill editor formats
+ * See https://quilljs.com/docs/formats/
+ */
+const formats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image', 'video'
+]
+
+/* 
+ * PropType validation
+ */
+const propTypes = {
+    placeholder: PropTypes.string,
+}
+
+const metadata = {
+    contentType: 'image/jpeg'
+};
 
 export default function PostProduct() {
+    const [state, setstate] = useState({ editorHtml: '' });
+    const [categorySelected, setcategorySelected] = useState(0);
+    const dispatch = useDispatch();
+    const history = useHistory();
+    const [validated, setValidated] = useState(false);
+
+    //decription
+    const [description, setDescription] = useState({ editorHtml: '', theme: 'snow' });
+    const [autoRenew, setAutoRenew] = useState(0);
+
+    //upload imge
+    const [mainImage, setMainImage] = useState(null);
+    const [extra1Image, setExtra1Image] = useState(null);
+    const [extra2Image, setExtra2Image] = useState(null);
+    const [extra3Image, setExtra3Image] = useState(null);
+    const [stepCost, setStepCost] = useState(null);
+    const [progress, setProgress] = useState(0);
+
+
+
+    //define categories
+    const categories = useSelector(selectCategories);
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const productName = e.target.productName.value;
+        const category_id = categorySelected;
+        //const image = mainImage.name + ',' + extra1Image.name + ',' + extra2Image.name + ',' + extra3Image.name;
+        const start_cost = e.target.start_cost.value;
+        const step_cost = stepCost;
+        const but_now = e.target.but_now.value ? e.target.but_now.value: null;
+        const start_day = formatDateTime(Date().toLocaleString());
+
+        //caculate end day
+        var myDate = new Date();
+        myDate.setDate(myDate.getDate() + 7);
+        const end_day = formatDateTime(myDate);
+
+        //get description
+
+        console.log(description)
+        console.log(autoRenew)
+
+        const form = e.currentTarget;
+        if (form.checkValidity()) {
+
+
+
+            // Upload file and metadata to the object 'images/mountains.jpg'
+            const storageRef = ref(storage, 'images/' + mainImage.name);
+            const uploadTask = uploadBytesResumable(storageRef, mainImage, metadata);
+
+            // uploadTask.on('state_changed',
+            //     (snapshot) => {
+            //         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            //         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            //         console.log('Upload is ' + progress + '% done');
+            //         switch (snapshot.state) {
+            //             case 'paused':
+            //                 //console.log('Upload is paused');
+            //                 break;
+            //             case 'running':
+            //                 //console.log('Upload is running');
+            //                 break;
+            //         }
+            //     },
+            //     (error) => {
+            //         // A full list of error codes is available at
+            //         // https://firebase.google.com/docs/storage/web/handle-errors
+            //         switch (error.code) {
+            //             case 'storage/unauthorized':
+            //                 // User doesn't have permission to access the object
+            //                 break;
+            //             case 'storage/canceled':
+            //                 // User canceled the upload
+            //                 break;
+
+            //             // ...
+
+            //             case 'storage/unknown':
+            //                 // Unknown error occurred, inspect error.serverResponse
+            //                 break;
+            //         }
+            //     },
+            //     () => {
+            //         // Upload completed successfully, now we can get the download URL
+            //         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            //             console.log('File available at', downloadURL);
+            //         });
+            //     }
+            // );
+        }
+        setValidated(true);
+
+
+
+    }
+
+    //handle main image
+    function handleMainImage(e) {
+
+        if (e.target.files[0]) {
+            setMainImage(e.target.files[0]);
+        }
+    }
+
+    function handleExtra1Image(e) {
+
+        if (e.target.files[0]) {
+            setExtra1Image(e.target.files[0]);
+        }
+    }
+
+    function handleExtra2Image(e) {
+
+        if (e.target.files[0]) {
+            setExtra2Image(e.target.files[0]);
+        }
+    }
+
+    function handleExtra3Image(e) {
+
+        if (e.target.files[0]) {
+            setExtra3Image(e.target.files[0]);
+        }
+    }
+
+
+    function handleCategory(event) {
+        setcategorySelected(event.target.value);
+    }
+
+    function handleStepCost(event) {
+        setStepCost(event.target.value);
+    }
+
+    function handleAutoRenew(event) {
+        event.target.checked? setAutoRenew(1) : setAutoRenew(0);
+    }
+
+
+    //get categories
+    useEffect(() => {
+        dispatch(getCategories());
+    }, [dispatch]);
+
+
     return (
-        <>
-        <UserNavBar/>
-        <h5 className="d-flex justify-content-center mt-4">Đăng bài!</h5>
-       </>
+        <div className="container">
+            <UserNavBar />
+            <Container className='p-4'>
+                <h5 className="d-flex justify-content-center mt-4">Đăng sản phẩm!</h5>
+
+                <Form noValidate onSubmit={handleSubmit} method="get" >
+                    <Row className="mb-3">
+                        <Form.Group as={Col} md="8" controlId="validationFormik01">
+                            <Form.Label>Tên sản phẩm</Form.Label>
+                            <Form.Control
+                                required
+                                type="text"
+                                name="productName"
+                                //onChange={handleChange}
+                                maxLength='255'
+                            />
+                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group as={Col} md="4" >
+                            <Form.Label>Danh mục</Form.Label>
+                            <Form.Select name='categories' onChange={handleCategory}>
+                                {categories.map(item => <option key={item.category_id} value={item.category_id}>{item.name} </option>
+
+                                )}
+                            </Form.Select>
+                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
+                            <Form.Label>Ảnh chính</Form.Label>
+                            <Form.Control type="file"
+                                name="mainImage"
+                                onChange={handleMainImage}
+                            />
+                        </Form.Group>
+                        <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
+                            <Form.Label>Ảnh phụ 1</Form.Label>
+                            <Form.Control type="file"
+                                name="extraImage1"
+                                onChange={handleExtra1Image}
+                            />
+                        </Form.Group>
+                        <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
+                            <Form.Label>Ảnh phụ 2</Form.Label>
+                            <Form.Control type="file"
+                                name="extraImage2"
+                                onChange={handleExtra2Image}
+                            />
+                        </Form.Group>
+                        <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
+                            <Form.Label>Ảnh phụ 3</Form.Label>
+                            <Form.Control type="file"
+                                name="extraImage3"
+                                onChange={handleExtra3Image}
+                            />
+                        </Form.Group>
+                    </Row>
+                    <Row>
+                        <Form.Group as={Col} md="2" controlId="validationFormik01">
+                            <Form.Label>Giá khởi điểm</Form.Label>
+                            <Form.Control
+                                required
+                                type="number"
+                                name="start_cost"
+                                // onChange={(e) => {
+                                //     handleChange("price")(e);
+
+                                // }}
+
+                                min={0} max={10000000}
+                            />
+                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group as={Col} md="2" controlId="validationFormik01" onChange={handleStepCost}>
+                            <Form.Label>Bước giá</Form.Label>
+                            <Form.Select defaultValue="Chọn bước giá">
+                                <option>1000đ</option>
+                                <option>2000đ</option>
+                                <option>3000đ</option>
+                            </Form.Select>
+                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group as={Col} md="2" controlId="validationFormik01">
+                            <Form.Label>Giá mua ngay(nếu có)</Form.Label>
+                            <Form.Control
+                                required
+                                type="number"
+                                name="but_now"
+                                // onChange={(e) => {
+                                //     handleChange("but_now")(e);
+                                // }}
+
+                                min={0} max={10000000}
+                            />
+                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        </Form.Group>
+
+                    </Row>
+                    <Row className='mb-3 mt-3'>
+                        <Form.Group as={Col} md="2" id="formGridCheckbox">
+                            <Form.Check type="checkbox" label="Tự động gia hạn" name='auto_renew' onChange={handleAutoRenew}/>
+                        </Form.Group>
+                    </Row>
+                    <h6>Mô tả sản phẩm</h6>
+                    <ReactQuill
+                        onChange={setDescription}
+                        value={description}
+                        modules={modules}
+                        formats={formats}
+                        bounds={'.app'}
+                        placeholder=''
+                    />
+
+                    <Row className='d-flex justify-content-center'>
+                        <Button type="submit" className='mt-3 col-md-2'>Đăng bài</Button>
+                    </Row>
+                </Form>
+            </Container>
+        </div>
     )
 }

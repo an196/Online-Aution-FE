@@ -73,7 +73,6 @@ export default function ProductTable() {
     return (
         <div className="container">
             <AdminNav />
-
             <DataTable name='product-table'
                 title="Danh sách các sản phẩm"
                 columns={columns}
