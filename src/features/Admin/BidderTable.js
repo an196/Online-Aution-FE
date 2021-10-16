@@ -101,7 +101,7 @@ export default function BidderTable() {
                 title="Danh sách tài khoản người mua"
                 columns={columns}
                 data={biiders}
-                selectableRows
+                //selectableRows
                 contextActions={contextActions}
                 onSelectedRowsChange={handleRowSelected}
                 clearSelectedRows={toggleCleared}

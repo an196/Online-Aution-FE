@@ -105,7 +105,7 @@ export default function UserTable() {
                 title="Danh sách tài khoản người bán"
                 columns={columns}
                 data={sellers}
-                selectableRows
+                //selectableRows
                 contextActions={contextActions}
                 onSelectedRowsChange={handleRowSelected}
                 clearSelectedRows={toggleCleared}
