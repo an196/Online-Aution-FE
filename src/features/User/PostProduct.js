@@ -17,6 +17,7 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+
 const schema = yup.object().shape({
     productName: yup.string().required(),
 
@@ -65,6 +66,7 @@ export default function PostProduct() {
     const dispatch = useDispatch();
     const history = useHistory();
     const [validated, setValidated] = useState(false);
+    const [startDate, setStartDate] = useState(new Date());
 
     //decription
     const [description, setDescription] = useState("");
@@ -89,21 +91,26 @@ export default function PostProduct() {
     async function handleSubmit(e) {
         e.preventDefault();
         e.stopPropagation();
-
+       
 
         const form = e.currentTarget;
         if (form.checkValidity()) {
+            const currentTime = new Date();
 
+            if(startDate.getDate() <= currentTime.getDate()){
+                NotifyHelper.error('Ngày bắt đầu đấu giá phải lớn hơn ngày hiện tại', 'Thông báo');
+                return;
+            }
             const productName = e.target.productName.value;
             const category_id = categorySelected;
 
             const start_cost = e.target.start_cost.value;
             const step_cost = stepCost;
             const buy_now = e.target.but_now.value ? e.target.but_now.value : null;
-            const start_day = formatDateTime(Date().toLocaleString());
+            const start_day = formatDateTime(startDate);
 
             //caculate end day
-            var myDate = new Date();
+            var myDate = startDate;
             myDate.setDate(myDate.getDate() + 7);
             const end_day = formatDateTime(myDate);
 
@@ -119,7 +126,7 @@ export default function PostProduct() {
                 start_cost: Number(start_cost),
                 step_cost: Number(step_cost),
                 buy_now: 0,
-                start_day: "17/10/2021 08:10:14",
+                start_day: start_day,
                 end_day: end_day,
                 description: description,
                 is_auto_renew: autoRenew,
@@ -222,20 +229,20 @@ export default function PostProduct() {
     function handleMainImage(e) {
 
         if (e.target.files[0]) {
-            upImgToFireBase(e.target.files[0],1);
+            upImgToFireBase(e.target.files[0], 1);
         }
     }
 
     function handleExtra1Image(e) {
         if (e.target.files[0]) {
-            upImgToFireBase(e.target.files[0],2);
+            upImgToFireBase(e.target.files[0], 2);
         }
     }
 
     function handleExtra2Image(e) {
 
         if (e.target.files[0]) {
-           upImgToFireBase(e.target.files[0],3);
+            upImgToFireBase(e.target.files[0], 3);
         }
     }
 
@@ -367,7 +374,11 @@ export default function PostProduct() {
                             />
                             <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                         </Form.Group>
-
+                        <Form.Group as={Col} md="2" >
+                        <Form.Label>Ngày bắt đầu đấu giá</Form.Label>
+                        <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+                        </Form.Group>
+                        
                     </Row>
                     <Row className='mb-3 mt-3'>
                         <Form.Group as={Col} md="2" id="formGridCheckbox">
