@@ -1,9 +1,12 @@
-import {  Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import AdminNav from '../../components/AdminNav';
-import { selectProducts, getProduct,  removeProduct, remove } from './AdminSlice';
+import { selectProducts, getProduct, removeProduct, remove } from './AdminSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import DataTable from 'react-data-table-component';
+import { BsFillTrashFill } from 'react-icons/bs';
+import axios from 'axios';
+import { NotifyHelper } from '../../helper/NotifyHelper';
 
 export default function ProductTable() {
     const products = useSelector(selectProducts);
@@ -12,16 +15,13 @@ export default function ProductTable() {
     const [toggleCleared, setToggleCleared] = React.useState(false);
 
 
-    useEffect(() => {
-        dispatch(getProduct());
-    }, [dispatch]);
-
+    
     const handleRowSelected = React.useCallback(state => {
         setSelectedRows(state.selectedRows);
     }, []);
 
-    
-    
+
+
 
     const contextActions = React.useMemo(() => {
         const handleDelete = () => {
@@ -29,7 +29,7 @@ export default function ProductTable() {
                 setToggleCleared(!toggleCleared);
                 const id = selectedRows[0].product_id;
                 dispatch(removeProduct(id));
-                dispatch(remove(id));
+                //dispatch(remove(id));
             }
         };
 
@@ -65,11 +65,49 @@ export default function ProductTable() {
             selector: row => row.type_name,
             sortable: true,
         },
+        {
+            cell: (row) => (<Button size="small" variant='danger'  onClick={() => handleDelete(row.product_id)} ><BsFillTrashFill /></Button>),
+           
+            button: true,
+        },
     ];
 
-   
-    
-   console.log(products);
+    function handleDelete(id) {
+        console.log(id)
+        const data = {};
+
+        let headers = {};
+        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
+        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
+
+        let config = {
+            headers: { ...headers}
+        }
+       
+        axios
+            .patch(`http://localhost:3002/api/admin/product/removeProduct?id=${id}`,data, config)
+            .then(function (res) {
+                console.log(res)
+                if (res.status === 200){
+                    NotifyHelper.success(res.data.message, "Thông báo")
+                    dispatch(remove(id))
+                }
+                    
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error(error, "Thông báo");
+                console.log(error)
+            });
+        
+       
+    }
+
+    useEffect(() => {
+        dispatch(getProduct());
+    }, [dispatch]);
+
+
     return (
         <div className="container">
             <AdminNav />
@@ -77,14 +115,12 @@ export default function ProductTable() {
                 title="Danh sách các sản phẩm"
                 columns={columns}
                 data={products}
-                selectableRows
+                //selectableRows
                 contextActions={contextActions}
                 onSelectedRowsChange={handleRowSelected}
                 clearSelectedRows={toggleCleared}
                 pagination
-               
             />
-           
         </div>
 
     )
