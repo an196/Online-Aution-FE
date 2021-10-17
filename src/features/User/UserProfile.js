@@ -18,7 +18,7 @@ export default function UserProfile() {
         if (role_id == 2) {
             setBuyer(false);
         }
-        dispatch(getProfile(account_id))
+        dispatch(getProfile())
     }, [dispatch])
     console.log(profile)
     return (
