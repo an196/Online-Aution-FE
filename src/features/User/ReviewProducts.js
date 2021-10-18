@@ -1,37 +1,36 @@
 
-import { Tabs, Tab } from 'react-bootstrap';
+import { Tabs, Tab, Col, Row } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
-import BiddenReview from '../../components/BidderReview';
-import SellerReview from '../../components/SellerReview';
+import Review from '../../components/Review';
 import UserNavBar from '../../components/UserNavBar';
 import { useSelector, useDispatch } from "react-redux";
-import { selectUser, getUserInfo } from './UserSlice';
+import { selectReviews, getReviews } from './UserSlice';
+import jwt_decode from 'jwt-decode';
 
 
 export default function ReviewProduct() {
-    const user = useSelector(selectUser);
+    const data = useSelector(selectReviews);
     const dispatch = useDispatch();
-    const [buyer,setBuyer] = useState(true);
+    const [buyer, setBuyer] = useState(true);
+    const userId = jwt_decode(localStorage.x_accessToken).account_id;
 
     useEffect(() => {
-        dispatch(getUserInfo());
-        if(user && user.role_id == 2){
-            setBuyer(false);
-        }
-       
+        dispatch(getReviews(userId));
     }, [dispatch])
 
+    console.log(data)
     return (
-        <div className="container">
-            <UserNavBar/>
-            <Tabs defaultActiveKey="buyer" id="uncontrolled-tab-example" className="">
-                <Tab eventKey="buyer" title="Mua">
-                    <SellerReview />
-                </Tab>
-                <Tab eventKey="seller" title="Bán" disabled={buyer}>
-                    <BiddenReview />
-                </Tab>
-            </Tabs>
-        </div>
+        <Row>
+            <Col></Col>
+            <Col xs={8}>
+                <UserNavBar />
+                <h5 className="d-flex justify-content-center mt-4">Các đánh giá!</h5>
+                {data.map((item) => 
+                   ( <Review item={item} key={item.evaluation_id} />)
+                )}
+
+            </Col>
+            <Col></Col>
+        </Row>
     );
 }

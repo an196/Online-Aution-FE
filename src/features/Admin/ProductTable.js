@@ -15,12 +15,9 @@ export default function ProductTable() {
     const [toggleCleared, setToggleCleared] = React.useState(false);
 
 
-    
     const handleRowSelected = React.useCallback(state => {
         setSelectedRows(state.selectedRows);
     }, []);
-
-
 
 
     const contextActions = React.useMemo(() => {
