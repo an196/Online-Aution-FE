@@ -75,7 +75,7 @@ export default function ProductCard({ item, watchList }) {
         if(watchList.some(item => id === item.product_id))
             setlike(true);
        }
-    },[removeProductfromWatchList]);
+    },[removeProductfromWatchList, dispatch]);
 
 
     function addWatchList(){

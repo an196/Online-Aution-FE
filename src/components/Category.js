@@ -9,25 +9,29 @@ import {
 import { formatDateTime, formatProductName } from '../utils/utils';
 import ProductCard from './ProductCard';
 import { useDispatch, useSelector } from "react-redux";
-
+import {selectWatchList, getWatchList} from '../features/User/UserSlice';
 
 export default function Category(props) {
     const products = useSelector(selectProductsByCategory);
     const category = useSelector(selectCategoryName);
     const { id } = useParams();
-    const dispath = useDispatch();
+    const dispatch = useDispatch();
+    const watchList = useSelector(selectWatchList);
 
     useEffect(() => {
-        dispath(getProductsByCategory(id));
+        dispatch(getProductsByCategory(id));
 
-    }, [dispath,id]);
+        if(localStorage.x_accessToken){
+            dispatch(getWatchList());
+        }
+    }, [dispatch,id]);
 
     return (
         <div className="container mt-4" fluid>
             <h5 className='mb-4'>Danh mục: {products? category : null}</h5>
             <Row xs={1} md={5} className="g-4 "  >
                     {products.map((item) => (
-                        <ProductCard key={item.auction_id} item={item}/>
+                        <ProductCard key={item.auction_id} item={item} watchList={watchList}/>
                     ))}
                 </Row>
             <div style= {{height:'2rem'}}></div>
