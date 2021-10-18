@@ -11,6 +11,10 @@ const adminApi = {
         const url = `/bidder/watch_list`;
         return axiosClient.get(url);
     },
+    addWatchList(id){
+        const url = `/bidder/watch_list?product_id=${id}`;
+        return axiosClient.post(url);
+    },
 }
 
 export default adminApi;

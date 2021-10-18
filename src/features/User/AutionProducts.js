@@ -1,4 +1,4 @@
-import { Tabs, Tab } from 'react-bootstrap';
+import { Tabs, Tab,Col, Row } from 'react-bootstrap';
 import ProductAutioning from '../../components/ProductAutioning';
 import ProductShefing from '../../components/ProductShefing';
 import UserNavBar from '../../components/UserNavBar';
@@ -20,7 +20,9 @@ export default function AutionProducts() {
     }, [dispatch])
 
     return (
-        <div className="container">
+        <Row>
+            <Col></Col>
+            <Col xs={8}>
             <UserNavBar/>
             <Tabs defaultActiveKey="buyer" id="uncontrolled-tab-example" className="">
                 <Tab eventKey="buyer" title="Mua">
@@ -32,7 +34,8 @@ export default function AutionProducts() {
                     <ProductShefing />
                 </Tab>
             </Tabs>
-           
-        </div>
+           </Col>
+            <Col></Col>
+        </Row>
     )
 }

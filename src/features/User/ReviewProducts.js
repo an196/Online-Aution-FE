@@ -1,5 +1,5 @@
 
-import { Tabs, Tab } from 'react-bootstrap';
+import { Tabs, Tab,Col,Row } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import BiddenReview from '../../components/BidderReview';
 import SellerReview from '../../components/SellerReview';
@@ -22,7 +22,9 @@ export default function ReviewProduct() {
     }, [dispatch])
 
     return (
-        <div className="container">
+        <Row>
+            <Col></Col>
+            <Col xs={8}>
             <UserNavBar/>
             <Tabs defaultActiveKey="buyer" id="uncontrolled-tab-example" className="">
                 <Tab eventKey="buyer" title="Mua">
@@ -32,6 +34,8 @@ export default function ReviewProduct() {
                     <BiddenReview />
                 </Tab>
             </Tabs>
-        </div>
+            </Col>
+            <Col></Col>
+        </Row>
     );
 }

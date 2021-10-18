@@ -22,7 +22,9 @@ export default function UserProfile() {
     }, [dispatch])
     console.log(profile)
     return (
-        <div className="container">
+        <Row>
+            <Col></Col>
+            <Col xs={8}>
             <UserNavBar />
             <div className="card mb-3 mt-4 no-gutters m-auto p-4 col-md-7 d-flex justify-content-center" >
                 <div className="row no-gutters">
@@ -64,6 +66,8 @@ export default function UserProfile() {
                     </Row>
                 </div>
             </div>
-        </div>
+           </Col>
+            <Col></Col>
+        </Row>
     )
 }
