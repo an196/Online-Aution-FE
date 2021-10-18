@@ -20,6 +20,7 @@ export default function ProductTable() {
         setSelectedRows(state.selectedRows);
     }, []);
 
+
     const contextActions = React.useMemo(() => {
         const handleDelete = () => {
             if (window.confirm(`Are you sure you want to delete:\r ${selectedRows.map(r => r.name)}?`)) {

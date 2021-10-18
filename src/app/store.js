@@ -4,6 +4,7 @@ import productReducer from '../features/product/productSlice';
 import typeReducer from '../features/product/typeSlice';
 import UserReducer from '../features/User/UserSlice';
 import AdminReducer from '../features/Admin/AdminSlice';
+import SellerReducer from '../features/User/SellerSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
       type: typeReducer,
       user: UserReducer,
       admin: AdminReducer,
+      seller: SellerReducer,
   },
 })
 
