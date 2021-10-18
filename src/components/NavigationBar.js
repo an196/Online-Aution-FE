@@ -18,15 +18,15 @@ export default function NavigationBar() {
     const history = useHistory();
     const user = useSelector(selectUser);
     const dispatch = useDispatch();
-   
+    const role_id = jwt_decode(localStorage.x_accessToken).role_id;
 
     const handleClick = function (e) {
         e.preventDefault();
         
-        if(user.role_id !== undefined){
+        if(localStorage.x_accessToken){
             
             
-            switch(user.role_id){
+            switch(role_id){
                 case 1:
                 case 2:
                     history.push("/user/favorite");

@@ -6,8 +6,8 @@ import { useState, useEffect } from 'react';
 import AutionHistory from '../components/AutionHistory';
 import ProductCard from './ProductCard';
 import ReactHtmlParser from "react-html-parser";
-import {formatDateTime,formatProductName } from '../utils/utils';
-
+import { formatDateTime, formatProductName } from '../utils/utils';
+import { selectWatchList, getWatchList, removeProductfromWatchList } from '../features/User/UserSlice';
 import {
     selectInfoProduct,
     getInfoProduct,
@@ -15,6 +15,9 @@ import {
 } from '../features/product/productSlice';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from 'react-router';
+import axios from 'axios';
+import { NotifyHelper } from '../helper/NotifyHelper';
+import jwt_decode from 'jwt-decode';
 
 const styles = {
     card: {
@@ -23,9 +26,11 @@ const styles = {
         width: '8.8rem'
     },
     cardImage: {
-        objectFit: 'cover',
-        borderRadius: 55,
-        with: '8.8rem',
+        flex: 1,
+        width: '100%',
+        height: '100%',
+        resizeMode: 'contain',
+        maxHeight: '20rem',
     },
     cardTitle: {
         fontSize: '0.8rem',
@@ -38,29 +43,98 @@ const styles = {
     }
 }
 
-export default function ProductDetail(props) {
+export default function ProductDetail({ props }) {
     const infoProduct = useSelector(selectInfoProduct);
     const realationProduct = useSelector(selectRelationProduct);
     const { id } = useParams();
     const [like, setlike] = useState(false);
     const [modalShow, setModalShow] = useState(false);
-    function handleLike(e) {
-        setlike(!like);
+    const watchList = useSelector(selectWatchList);
+    const [validUser, setValidUser] = useState(false);
+    const dispatch = useDispatch();
+
+
+    function addWatchList() {
+        const data = {
+            product_id: Number(id)
+        };
+
+        let headers = {};
+        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
+        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
+
+        let config = {
+            headers: { ...headers }
+        }
+
+        axios
+            .post(`http://localhost:3002/api/bidder/watch_list?product_id=${id}`, data, config)
+            .then(function (res) {
+                if (res.status === 200) {
+                    NotifyHelper.success(res.data.message, "Thông báo")
+                }
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error(error, "Thông báo");
+
+            });
     }
 
-    const dispath = useDispatch();
+    function removeWatchList() {
 
-    useEffect(() => {
-        dispath(getInfoProduct(id));
-       
-    }, [dispath]);
+        let headers = {};
+        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
+        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
+
+        let config = {
+            headers: { ...headers }
+        }
+
+        axios
+            .delete(`http://localhost:3002/api/bidder/watch_list?product_id=${id}`, config)
+            .then(function (res) {
+                if (res.status === 200) {
+                    NotifyHelper.success(res.data.message, "Thông báo");
+
+                }
+            })
+            .catch(function (error) {
+                NotifyHelper.error(error, "Thông báo");
+            });
+    }
+
+    function handleLike(e) {
+        if (like) {
+            removeWatchList();
+            setlike(false);
+
+        }
+        else {
+            addWatchList();
+            setlike(true);
+        }
+    }
 
     const data = {
         ...infoProduct,
-        start_day:formatDateTime(infoProduct.created_at),
+        start_day: formatDateTime(infoProduct.created_at),
         buy_now: formatDateTime(infoProduct.buy_now),
         end_day: formatDateTime(infoProduct.end_day),
     }
+
+    useEffect(() => {
+        dispatch(getInfoProduct(id));
+
+        if (localStorage.x_accessToken) {
+            dispatch(getWatchList());
+            setValidUser(true);
+            if (watchList.some(item => Number(id) === item.product_id))
+                setlike(true);
+        }
+    }, [dispatch, getInfoProduct, getWatchList]);
+
+
 
     return (
         <>
@@ -69,10 +143,10 @@ export default function ProductDetail(props) {
                     {data ?
                         <Row >
                             <Col className="col-md-4 m-2">
-                                <Row>
+                                <Row >
                                     <title>Placeholder</title>
 
-                                    <Image src={data.image ? data.image[0] : ''} fluid />
+                                    <Image src={data.image ? data.image[0] : ''} style={styles.cardImage} />
                                 </Row>
                                 <div style={{ height: 10 }}></div>
                                 <Row xs={1} md={3} className="m-1">
@@ -86,9 +160,13 @@ export default function ProductDetail(props) {
                                 </Row>
                                 <div style={{ height: 20 }}></div>
                                 <Row>
-                                    <p role='button' className='d-flex justify-content-center' onClick={handleLike}>
-                                        {like ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart />}
-                                    </p>
+                                    {
+                                        validUser ?
+                                            <p role='button' className='d-flex justify-content-center' onClick={handleLike}>
+                                                {like ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart />}
+                                            </p>
+                                            : null
+                                    }
                                 </Row>
                             </Col >
                             <Col className="col-md-7 m-2">
@@ -130,12 +208,12 @@ export default function ProductDetail(props) {
                         <h5 >Sản phẩm cùng mục</h5>
                         {
                             realationProduct ?
-                            <Row xs={1} md={realationProduct.length } className="g-4 m-auto mb-3" >
-                            {realationProduct.map((item) => (
-                                <ProductCard key={item.product_id} item={item} />
-                            )) }
-                        </Row>
-                        :null}
+                                <Row xs={1} md={realationProduct.length} className="g-4 m-auto mb-3" >
+                                    {realationProduct.map((item) => (
+                                        <ProductCard key={item.product_id} item={item} />
+                                    ))}
+                                </Row>
+                                : null}
                     </Row>
                 </div>
             </div>

@@ -6,7 +6,7 @@ import UserNavBar from '../../components/UserNavBar';
 import { useSelector, useDispatch } from "react-redux";
 import { selectReviews, getReviews } from './UserSlice';
 import jwt_decode from 'jwt-decode';
-
+import Footer from '../../components/Footer';
 
 export default function ReviewProduct() {
     const data = useSelector(selectReviews);
@@ -28,7 +28,7 @@ export default function ReviewProduct() {
                 {data.map((item) => 
                    ( <Review item={item} key={item.evaluation_id} />)
                 )}
-
+                <Footer/>
             </Col>
             <Col></Col>
         </Row>

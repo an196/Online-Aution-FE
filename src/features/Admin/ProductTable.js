@@ -2,11 +2,12 @@ import { Button } from 'react-bootstrap';
 import AdminNav from '../../components/AdminNav';
 import { selectProducts, getProduct, removeProduct, remove } from './AdminSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { BsFillTrashFill } from 'react-icons/bs';
 import axios from 'axios';
 import { NotifyHelper } from '../../helper/NotifyHelper';
+import Footer from '../../components/Footer';
 
 export default function ProductTable() {
     const products = useSelector(selectProducts);
@@ -62,8 +63,8 @@ export default function ProductTable() {
             sortable: true,
         },
         {
-            cell: (row) => (<Button size="small" variant='danger'  onClick={() => handleDelete(row.product_id)} ><BsFillTrashFill /></Button>),
-           
+            cell: (row) => (<Button size="small" variant='danger' onClick={() => handleDelete(row.product_id)} ><BsFillTrashFill /></Button>),
+
             button: true,
         },
     ];
@@ -77,26 +78,26 @@ export default function ProductTable() {
         headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
 
         let config = {
-            headers: { ...headers}
+            headers: { ...headers }
         }
-       
+
         axios
-            .patch(`http://localhost:3002/api/admin/product/removeProduct?id=${id}`,data, config)
+            .patch(`http://localhost:3002/api/admin/product/removeProduct?id=${id}`, data, config)
             .then(function (res) {
                 console.log(res)
-                if (res.status === 200){
+                if (res.status === 200) {
                     NotifyHelper.success(res.data.message, "Thông báo")
                     dispatch(remove(id))
                 }
-                    
+
 
             })
             .catch(function (error) {
                 NotifyHelper.error(error, "Thông báo");
                 console.log(error)
             });
-        
-       
+
+
     }
 
     useEffect(() => {
@@ -117,6 +118,7 @@ export default function ProductTable() {
                 clearSelectedRows={toggleCleared}
                 pagination
             />
+            <Footer />
         </div>
 
     )

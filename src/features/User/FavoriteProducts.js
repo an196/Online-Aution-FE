@@ -30,7 +30,8 @@ export default function FavoriteProducts() {
                             {watchList ? watchList.map((item) => (
                                 <WatchListCard key={item.product_id} item={item}>
                                 </WatchListCard>
-                            )) : null}
+                            )) 
+                            : null}
                         </Row>
                     </div>
                 </div>

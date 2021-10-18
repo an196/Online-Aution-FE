@@ -4,6 +4,7 @@ import ProductDetail from '../components/ProductDetail.js';
 import { Container,Col,Row  } from 'react-bootstrap';
 
 export default function ProductDetailPage(props) {
+    
     return (
         <Container>
             <Row>
