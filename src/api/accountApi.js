@@ -12,8 +12,18 @@ const adminApi = {
         return axiosClient.get(url);
     },
     addWatchList(id){
+        const data ={
+            product_id: id
+        }
         const url = `/bidder/watch_list?product_id=${id}`;
-        return axiosClient.post(url);
+        return axiosClient.post(url,data);
+    },
+    removeWatchList(id){
+        const data ={
+            product_id: id
+        }
+        const url = `/bidder/watch_list?product_id=${id}`;
+        return axiosClient.delete(url,data);
     },
     getReviews(id){
         const url = `/evaluation_historys/${id}`;

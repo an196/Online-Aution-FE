@@ -31,7 +31,7 @@ export default function Home(props) {
             
     },[dispach]);
 
-   
+
 
     return (
         <div className="container mt-4" >

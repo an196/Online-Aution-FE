@@ -18,13 +18,14 @@ export default function NavigationBar() {
     const history = useHistory();
     const user = useSelector(selectUser);
     const dispatch = useDispatch();
-    const role_id = jwt_decode(localStorage.x_accessToken).role_id;
-
+   
     const handleClick = function (e) {
         e.preventDefault();
         
         if(localStorage.x_accessToken){
             
+            const role_id = jwt_decode(localStorage.x_accessToken).role_id;
+           
             
             switch(role_id){
                 case 1:
@@ -57,7 +58,7 @@ export default function NavigationBar() {
       
     useEffect(() => {
         dispatch(getTypeInfo());
-    
+        
     }, [dispatch]);
    
     return (

@@ -16,7 +16,7 @@ export default function UserProfile() {
     const [request_update, setRequestUpgrade] = useState(false);
     const account_id = jwt_decode(localStorage.x_accessToken).account_id;
     const role_id = jwt_decode(localStorage.x_accessToken).role_id;
-
+  
 
     function handleUpgrade() {
 
@@ -51,13 +51,26 @@ export default function UserProfile() {
             setBuyer(false);
         }
 
-        if(profile && profile.request_update === 1){
+        if (profile && profile.request_update === 1) {
             setRequestUpgrade(true);
         }
-        
-}, [dispatch,setBuyer,setRequestUpgrade, handleUpgrade])
-    console.log(profile)
 
+    }, [dispatch, setRequestUpgrade,getProfile])
+    console.log(profile)
+        
+    useEffect(() => {
+        dispatch(getProfile());
+
+        if (role_id === 2) {
+            setBuyer(false);
+        }
+
+        if (profile && profile.request_update === 1) {
+            setRequestUpgrade(true);
+        }
+
+    }, [])
+   
 
     return (
         <Row>
@@ -71,19 +84,19 @@ export default function UserProfile() {
                                 <Row>
                                     <title>Avatar</title>
                                     <Image src="https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png" fluid />
-                                    {buyer && !request_update? 
-                                    <Button variant="success" onClick={handleUpgrade} size="sm" className='mt-4 m-auto col-md-10'>
-                                        <BsArrowBarUp />
-                                        Nâng cấp seller
-                                    </Button>
-                                    :null}
+                                    {buyer && !request_update ?
+                                        <Button variant="success" onClick={handleUpgrade} size="sm" className='mt-4 m-auto col-md-10'>
+                                            <BsArrowBarUp />
+                                            Nâng cấp seller
+                                        </Button>
+                                        : null}
                                     {
-                                        request_update? 
-                                        <Button variant="secondary" disabled size="sm" className='mt-4 m-auto col-md-10'>
-                                        
-                                        Đang chờ duyệt
-                                    </Button>
-                                    :null}
+                                        request_update ?
+                                            <Button variant="secondary" disabled size="sm" className='mt-4 m-auto col-md-10'>
+
+                                                Đang chờ duyệt
+                                            </Button>
+                                            : null}
                                 </Row>
                             </Col >
                             {profile ?

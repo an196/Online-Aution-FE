@@ -12,6 +12,8 @@ import {
 } from '../utils/utils';
 import { NotifyHelper } from '../helper/NotifyHelper';
 import { useEffect } from 'react';
+import { addWatchList, removeWatchList } from '../features/User/UserSlice';
+import { useSelector, useDispatch } from "react-redux";
 
 const styles = {
     card: {
@@ -39,6 +41,7 @@ export default function WatchListCard({ item, watchList }) {
     const defaultImg = '../../public/images.png/100px250';
     const [like, setlike] = useState(true);
     const id = item.product_id;
+    const dispatch = useDispatch();
 
     const data = {
         ...item,
@@ -51,71 +54,13 @@ export default function WatchListCard({ item, watchList }) {
 
     function handleLike() {
         if(like){
-            removeWatchList();
+            dispatch(removeWatchList(id));
             setlike(false);
-            console.log(id)
         }
         else{
-            addWatchList();
+            dispatch(addWatchList(id));
             setlike(true);
         }
-    }
-
-    function addWatchList(){
-        const data = {
-            product_id: id
-        };
-
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers}
-        }
-       
-        axios
-            .post(`http://localhost:3002/api/bidder/watch_list?product_id=${id}`,data, config)
-            .then(function (res) {
-                console.log(res)
-                if (res.status === 200){
-                    NotifyHelper.success(res.data.message, "Thông báo")
-                    //dispatch(remove(id))
-                }
-                    
-
-            })
-            .catch(function (error) {
-                NotifyHelper.error(error, "Thông báo");
-                console.log(error)
-            });
-    }
-
-    function removeWatchList(){
-        
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers}
-        }
-       
-        axios
-            .delete(`http://localhost:3002/api/bidder/watch_list?product_id=${id}`, config)
-            .then(function (res) {
-                console.log(res)
-                if (res.status === 200){
-                    NotifyHelper.success(res.data.message, "Thông báo")
-                    //dispatch(remove(id))
-                }
-                    
-
-            })
-            .catch(function (error) {
-                NotifyHelper.error(error, "Thông báo");
-                console.log(error)
-            });
     }
 
 
@@ -147,7 +92,7 @@ export default function WatchListCard({ item, watchList }) {
                             <br />
                             <a role='text' style={{ textDecoration: 'none' }} className="text-danger">Hạn: {data.end_day}</a>
                             <br />
-                            <Link to={`/product/detail/${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
+                            <Link to={`/product/detail?productid=${data.product_id}&like=${like}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
                         </Card.Text>
                         <Row className="d-flex justify-content-center">
                             <p role='button' className='d-flex justify-content-center' onClick={handleLike}>

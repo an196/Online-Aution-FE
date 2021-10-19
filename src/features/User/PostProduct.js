@@ -1,6 +1,5 @@
 import { Form, Row, Col, Button, InputGroup, Container } from 'react-bootstrap';
 import UserNavBar from '../../components/UserNavBar';
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import * as yup from 'yup';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from "react-quill";

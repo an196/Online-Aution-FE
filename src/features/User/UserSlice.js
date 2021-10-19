@@ -33,8 +33,22 @@ export const addWatchList = createAsyncThunk("user/addWatchList",
     async (id) => {
         const response = await accountApi.addWatchList(id);
         if (response.status === 200) {
+            NotifyHelper.success(response.data.message, 'Thông báo');
             return 1;
         }
+        NotifyHelper.success(response.data.message, 'Thông báo');
+        return 0;
+    }
+);
+
+export const removeWatchList = createAsyncThunk("user/removeWatchList",
+    async (id) => {
+        const response = await accountApi.removeWatchList(id);
+        if (response.status === 200) {
+            NotifyHelper.success(response.data.message, 'Thông báo');
+            return 1;
+        }
+        NotifyHelper.success(response.data.message, 'Thông báo');
         return 0;
     }
 );
@@ -48,7 +62,6 @@ export const getReviews = createAsyncThunk("user/getReviews",
         return 0;
     }
 );
-
 
 
 export const userSlice = createSlice({
@@ -67,9 +80,6 @@ export const userSlice = createSlice({
         getUserInfo: (state, action) => {
             state.userInfo = jwt_decode(localStorage.x_accessToken);
         },
-        removeProductfromWatchList: (state, action) => {
-            state.watchList = state.watchList.filter(item => item.product_id !== action.payload);
-        }
     },
     extraReducers: (builder) => {
         builder
@@ -83,11 +93,18 @@ export const userSlice = createSlice({
                 state.requesting = true;
                 state.getReviews = payload;
             })
+            .addCase(addWatchList.fulfilled, (state, { payload }) => {
+                state.requesting = true;
+            })
+            .addCase(removeWatchList.fulfilled, (state, { payload }) => {
+                state.requesting = true;
+            })
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { setUser, setOTP, setRegisterInfo, getUserInfo, removeProductfromWatchList } = userSlice.actions;
+export const { setUser, setOTP, setRegisterInfo, getUserInfo, 
+     } = userSlice.actions;
 export const selectUser = state => state.user.userInfo;
 export const selectOTP = state => state.user.OTP;
 export const selectRegisterInfo = state => state.user.registerInfo;

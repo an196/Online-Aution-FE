@@ -47,7 +47,7 @@ function App() {
         </Route>
         <Route path="/product/search" exact component={SearchResultPage}>
         </Route>
-        <Route path="/product/detail/:id" exact component={ProductDetailPage}>
+        <Route path="/product/detail" exact component={ProductDetailPage}>
         </Route>
         <Route path="/category/:id" exact exact component={CategoryPage}>
         </Route>
