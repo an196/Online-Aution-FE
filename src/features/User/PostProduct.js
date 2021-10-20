@@ -226,7 +226,6 @@ export default function PostProduct() {
 
     //handle main image
     function handleMainImage(e) {
-
         if (e.target.files[0]) {
             upImgToFireBase(e.target.files[0], 1);
         }
@@ -239,14 +238,12 @@ export default function PostProduct() {
     }
 
     function handleExtra2Image(e) {
-
         if (e.target.files[0]) {
             upImgToFireBase(e.target.files[0], 3);
         }
     }
 
     function handleExtra3Image(e) {
-
         if (e.target.files[0]) {
             upImgToFireBase(e.target.files[0], 4);
         }

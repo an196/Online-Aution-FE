@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 import { NotifyHelper } from '../../helper/NotifyHelper';
+import { useHistory } from 'react-router';
 
 export default function UserProfile() {
     const [profile,setProfile] = useState();
@@ -16,9 +17,12 @@ export default function UserProfile() {
     const account_id = jwt_decode(localStorage.x_accessToken).account_id;
     const role_id = jwt_decode(localStorage.x_accessToken).role_id;
     const [requestUpgrade, setRequestUpgrade] = useState();
+    const history = useHistory();
+
 
     function handleUpgrade() {
         dispatch(upgradeAccount());
+        setRequestUpgrade(true)
     }
 
     function getUseInfo(){
@@ -49,6 +53,10 @@ export default function UserProfile() {
             .catch(function (error) {
                 NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
             });
+    }
+
+    function handleUpdate(){
+        history.push('/user/update-profile')
     }
 
     useEffect(() => {
@@ -101,7 +109,7 @@ export default function UserProfile() {
                                                 <br />
                                             </p>
                                         </div>
-                                        <Button variant="primary" size="sm" className='mb-3'><GrUpdate /> Cập nhật</Button>
+                                        <Button variant="primary" size="sm" className='mb-3' onClick={handleUpdate}><GrUpdate /> Cập nhật</Button>
                                         &nbsp;&nbsp;&nbsp;
                                         <Button variant="primary" size="sm" className='mb-3'><GrUpdate /> Đổi mật khẩu</Button>
                                     </div>

@@ -7,7 +7,7 @@ import AutionHistory from '../components/AutionHistory';
 import ProductCard from './ProductCard';
 import ReactHtmlParser from "react-html-parser";
 import { formatDateTime, formatProductName } from '../utils/utils';
-import { selectWatchList, getWatchList, addWatchList, removeWatchList } from '../features/User/UserSlice';
+import {  addWatchList, removeWatchList } from '../features/User/UserSlice';
 import {
     selectInfoProduct,
     getInfoProduct,
@@ -58,7 +58,6 @@ export default function ProductDetail() {
 
     function handleLike(e) {
 
-        //
         if (like) {
             dispatch(removeWatchList(id));
             setlike(false);
@@ -89,7 +88,9 @@ export default function ProductDetail() {
                 console.log(res.data.watch_list);
                 if (res.status === 200) {
                     setWatchList(res.data.watch_list);
-                    console.log(res.data.watch_list);
+                   
+                    if (res.data.watch_list.some(item => id === item.product_id))
+                    setlike(true);
                 }
 
             })
@@ -106,8 +107,6 @@ export default function ProductDetail() {
     }
 
     useEffect(() => {
-        query.get("like") === 'true' ? setlike(true) : setlike(false);
-
         dispatch(getInfoProduct(id));
         if (localStorage.x_accessToken) {
             setValidUser(true);
