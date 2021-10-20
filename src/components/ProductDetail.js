@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Image, Row, Col, Button } from 'react-bootstrap';
 import { AiFillHeart, AiOutlineHeart, AiOutlineShoppingCart, AiOutlineHistory } from "react-icons/ai";
 import { ImHammer2 } from "react-icons/im";
@@ -7,7 +7,7 @@ import AutionHistory from '../components/AutionHistory';
 import ProductCard from './ProductCard';
 import ReactHtmlParser from "react-html-parser";
 import { formatDateTime, formatProductName } from '../utils/utils';
-import {  addWatchList, removeWatchList } from '../features/User/UserSlice';
+import { addWatchList, removeWatchList } from '../features/User/UserSlice';
 import {
     selectInfoProduct,
     getInfoProduct,
@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import axios from 'axios';
 import { NotifyHelper } from '../helper/NotifyHelper';
-
+import socketIOClient from "socket.io-client";
 
 const styles = {
     card: {
@@ -47,7 +47,7 @@ export default function ProductDetail() {
     const infoProduct = useSelector(selectInfoProduct);
     const realationProduct = useSelector(selectRelationProduct);
     const [modalShow, setModalShow] = useState(false);
-    const [watchList,setWatchList] = useState();
+    const [watchList, setWatchList] = useState();
     const [validUser, setValidUser] = useState(false);
     const dispatch = useDispatch();
     const location = useLocation();
@@ -55,6 +55,17 @@ export default function ProductDetail() {
     const query = new URLSearchParams(useLocation().search);
     const id = query.get("productid");
     const [like, setlike] = useState();
+
+
+    //socket
+    const host = "http://localhost:3002";
+    const [connect, setConnect] = useState(true);
+    const socketRef = useRef();
+    const querySocket = {
+        query: {
+            token: localStorage.x_accessToken ? localStorage.x_accessToken : null
+        }
+    }
 
     function handleLike(e) {
 
@@ -88,9 +99,9 @@ export default function ProductDetail() {
                 console.log(res.data.watch_list);
                 if (res.status === 200) {
                     setWatchList(res.data.watch_list);
-                   
+
                     if (res.data.watch_list.some(item => id === item.product_id))
-                    setlike(true);
+                        setlike(true);
                 }
 
             })
@@ -106,6 +117,18 @@ export default function ProductDetail() {
         end_day: formatDateTime(infoProduct.end_day),
     }
 
+    function handleAution() {
+        if (socketRef.current.connected) {
+            // thông tin đấu giá gửi lên server
+            socketRef.current.emit("dau_gia_san_pham", { product_id: Number(id), cost: 15000000 });
+          
+        } else {
+            console.log("không thể kết nối đến server");
+            NotifyHelper.error("Có lỗi đã xảy ra", 'Thông báo')
+        }
+    }
+
+
     useEffect(() => {
         dispatch(getInfoProduct(id));
         if (localStorage.x_accessToken) {
@@ -113,9 +136,32 @@ export default function ProductDetail() {
             getWatchList();
         }
 
-    }, [dispatch,location]);
+    }, [dispatch, location]);
 
-    console.log(like)
+    useEffect(() => {
+        socketRef.current = socketIOClient.connect('http://localhost:3002', {
+            query: {
+                token: localStorage.x_accessToken ? localStorage.x_accessToken : null
+            }
+        });
+
+        socketRef.current.on("ket_qua_dau_gia_nguoi_mua", (res) => {
+            if (res.status === 200) {
+                NotifyHelper.success(res.message, 'Thông báo')
+                console.log('ok2')
+            }
+            else {
+                NotifyHelper.error(res.message, 'Thông báo')
+                console.log('ok2')
+            }
+
+        });
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+    }, []);
+
     return (
         <>
             <div className="card mb-3 mt-4 no-gutters" >
@@ -156,21 +202,29 @@ export default function ProductDetail() {
                                         </h5>
                                         <p className="card-text">
                                             Giá hiện tại: {data.start_cost}₫ <br />
-                                            <Button variant="success"> <AiOutlineShoppingCart></AiOutlineShoppingCart>&nbsp; Mua ngay
-                                            </Button> {data.buy_now} <br />
+                                            {validUser ?
+                                                <>
+                                                    <Button className='m-2 ' variant="success"> <AiOutlineShoppingCart></AiOutlineShoppingCart>&nbsp; Mua ngay
+                                                    </Button> {data.buy_now}
+                                                </>
+                                                : null}
+                                            <br />
                                             Người bán: {data.seller_name} &nbsp;&nbsp;&nbsp;&nbsp;  Đánh giá: {data.evaluation_score} điểm
                                             <br />
                                             Đăng: {data.start_day}
                                             <br />
                                             Kết thúc: <a role='text' style={{ textDecoration: 'none' }} className="text-danger">{data.end_day}</a>
                                         </p>
-
-                                        <Button variant="warning"> <ImHammer2 /> &nbsp;Đấu giá
-                                        </Button>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;
-                                        <Button variant="info" onClick={() => setModalShow(true)}> <AiOutlineHistory /> &nbsp;Lịch sử
-                                        </Button>
-                                        <AutionHistory show={modalShow} onHide={() => setModalShow(false)} />
+                                        {validUser ?
+                                            <>
+                                                <Button className='mb-2' onClick={handleAution} variant="warning"> <ImHammer2 /> &nbsp;Đấu giá
+                                                </Button>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                {/* <Button className='mb-2' variant="info" onClick={() => setModalShow(true)}> <AiOutlineHistory /> &nbsp;Lịch sử
+                                                </Button> */}
+                                                <AutionHistory show={modalShow} onHide={() => setModalShow(false)} />
+                                            </>
+                                            : null}
                                         <br /><br />
                                         <b >Thông tin sản phẩm</b>
                                         {ReactHtmlParser(data.description)}
