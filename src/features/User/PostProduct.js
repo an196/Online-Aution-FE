@@ -273,7 +273,9 @@ export default function PostProduct() {
 
 
     return (
-        <div className="container">
+        <Row>
+        <Col></Col>
+        <Col xs={8}>
             <UserNavBar />
             <Container className='p-4'>
                 <h5 className="d-flex justify-content-center mt-4">Đăng sản phẩm!</h5>
@@ -399,6 +401,8 @@ export default function PostProduct() {
                     </Row>
                 </Form>
             </Container>
-        </div>
+            </Col>
+            <Col></Col>
+        </Row>
     )
 }

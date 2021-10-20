@@ -2,22 +2,49 @@ import { Card, Row, Col } from 'react-bootstrap';
 import UserNavBar from '../../components/UserNavBar';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { selectWatchList, getWatchList } from './UserSlice';
 import WatchListCard from '../../components/WatchListCard'
+import { withRouter,useHistory } from 'react-router';
+import axios from 'axios';
+import { NotifyHelper } from '../../helper/NotifyHelper';
 
-
-export default function FavoriteProducts() {
-    const watchList = useSelector(selectWatchList);
+const FavoriteProducts = () =>  {
     const dispatch = useDispatch();
+    const history = useHistory();
+    const [watchList,setWatchList] = useState();
+
+
+    function get(){
+        let data = {
+        };
+
+        const config ={
+            headers: {
+                'x-access-token' : localStorage.x_accessToken,
+                'x-refresh-token': localStorage.x_refreshToken
+            }
+        }
+       
+        axios
+            .get("http://localhost:3002/api/bidder/watch_list", config)
+            .then(function (res) {
+                console.log(res.data.watch_list);
+                if (res.status === 200){
+                    setWatchList(res.data.watch_list);
+                console.log(res.data.watch_list);
+                }    
+               
+            })
+            .catch(function (error) {
+                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
+            });
+    }
 
     useEffect(() => {
-        dispatch(getWatchList())
         if (localStorage.x_accessToken) {
-            dispatch(getWatchList());
+            get();
         }
     }, [dispatch])
-
-    console.log(watchList)
+    
     return (
         <Row>
             <Col></Col>
@@ -40,3 +67,5 @@ export default function FavoriteProducts() {
         </Row>
     )
 }
+
+export default withRouter(FavoriteProducts);

@@ -2,7 +2,7 @@ import axiosClient from './axiosClient';
 
 const prefix='accounts';
 
-const adminApi = {
+const accountApi = {
     getProfile(){
         const url = `/${prefix}/detail`;
         return axiosClient.get(url);
@@ -29,6 +29,11 @@ const adminApi = {
         const url = `/evaluation_historys/${id}`;
         return axiosClient.get(url);
     },
+    upgradeAccount(){
+        const data={};
+        const url = `/bidder/account/requestUpgrade`;
+        return axiosClient.post(url,data);
+    },
 }
 
-export default adminApi;
+export default accountApi;

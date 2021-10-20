@@ -37,6 +37,7 @@ export default function UserNavBar(props) {
                     <div style={{ width: 10 }}></div>
                     <LinkContainer to="/"><Navbar.Brand>OnAution</Navbar.Brand></LinkContainer>
                     <Nav className="me-auto">
+                       
                         <LinkContainer to="/user/favorite"><Nav.Link > Ưa thích</Nav.Link></LinkContainer>
                         <LinkContainer to="/user/aution-history" ><Nav.Link > Lịch sử đấu giá</Nav.Link></LinkContainer>
                         <LinkContainer to="/user/aution"><Nav.Link > Đấu giá</Nav.Link></LinkContainer>

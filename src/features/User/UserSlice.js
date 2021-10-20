@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import jwt_decode from 'jwt-decode';
+import { boolean } from 'yup';
 import accountApi from "../../api/accountApi";
 import { NotifyHelper } from '../../helper/NotifyHelper';
 
@@ -11,6 +12,7 @@ const initialState = {
     profile: {},
     watchList: [],
     getReviews: [],
+    isRequestUpgrade: boolean,
 }
 
 export const getProfile = createAsyncThunk("user/getProfile",
@@ -63,6 +65,20 @@ export const getReviews = createAsyncThunk("user/getReviews",
     }
 );
 
+export const upgradeAccount = createAsyncThunk("user/upgradeAccount",
+    async () => {
+        const response = await accountApi.upgradeAccount();
+      
+        if (response.status === 200) {
+            NotifyHelper.success(response.data.message, 'Thông báo');
+            return 1;
+        }
+        NotifyHelper.success(response.data.message, 'Thông báo');
+        return 0;
+    }
+);
+
+
 
 export const userSlice = createSlice({
     name: 'user',
@@ -80,11 +96,15 @@ export const userSlice = createSlice({
         getUserInfo: (state, action) => {
             state.userInfo = jwt_decode(localStorage.x_accessToken);
         },
+        refresh: (state, action) => {
+            state.requesting = false;
+        },
     },
     extraReducers: (builder) => {
         builder
             .addCase(getProfile.fulfilled, (state, { payload }) => {
                 state.profile = payload.info_account;
+                state.isRequestUpgrade =  payload.info_account.request_update;
             })
             .addCase(getWatchList.fulfilled, (state, { payload }) => {
                 state.watchList = payload.watch_list;
@@ -99,11 +119,14 @@ export const userSlice = createSlice({
             .addCase(removeWatchList.fulfilled, (state, { payload }) => {
                 state.requesting = true;
             })
+            .addCase(upgradeAccount.fulfilled, (state, { payload }) => {
+                state.requesting = true;
+            })
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { setUser, setOTP, setRegisterInfo, getUserInfo, 
+export const { setUser, setOTP, setRegisterInfo, getUserInfo, refresh
      } = userSlice.actions;
 export const selectUser = state => state.user.userInfo;
 export const selectOTP = state => state.user.OTP;
@@ -111,4 +134,5 @@ export const selectRegisterInfo = state => state.user.registerInfo;
 export const selectProfile = state => state.user.profile;
 export const selectWatchList = state => state.user.watchList;
 export const selectReviews = state => state.user.getReviews;
+export const selectRequestUpgrade = state => state.user.isRequestUpgrade;
 export default userSlice.reducer;

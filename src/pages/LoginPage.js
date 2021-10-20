@@ -1,24 +1,24 @@
 import React, { Col, Form, Row, Button, Container } from "react-bootstrap";
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from "axios";
 import { useHistory } from "react-router";
 import jwt_decode from "jwt-decode";
 import { useSelector, useDispatch } from "react-redux";
-import { selectUser, setUser } from "../features/User/UserSlice";
+import { selectUser, setUser, refresh } from "../features/User/UserSlice";
 import { Link } from "react-router-dom";
 import { NotifyHelper } from "../helper/NotifyHelper";
+import { withRouter } from 'react-router-dom';
 
+function Login(props) {
 
-export default function Login() {
-    
     const [validated, setValidated] = useState(false);
     const [errors, setErrors] = useState({});
-
+   
     const history = useHistory();
     const user = useSelector(selectUser);
     const dispatch = useDispatch();
 
-    //validate form
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -49,7 +49,7 @@ export default function Login() {
                     if (res.status === 200)
                         if (res.data.authenticated === true) {
                             const { accessToken, refreshToken } = res.data;
-                           
+
                             localStorage.setItem('x_accessToken', accessToken);
                             localStorage.setItem('x_refreshToken', refreshToken);
 
@@ -59,21 +59,21 @@ export default function Login() {
                                 switch (user.role_id) {
                                     case 1:
                                     case 2:
-                                        console.log(user);
+                                        dispatch(setUser());
                                         NotifyHelper.success("Đăng nhập thành công", "Thông báo");
-                                        history.push("/user/favorite");
-                                        
+                                        history.push("/");
                                        
                                         break;
                                     case 3:
-                                        history.push("/admin")
+                                        dispatch(setUser());
+                                        history.push("/admin");
                                         NotifyHelper.success("Đăng nhập thành công", "Thông báo");
                                         break;
                                     default:
                                         break;
                                 }
                             }
-                           
+
                         }
                     if (res.status === 400) {
                         console.log(res.data)
@@ -120,7 +120,10 @@ export default function Login() {
         }
     }
 
-
+    useEffect(() => {
+        history.replace() 
+       
+    }, [dispatch])
     return (
         <Container>
             <Row>
@@ -185,3 +188,5 @@ export default function Login() {
     );
 
 }
+
+export default withRouter(Login);
