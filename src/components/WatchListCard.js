@@ -3,17 +3,14 @@ import { Col, Row } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card'
 import { AiOutlineHeart,AiFillHeart } from "react-icons/ai";
 import { Link } from 'react-router-dom';
-import ReactHtmlParser from "react-html-parser";
-import axios from 'axios';
 import {
     formatDateTime,
     formatProductName,
     formatPrice,
 } from '../utils/utils';
-import { NotifyHelper } from '../helper/NotifyHelper';
 import { useEffect } from 'react';
 import { addWatchList, removeWatchList } from '../features/User/UserSlice';
-import { useSelector, useDispatch } from "react-redux";
+import {  useDispatch } from "react-redux";
 
 const styles = {
     card: {

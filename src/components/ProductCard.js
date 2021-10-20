@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Col, Row, Nav, Navbar } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card'
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import ReactHtmlParser from "react-html-parser";
 import { selectWatchList, addWatchList, getWatchList, removeWatchList } from '../features/User/UserSlice';
 import {
@@ -12,6 +12,8 @@ import {
 } from '../utils/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
+import axios from 'axios';
+import { NotifyHelper } from '../helper/NotifyHelper';
 
 const styles = {
 
@@ -38,11 +40,12 @@ const styles = {
 
 export default function ProductCard({ item }) {
     const defaultImg = '../../public/images.png/100px250';
-    const [like, setlike] = useState(false);
+    const [like, setlike] = useState();
     const dispatch = useDispatch();
     const [validUser, setValidUser] = useState(false);
-    const watchList = useSelector(selectWatchList);
+    const [watchList, setWatchList] = useState();
     const history = useHistory();
+
 
     const id = item.product_id;
     const data = {
@@ -66,18 +69,46 @@ export default function ProductCard({ item }) {
         }
     }
 
+    function getWatchList() {
+        let data = {
+        };
+
+        const config = {
+            headers: {
+                'x-access-token': localStorage.x_accessToken,
+                'x-refresh-token': localStorage.x_refreshToken
+            }
+        }
+
+        axios
+            .get("http://localhost:3002/api/bidder/watch_list", config)
+            .then(function (res) {
+              
+                if (res.status === 200) {
+                    setWatchList(res.data.watch_list);
+                    if (res.data.watch_list.some(item => id === item.product_id))
+                        setlike(true);
+                }
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
+            });
+    }
+
+
+
     useEffect(() => {
         if (localStorage.x_accessToken) {
+            getWatchList();
             setValidUser(true);
         }
-        if (watchList) {
-            if (watchList.some(item => id === item.product_id))
-                setlike(true);
-        }
-    }, [ dispatch]);
+    }, [dispatch])
 
 
-    //console.log(watchList)
+
+
+
     return (
         <Col>{data ?
             <div>
@@ -106,7 +137,7 @@ export default function ProductCard({ item }) {
                             <br />
                             <Link to={`/product/detail?productid=${data.product_id}&like=${like}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
 
-                        
+
 
                         </Card.Text>
                         <Row >

@@ -15,6 +15,9 @@ import {
 } from '../features/product/productSlice';
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import axios from 'axios';
+import { NotifyHelper } from '../helper/NotifyHelper';
+
 
 const styles = {
     card: {
@@ -44,29 +47,55 @@ export default function ProductDetail() {
     const infoProduct = useSelector(selectInfoProduct);
     const realationProduct = useSelector(selectRelationProduct);
     const [modalShow, setModalShow] = useState(false);
-    const watchList = useSelector(selectWatchList);
+    const [watchList,setWatchList] = useState();
     const [validUser, setValidUser] = useState(false);
     const dispatch = useDispatch();
-
+    const location = useLocation();
 
     const query = new URLSearchParams(useLocation().search);
     const id = query.get("productid");
-    const [like,setlike] = useState();
-   
+    const [like, setlike] = useState();
+
     function handleLike(e) {
-        
+
         //
         if (like) {
             dispatch(removeWatchList(id));
             setlike(false);
-           
+
         }
-        else{
-           
+        else {
+
             dispatch(addWatchList(Number(id)));
             setlike(true);
-          
+
         }
+    }
+
+    function getWatchList() {
+        let data = {
+        };
+
+        const config = {
+            headers: {
+                'x-access-token': localStorage.x_accessToken,
+                'x-refresh-token': localStorage.x_refreshToken
+            }
+        }
+
+        axios
+            .get("http://localhost:3002/api/bidder/watch_list", config)
+            .then(function (res) {
+                console.log(res.data.watch_list);
+                if (res.status === 200) {
+                    setWatchList(res.data.watch_list);
+                    console.log(res.data.watch_list);
+                }
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
+            });
     }
 
     const data = {
@@ -77,15 +106,15 @@ export default function ProductDetail() {
     }
 
     useEffect(() => {
-        query.get("like") === 'true'? setlike(true): setlike(false);
-        
+        query.get("like") === 'true' ? setlike(true) : setlike(false);
+
         dispatch(getInfoProduct(id));
-        if (localStorage.x_accessToken){
+        if (localStorage.x_accessToken) {
             setValidUser(true);
-            dispatch(getWatchList());
+            getWatchList();
         }
-       
-    }, [dispatch]);
+
+    }, [dispatch,location]);
 
     console.log(like)
     return (

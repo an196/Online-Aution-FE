@@ -13,7 +13,7 @@ const FavoriteProducts = () =>  {
     const [watchList,setWatchList] = useState();
 
 
-    function get(){
+    function getWatchList(){
         let data = {
         };
 
@@ -41,7 +41,7 @@ const FavoriteProducts = () =>  {
 
     useEffect(() => {
         if (localStorage.x_accessToken) {
-            get();
+            getWatchList();
         }
     }, [dispatch])
     
