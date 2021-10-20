@@ -10,15 +10,42 @@ import {
     selectTopHighestCost,
     selectTopHighestAutions 
 } from '../features/product/productSlice';
-import {selectWatchList, getWatchList} from '../features/User/UserSlice';
+import axios from 'axios';
+import { NotifyHelper } from '../helper/NotifyHelper';
 
 export default function Home(props) {
     const topItemRunOut = useSelector(selectRunOutItems);
     const topHighestCost = useSelector(selectTopHighestCost);
     const topHighestAutions = useSelector(selectTopHighestAutions);
-    const watchList = useSelector(selectWatchList);
+    const [watchList,setWatchList] = useState();
 
     const dispach = useDispatch();
+    
+    function getWatchList(){
+        let data = {
+        };
+
+        const config ={
+            headers: {
+                'x-access-token' : localStorage.x_accessToken,
+                'x-refresh-token': localStorage.x_refreshToken
+            }
+        }
+       
+        axios
+            .get("http://localhost:3002/api/bidder/watch_list", config)
+            .then(function (res) {
+                console.log(res.data.watch_list);
+                if (res.status === 200){
+                    setWatchList(res.data.watch_list);
+                console.log(res.data.watch_list);
+                }    
+               
+            })
+            .catch(function (error) {
+                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
+            });
+    }
 
     useEffect(() => {
         dispach(getTopItemRunOut());
@@ -26,12 +53,12 @@ export default function Home(props) {
         dispach(getTopHighestAutions());
 
         if(localStorage.x_accessToken){
-            dispach(getWatchList());
+           getWatchList();
         }
             
     },[dispach]);
 
-   
+
 
     return (
         <div className="container mt-4" >
@@ -39,7 +66,7 @@ export default function Home(props) {
                 <h5>Sản phẩm gần kết thúc</h5>
                 <Row xs={1} md={5} className="g-4" >
                     {topItemRunOut.map((item) => (
-                        <ProductCard key={item.auction_id} item={item} watchList={watchList}/>
+                        <ProductCard key={item.auction_id} item={item} />
                     ))}
                 </Row>
             </Row>
@@ -47,7 +74,7 @@ export default function Home(props) {
                 <h5>Sản phẩm đấu giá nhiều nhất</h5>
                 <Row xs={1} md={5} className="g-4" >
                     {topHighestAutions.map((item) => (
-                       <ProductCard key={item.auction_id} item={item} watchList={watchList}/>
+                       <ProductCard key={item.auction_id} item={item} />
                     ))}
                 </Row>
             </Row>
@@ -55,7 +82,7 @@ export default function Home(props) {
                 <h5>Sản phẩm có giá cao nhất</h5>
                 <Row xs={1} md={5} className="g-4" >
                     {topHighestCost.map((item) => (
-                       <ProductCard key={item.auction_id} item={item} watchList={watchList}/>
+                       <ProductCard key={item.auction_id} item={item} />
                     ))}
                 </Row>
             </Row>

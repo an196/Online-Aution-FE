@@ -2,7 +2,7 @@ import axiosClient from './axiosClient';
 
 const prefix='accounts';
 
-const adminApi = {
+const accountApi = {
     getProfile(){
         const url = `/${prefix}/detail`;
         return axiosClient.get(url);
@@ -12,13 +12,28 @@ const adminApi = {
         return axiosClient.get(url);
     },
     addWatchList(id){
+        const data ={
+            product_id: id
+        }
         const url = `/bidder/watch_list?product_id=${id}`;
-        return axiosClient.post(url);
+        return axiosClient.post(url,data);
+    },
+    removeWatchList(id){
+        const data ={
+            product_id: id
+        }
+        const url = `/bidder/watch_list?product_id=${id}`;
+        return axiosClient.delete(url,data);
     },
     getReviews(id){
         const url = `/evaluation_historys/${id}`;
         return axiosClient.get(url);
     },
+    upgradeAccount(){
+        const data={};
+        const url = `/bidder/account/requestUpgrade`;
+        return axiosClient.post(url,data);
+    },
 }
 
-export default adminApi;
+export default accountApi;

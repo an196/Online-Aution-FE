@@ -1,21 +1,22 @@
 import { useEffect, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row, Nav, Navbar } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card'
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import ReactHtmlParser from "react-html-parser";
-import { removeProductfromWatchList } from '../features/User/UserSlice';
+import { selectWatchList, addWatchList, getWatchList, removeWatchList } from '../features/User/UserSlice';
 import {
     formatDateTime,
     formatProductName,
     formatPrice,
 } from '../utils/utils';
-import { useDispatch } from 'react-redux';
-import { NotifyHelper } from '../helper/NotifyHelper';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
 import axios from 'axios';
-
+import { NotifyHelper } from '../helper/NotifyHelper';
 
 const styles = {
+
     card: {
         //backgroundColor: '#B7E0F2',
         borderRadius: 5,
@@ -37,13 +38,15 @@ const styles = {
     },
 }
 
-export default function ProductCard({ item, watchList }) {
+export default function ProductCard({ item }) {
     const defaultImg = '../../public/images.png/100px250';
-    const [like, setlike] = useState(false);
+    const [like, setlike] = useState();
     const dispatch = useDispatch();
     const [validUser, setValidUser] = useState(false);
+    const [watchList, setWatchList] = useState();
+    const history = useHistory();
 
-    
+
     const id = item.product_id;
     const data = {
         ...item,
@@ -56,79 +59,54 @@ export default function ProductCard({ item, watchList }) {
     };
 
     function handleLike() {
-        if(like){
-            removeWatchList();
+        if (like) {
             setlike(false);
-            removeProductfromWatchList(id)
+            dispatch(removeWatchList(id));
         }
-        else{
-            addWatchList();
+        else {
+            dispatch(addWatchList(id));
             setlike(true);
         }
     }
 
-    useEffect(()=>{
-        if (localStorage.x_accessToken) {
-            setValidUser(true);
-        }
-       if(watchList){
-        if(watchList.some(item => id === item.product_id))
-            setlike(true);
-       }
-    },[removeProductfromWatchList, dispatch]);
-
-
-    function addWatchList(){
-        const data = {
-            product_id: id
+    function getWatchList() {
+        let data = {
         };
 
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers}
+        const config = {
+            headers: {
+                'x-access-token': localStorage.x_accessToken,
+                'x-refresh-token': localStorage.x_refreshToken
+            }
         }
-       
+
         axios
-            .post(`http://localhost:3002/api/bidder/watch_list?product_id=${id}`,data, config)
+            .get("http://localhost:3002/api/bidder/watch_list", config)
             .then(function (res) {
-                if (res.status === 200){
-                    NotifyHelper.success(res.data.message, "Thông báo")
+              
+                if (res.status === 200) {
+                    setWatchList(res.data.watch_list);
+                    if (res.data.watch_list.some(item => id === item.product_id))
+                        setlike(true);
                 }
-                    
 
             })
             .catch(function (error) {
-                NotifyHelper.error(error, "Thông báo");
-                console.log(error)
+                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
             });
     }
 
-    function removeWatchList(){
-        
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
 
-        let config = {
-            headers: { ...headers}
+
+    useEffect(() => {
+        if (localStorage.x_accessToken) {
+            getWatchList();
+            setValidUser(true);
         }
-       
-        axios
-            .delete(`http://localhost:3002/api/bidder/watch_list?product_id=${id}`, config)
-            .then(function (res) {
-                if (res.status === 200){
-                    NotifyHelper.success(res.data.message, "Thông báo")
-                    
-                }
-            })
-            .catch(function (error) {
-                NotifyHelper.error(error, "Thông báo");
-                console.log(error)
-            });
-    }
+    }, [dispatch])
+
+
+
 
 
     return (
@@ -157,15 +135,18 @@ export default function ProductCard({ item, watchList }) {
                             <br />
                             Lượt đấu giá: {data.count_auction}
                             <br />
-                            <Link to={`/product/detail/${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
+                            <Link to={`/product/detail?productid=${data.product_id}&like=${like}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
+
+
+
                         </Card.Text>
-                        <Row className="d-flex justify-content-center">
+                        <Row >
                             {
                                 validUser ?
                                     <p role='button' className='d-flex justify-content-center' onClick={handleLike}>
                                         {like ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart />}
                                     </p>
-                                :null
+                                    : null
                             }
 
                         </Row>

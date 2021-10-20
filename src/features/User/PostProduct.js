@@ -1,6 +1,5 @@
 import { Form, Row, Col, Button, InputGroup, Container } from 'react-bootstrap';
 import UserNavBar from '../../components/UserNavBar';
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import * as yup from 'yup';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from "react-quill";
@@ -274,7 +273,9 @@ export default function PostProduct() {
 
 
     return (
-        <div className="container">
+        <Row>
+        <Col></Col>
+        <Col xs={8}>
             <UserNavBar />
             <Container className='p-4'>
                 <h5 className="d-flex justify-content-center mt-4">Đăng sản phẩm!</h5>
@@ -400,6 +401,8 @@ export default function PostProduct() {
                     </Row>
                 </Form>
             </Container>
-        </div>
+            </Col>
+            <Col></Col>
+        </Row>
     )
 }

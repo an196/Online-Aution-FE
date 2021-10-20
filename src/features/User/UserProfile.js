@@ -3,61 +3,57 @@ import { GrUpdate } from 'react-icons/gr';
 import UserNavBar from '../../components/UserNavBar';
 import { BsArrowBarUp } from 'react-icons/bs'
 import { useSelector, useDispatch } from "react-redux";
-import { selectProfile, getProfile } from './UserSlice';
+import {  upgradeAccount } from './UserSlice';
 import { useState, useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 import { NotifyHelper } from '../../helper/NotifyHelper';
 
 export default function UserProfile() {
-    const profile = useSelector(selectProfile);
+    const [profile,setProfile] = useState();
     const dispatch = useDispatch();
     const [buyer, setBuyer] = useState(true);
-    const [request_update, setRequestUpgrade] = useState(false);
     const account_id = jwt_decode(localStorage.x_accessToken).account_id;
     const role_id = jwt_decode(localStorage.x_accessToken).role_id;
-
+    const [requestUpgrade, setRequestUpgrade] = useState();
 
     function handleUpgrade() {
+        dispatch(upgradeAccount());
+    }
 
-        const data = {
+    function getUseInfo(){
+        let data = {
         };
 
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
+        const config ={
+            headers: {
+                'x-access-token' : localStorage.x_accessToken,
+                'x-refresh-token': localStorage.x_refreshToken
+            }
         }
-
+       
         axios
-            .post(`http://localhost:3002/api/bidder/account/requestUpgrade`, data, config)
+            .get("http://localhost:3002/api/accounts/detail", config)
             .then(function (res) {
-                if (res.status === 200) {
-                    NotifyHelper.success(res.data.message, "Thông báo")
-                }
+                console.log(res);
+                if (res.status === 200){
+                    console.log('ok')
+                    setProfile(res.data.info_account);
+                    setRequestUpgrade(res.data.info_account.request_update);
+                    if (role_id === 2) {
+                        setBuyer(false);
+                    }
+                }    
+               
             })
             .catch(function (error) {
-                NotifyHelper.error(error, "Thông báo");
-                console.log(error)
+                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
             });
     }
 
     useEffect(() => {
-        dispatch(getProfile());
-
-        if (role_id === 2) {
-            setBuyer(false);
-        }
-
-        if(profile && profile.request_update === 1){
-            setRequestUpgrade(true);
-        }
-        
-}, [dispatch,setBuyer,setRequestUpgrade, handleUpgrade])
-    console.log(profile)
-
+        getUseInfo();
+    }, [dispatch])
 
     return (
         <Row>
@@ -71,19 +67,19 @@ export default function UserProfile() {
                                 <Row>
                                     <title>Avatar</title>
                                     <Image src="https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png" fluid />
-                                    {buyer && !request_update? 
-                                    <Button variant="success" onClick={handleUpgrade} size="sm" className='mt-4 m-auto col-md-10'>
-                                        <BsArrowBarUp />
-                                        Nâng cấp seller
-                                    </Button>
-                                    :null}
+                                    {buyer && !requestUpgrade?
+                                        <Button variant="success" onClick={handleUpgrade} size="sm" className='mt-4 m-auto col-md-10'>
+                                            <BsArrowBarUp />
+                                            Nâng cấp seller
+                                        </Button>
+                                        : null}
                                     {
-                                        request_update? 
-                                        <Button variant="secondary" disabled size="sm" className='mt-4 m-auto col-md-10'>
-                                        
-                                        Đang chờ duyệt
-                                    </Button>
-                                    :null}
+                                      requestUpgrade && buyer?
+                                            <Button variant="secondary" disabled size="sm" className='mt-4 m-auto col-md-10'>
+
+                                                Đang chờ duyệt
+                                            </Button>
+                                            : null}
                                 </Row>
                             </Col >
                             {profile ?
