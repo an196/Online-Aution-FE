@@ -90,13 +90,13 @@ export default function PostProduct() {
     async function handleSubmit(e) {
         e.preventDefault();
         e.stopPropagation();
-       
+
 
         const form = e.currentTarget;
         if (form.checkValidity()) {
             const currentTime = new Date();
 
-            if(startDate.getDate() <= currentTime.getDate()){
+            if (startDate.getDate() <= currentTime.getDate()) {
                 NotifyHelper.error('Ngày bắt đầu đấu giá phải lớn hơn ngày hiện tại', 'Thông báo');
                 return;
             }
@@ -270,136 +270,137 @@ export default function PostProduct() {
 
 
     return (
-        <Row>
-        <Col></Col>
-        <Col xs={8}>
-            <UserNavBar />
-            <Container className='p-4'>
-                <h5 className="d-flex justify-content-center mt-4">Đăng sản phẩm!</h5>
+        <Container>
+            <Row>
+                <Col></Col>
+                <Col xs={8}>
+                    <UserNavBar />
+                    <Container className='p-4'>
+                        <h5 className="d-flex justify-content-center mt-4">Đăng sản phẩm!</h5>
+                        <Form noValidate onSubmit={handleSubmit} validated={validated} method="get" >
+                            <Row className="mb-3">
+                                <Form.Group as={Col} md="8" controlId="validationFormik01">
+                                    <Form.Label>Tên sản phẩm</Form.Label>
+                                    <Form.Control
+                                        required
+                                        type="text"
+                                        name="productName"
+                                        //onChange={handleChange}
+                                        maxLength='255'
+                                    />
+                                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                </Form.Group>
+                                <Form.Group as={Col} md="4" >
+                                    <Form.Label>Danh mục</Form.Label>
+                                    <Form.Select onChange={handleCategory} defaultValue="Chọn danh mục sản phẩm" >
+                                        {categories.map(item => <option key={item.category_id} value={item.category_id}>{item.name} </option>
 
-                <Form noValidate onSubmit={handleSubmit} validated={validated} method="get" >
-                    <Row className="mb-3">
-                        <Form.Group as={Col} md="8" controlId="validationFormik01">
-                            <Form.Label>Tên sản phẩm</Form.Label>
-                            <Form.Control
-                                required
-                                type="text"
-                                name="productName"
-                                //onChange={handleChange}
-                                maxLength='255'
-                            />
-                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group as={Col} md="4" >
-                            <Form.Label>Danh mục</Form.Label>
-                            <Form.Select onChange={handleCategory} defaultValue="Chọn danh mục sản phẩm" >
-                                {categories.map(item => <option key={item.category_id} value={item.category_id}>{item.name} </option>
+                                        )}
+                                    </Form.Select>
 
-                                )}
-                            </Form.Select>
+                                </Form.Group>
+                            </Row>
+                            <Row className="mb-3">
+                                <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
+                                    <Form.Label>Ảnh chính</Form.Label>
+                                    <Form.Control type="file"
+                                        required
+                                        name="mainImage"
+                                        onChange={handleMainImage}
+                                    />
+                                </Form.Group>
+                                <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
+                                    <Form.Label>Ảnh phụ 1</Form.Label>
+                                    <Form.Control type="file"
+                                        required
+                                        name="extraImage1"
+                                        onChange={handleExtra1Image}
+                                    />
+                                </Form.Group>
+                                <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
+                                    <Form.Label>Ảnh phụ 2</Form.Label>
+                                    <Form.Control type="file"
+                                        required
+                                        name="extraImage2"
+                                        onChange={handleExtra2Image}
+                                    />
+                                </Form.Group>
+                                <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
+                                    <Form.Label>Ảnh phụ 3</Form.Label>
+                                    <Form.Control type="file"
+                                        required
+                                        name="extraImage3"
+                                        onChange={handleExtra3Image}
+                                    />
+                                </Form.Group>
+                            </Row>
+                            <Row>
+                                <Form.Group as={Col} md="3" controlId="validationFormik01">
+                                    <Form.Label>Giá khởi điểm</Form.Label>
+                                    <Form.Control
+                                        required
+                                        type="number"
+                                        name="start_cost"
+                                        // onChange={(e) => {
+                                        //     handleChange("price")(e);
 
-                        </Form.Group>
-                    </Row>
-                    <Row className="mb-3">
-                        <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
-                            <Form.Label>Ảnh chính</Form.Label>
-                            <Form.Control type="file"
-                                required
-                                name="mainImage"
-                                onChange={handleMainImage}
-                            />
-                        </Form.Group>
-                        <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
-                            <Form.Label>Ảnh phụ 1</Form.Label>
-                            <Form.Control type="file"
-                                required
-                                name="extraImage1"
-                                onChange={handleExtra1Image}
-                            />
-                        </Form.Group>
-                        <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
-                            <Form.Label>Ảnh phụ 2</Form.Label>
-                            <Form.Control type="file"
-                                required
-                                name="extraImage2"
-                                onChange={handleExtra2Image}
-                            />
-                        </Form.Group>
-                        <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
-                            <Form.Label>Ảnh phụ 3</Form.Label>
-                            <Form.Control type="file"
-                                required
-                                name="extraImage3"
-                                onChange={handleExtra3Image}
-                            />
-                        </Form.Group>
-                    </Row>
-                    <Row>
-                        <Form.Group as={Col} md="2" controlId="validationFormik01">
-                            <Form.Label>Giá khởi điểm</Form.Label>
-                            <Form.Control
-                                required
-                                type="number"
-                                name="start_cost"
-                                // onChange={(e) => {
-                                //     handleChange("price")(e);
+                                        // }}
 
-                                // }}
+                                        min={0} max={10000000}
+                                    />
+                                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                </Form.Group>
+                                <Form.Group as={Col} md="3" controlId="validationFormik01" onChange={handleStepCost}>
+                                    <Form.Label>Bước giá</Form.Label>
+                                    <Form.Select defaultValue="Chọn bước giá">
+                                        <option value={1000} >1000đ</option>
+                                        <option value={2000}>2000đ</option>
+                                        <option value={3000}>3000đ</option>
+                                    </Form.Select>
+                                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                </Form.Group>
+                                <Form.Group as={Col} md="3" controlId="validationFormik01">
+                                    <Form.Label>Giá mua ngay(nếu có)</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        name="but_now"
+                                        // onChange={(e) => {
+                                        //     handleChange("but_now")(e);
+                                        // }}
 
-                                min={0} max={10000000}
+                                        min={0} max={10000000}
+                                    />
+                                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                </Form.Group>
+                                <Form.Group as={Col} md="3" >
+                                    <Form.Label>Ngày bắt đầu đấu giá</Form.Label>
+                                    <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+                                </Form.Group>
+
+                            </Row>
+                            <Row className='mb-3 mt-3'>
+                                <Form.Group as={Col} md="3" id="formGridCheckbox">
+                                    <Form.Check type="checkbox" label="Tự động gia hạn" name='auto_renew' onChange={handleAutoRenew} />
+                                </Form.Group>
+                            </Row>
+                            <h6>Mô tả sản phẩm</h6>
+                            <ReactQuill
+                                onChange={setDescription}
+                                value={description}
+                                modules={modules}
+                                formats={formats}
+                                bounds={'.app'}
+                                placeholder=''
                             />
-                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group as={Col} md="2" controlId="validationFormik01" onChange={handleStepCost}>
-                            <Form.Label>Bước giá</Form.Label>
-                            <Form.Select defaultValue="Chọn bước giá">
-                                <option value={1000} >1000đ</option>
-                                <option value={2000}>2000đ</option>
-                                <option value={3000}>3000đ</option>
-                            </Form.Select>
-                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group as={Col} md="2" controlId="validationFormik01">
-                            <Form.Label>Giá mua ngay(nếu có)</Form.Label>
-                            <Form.Control
-                                type="number"
-                                name="but_now"
-                                // onChange={(e) => {
-                                //     handleChange("but_now")(e);
-                                // }}
 
-                                min={0} max={10000000}
-                            />
-                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group as={Col} md="2" >
-                        <Form.Label>Ngày bắt đầu đấu giá</Form.Label>
-                        <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
-                        </Form.Group>
-                        
-                    </Row>
-                    <Row className='mb-3 mt-3'>
-                        <Form.Group as={Col} md="2" id="formGridCheckbox">
-                            <Form.Check type="checkbox" label="Tự động gia hạn" name='auto_renew' onChange={handleAutoRenew} />
-                        </Form.Group>
-                    </Row>
-                    <h6>Mô tả sản phẩm</h6>
-                    <ReactQuill
-                        onChange={setDescription}
-                        value={description}
-                        modules={modules}
-                        formats={formats}
-                        bounds={'.app'}
-                        placeholder=''
-                    />
-
-                    <Row className='d-flex justify-content-center'>
-                        <Button type="submit" className='mt-3 col-md-2'>Đăng bài</Button>
-                    </Row>
-                </Form>
-            </Container>
-            </Col>
-            <Col></Col>
-        </Row>
+                            <Row className='d-flex justify-content-center'>
+                                <Button type="submit" className='mt-3 col-md-2'>Đăng bài</Button>
+                            </Row>
+                        </Form>
+                    </Container>
+                </Col>
+                <Col></Col>
+            </Row>
+        </Container>
     )
 }

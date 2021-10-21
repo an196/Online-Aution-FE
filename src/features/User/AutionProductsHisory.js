@@ -1,4 +1,4 @@
-import { Tabs, Tab, Col, Row } from 'react-bootstrap';
+import { Tabs, Tab, Col, Row,Container } from 'react-bootstrap';
 import SellerAutionHistory from '../../components/SellerAutionHistory';
 import BidderAutionHistory from '../../components/BidderAutionHistory';
 import UserNavBar from '../../components/UserNavBar';
@@ -22,22 +22,24 @@ export default function AutionProductsHistory() {
 
     console.log(user)
     return (
-        <Row>
-            <Col></Col>
-            <Col xs={8}>
-                <UserNavBar />
-                <Tabs defaultActiveKey="buyer" id="uncontrolled-tab-example" className="mb-3">
-                    <Tab eventKey="buyer" title="Mua">
-                        <h5 className="d-flex justify-content-center mt-4">Lịch sử sản phẩm bạn đã mua!</h5>
-                        <SellerAutionHistory />
-                    </Tab>
-                    <Tab eventKey="seller" title="Bán" disabled={buyer}>
-                        <h5 className="d-flex justify-content-center mt-4">Lịch sử sản phẩm bạn đem đấu giá!</h5>
-                        <BidderAutionHistory />
-                    </Tab>
-                </Tabs>
-            </Col>
-            <Col></Col>
-        </Row>
+        <Container>
+            <Row>
+                <Col></Col>
+                <Col xs={8}>
+                    <UserNavBar />
+                    <Tabs defaultActiveKey="buyer" id="uncontrolled-tab-example" className="mb-3">
+                        <Tab eventKey="buyer" title="Mua">
+                            <h5 className="d-flex justify-content-center mt-4">Lịch sử sản phẩm bạn đã mua!</h5>
+                            <SellerAutionHistory />
+                        </Tab>
+                        <Tab eventKey="seller" title="Bán" disabled={buyer}>
+                            <h5 className="d-flex justify-content-center mt-4">Lịch sử sản phẩm bạn đem đấu giá!</h5>
+                            <BidderAutionHistory />
+                        </Tab>
+                    </Tabs>
+                </Col>
+                <Col></Col>
+            </Row>
+        </Container>
     )
 }

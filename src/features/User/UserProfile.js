@@ -1,4 +1,4 @@
-import { Row, Col, Image, Button } from 'react-bootstrap';
+import { Row, Col, Image, Button, Container } from 'react-bootstrap';
 import { GrUpdate } from 'react-icons/gr';
 import UserNavBar from '../../components/UserNavBar';
 import { BsArrowBarUp } from 'react-icons/bs'
@@ -64,6 +64,7 @@ export default function UserProfile() {
     }, [dispatch])
 
     return (
+        <Container>
         <Row>
             <Col></Col>
             <Col xs={8}>
@@ -121,5 +122,6 @@ export default function UserProfile() {
             </Col>
             <Col></Col>
         </Row>
+        </Container>
     )
 }
