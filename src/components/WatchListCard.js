@@ -89,7 +89,7 @@ export default function WatchListCard({ item, watchList }) {
                             <br />
                             <a role='text' style={{ textDecoration: 'none' }} className="text-danger">Hạn: {data.end_day}</a>
                             <br />
-                            <Link to={`/product/detail?productid=${data.product_id}&like=${like}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
+                            <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
                         </Card.Text>
                         <Row className="d-flex justify-content-center">
                             <p role='button' className='d-flex justify-content-center' onClick={handleLike}>

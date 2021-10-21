@@ -6,7 +6,7 @@ import { ImHammer2 } from "react-icons/im";
 import AutionHistory from '../components/AutionHistory';
 import ProductCard from './ProductCard';
 import ReactHtmlParser from "react-html-parser";
-import { formatDateTime, formatProductName } from '../utils/utils';
+import { formatDateTime, formatProductName, formatPrice } from '../utils/utils';
 import { addWatchList, removeWatchList } from '../features/User/UserSlice';
 import {
     selectInfoProduct,
@@ -100,7 +100,7 @@ export default function ProductDetail() {
                 if (res.status === 200) {
                     setWatchList(res.data.watch_list);
 
-                    if (res.data.watch_list.some(item => id === item.product_id))
+                    if (res.data.watch_list.some(item => Number(id) === item.product_id))
                         setlike(true);
                 }
 
@@ -113,7 +113,8 @@ export default function ProductDetail() {
     const data = {
         ...infoProduct,
         start_day: formatDateTime(infoProduct.created_at),
-        buy_now: formatDateTime(infoProduct.buy_now),
+        buy_now: formatPrice(infoProduct.buy_now),
+        start_cost: formatPrice(infoProduct.start_cost),
         end_day: formatDateTime(infoProduct.end_day),
     }
 
@@ -121,13 +122,23 @@ export default function ProductDetail() {
         if (socketRef.current.connected) {
             // thông tin đấu giá gửi lên server
             socketRef.current.emit("dau_gia_san_pham", { product_id: Number(id), cost: 15000000 });
-          
+
         } else {
             console.log("không thể kết nối đến server");
-            NotifyHelper.error("Có lỗi đã xảy ra", 'Thông báo')
+            NotifyHelper.error("Có lỗi đã xảy ra", 'Thông báo');
         }
     }
 
+    function handleBuynow() {
+        if (socketRef.current.connected) {
+            // thông tin đấu giá gửi lên server
+
+            socketRef.current.emit("mua_ngay", { product_id: 1, cost: 3000000 });
+        } else {
+            console.log("không thể kết nối đến server");
+            NotifyHelper.error("Có lỗi đã xảy ra", 'Thông báo');
+        }
+    }
 
     useEffect(() => {
         dispatch(getInfoProduct(id));
@@ -146,15 +157,33 @@ export default function ProductDetail() {
         });
 
         socketRef.current.on("ket_qua_dau_gia_nguoi_mua", (res) => {
+            console.log(res)
             if (res.status === 200) {
                 NotifyHelper.success(res.message, 'Thông báo')
-                console.log('ok2')
+
             }
             else {
                 NotifyHelper.error(res.message, 'Thông báo')
-                console.log('ok2')
+
             }
 
+        });
+
+        socketRef.current.on("ket_qua_dau_gia_nguoi_mua_ngay", (res) => {
+            console.log(res)
+            if (res.status === 200) {
+                NotifyHelper.success(res.message, 'Thông báo')
+
+            }
+            else {
+                NotifyHelper.error(res.message, 'Thông báo')
+
+            }
+
+        });
+
+        socketRef.current.on("cap_nhat_giao_dien_xem_chi_tiet_san_pham_nguoi_ban", (data) => {
+            console.log(data);
         });
 
         return () => {
@@ -162,6 +191,7 @@ export default function ProductDetail() {
         };
     }, []);
 
+    console.log(data)
     return (
         <>
             <div className="card mb-3 mt-4 no-gutters" >
@@ -201,10 +231,10 @@ export default function ProductDetail() {
                                         <h5 className="card-title">{data.name}
                                         </h5>
                                         <p className="card-text">
-                                            Giá hiện tại: {data.start_cost}₫ <br />
+                                            Giá hiện tại: {data.start_cost} <br />
                                             {validUser ?
                                                 <>
-                                                    <Button className='m-2 ' variant="success"> <AiOutlineShoppingCart></AiOutlineShoppingCart>&nbsp; Mua ngay
+                                                    <Button className='m-2 ' onClick={handleBuynow} variant="success"> <AiOutlineShoppingCart></AiOutlineShoppingCart>&nbsp; Mua ngay
                                                     </Button> {data.buy_now}
                                                 </>
                                                 : null}
@@ -220,8 +250,8 @@ export default function ProductDetail() {
                                                 <Button className='mb-2' onClick={handleAution} variant="warning"> <ImHammer2 /> &nbsp;Đấu giá
                                                 </Button>
                                                 &nbsp;&nbsp;&nbsp;&nbsp;
-                                                {/* <Button className='mb-2' variant="info" onClick={() => setModalShow(true)}> <AiOutlineHistory /> &nbsp;Lịch sử
-                                                </Button> */}
+                                                <Button className='mb-2' variant="info" onClick={() => setModalShow(true)}> <AiOutlineHistory /> &nbsp;Lịch sử
+                                                </Button>
                                                 <AutionHistory show={modalShow} onHide={() => setModalShow(false)} />
                                             </>
                                             : null}
@@ -238,19 +268,16 @@ export default function ProductDetail() {
             </div>
             <h5 >Sản phẩm cùng mục</h5>
             <div className="card mb-3 mt-4 no-gutters" >
-                <div className="row no-gutters m-auto p-auto">
-
-                    <Row xs={1} className=" mt-4 m-auto p-auto">
-                        {
-                            realationProduct ?
-                                <Row xs={1} md={realationProduct.length} className="g-4 m-auto mb-3" >
-                                    {realationProduct.map((item) => (
-                                        <ProductCard key={item.product_id} item={item} />
-                                    ))}
-                                </Row>
-                                : null}
-                    </Row>
-                </div>
+                <Row  className="no-gutters">
+                    {
+                        realationProduct ?
+                            <Row xs={1} md={5} className="g-4 m-auto mb-3">
+                                {realationProduct.map((item) => (
+                                    <ProductCard key={item.product_id} item={item} />
+                                ))}
+                            </Row>
+                            : null}
+                </Row>
             </div>
         </>
     );
