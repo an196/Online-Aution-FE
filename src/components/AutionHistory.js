@@ -9,6 +9,8 @@ import {
     getInfoProduct,
     selectInfoAuctioneers
 } from '../features/product/productSlice';
+import { formatDateTime, formatPrice } from '../utils/utils';
+
 
 export default function AutionHistory() {
     const query = new URLSearchParams(useLocation().search);
@@ -86,8 +88,8 @@ export default function AutionHistory() {
                         {infoAuctioneers ? infoAuctioneers.map((item => (
                             <tr key={item.auction_detail_id}>
                                 <td>{item.bidder_id}</td>
-                                <td>{item.created_at}</td>
-                                <td>{item.cost}</td>
+                                <td>{formatDateTime(item.created_at)}</td>
+                                <td>{formatPrice(item.cost)}</td>
                                 <td>{item.bidder_name}</td>
                                 <td className='d-flex jutify-content-center'>
                                     <Button className='m-auto' size='sm'
