@@ -7,12 +7,14 @@ import { useLocation } from "react-router-dom";
 import {
 
     getInfoProduct,
-    selectInfoAuctioneers
+    selectInfoAuctioneers,
+    selectInfoProduct
 } from '../features/product/productSlice';
-import { formatDateTime, formatPrice } from '../utils/utils';
+import { formatDateTime, formatPrice,formatBiddertName } from '../utils/utils';
 
 
-export default function AutionHistory() {
+
+export default function AuctioningTable() {
     const query = new URLSearchParams(useLocation().search);
     const id = query.get("productid");
     const [show, setShow] = useState(false);
@@ -23,6 +25,7 @@ export default function AutionHistory() {
     const infoAuctioneers = useSelector(selectInfoAuctioneers);
     const dispatch = useDispatch();
     const location = useLocation();
+
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -65,10 +68,10 @@ export default function AutionHistory() {
     }
 
     useEffect(() => {
-
         dispatch(getInfoProduct(id));
     }, [dispatch, axios.post]);
 
+    console.log(infoAuctioneers)
     return (
 
         <Container className='mt-3'>

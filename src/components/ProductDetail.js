@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Image, Row, Col, Button } from 'react-bootstrap';
 import { AiFillHeart, AiOutlineHeart, AiOutlineShoppingCart, AiOutlineHistory } from "react-icons/ai";
 import { ImHammer2 } from "react-icons/im";
-import AutionHistory from '../components/AutionHistory';
+import AutionHistory from './AuctioningTable';
 import ProductCard from './ProductCard';
 import ReactHtmlParser from "react-html-parser";
 import { formatDateTime, formatProductName, formatPrice } from '../utils/utils';
@@ -19,6 +19,8 @@ import axios from 'axios';
 import { NotifyHelper } from '../helper/NotifyHelper';
 import socketIOClient from "socket.io-client";
 import jwt_decode from 'jwt-decode';
+import AuctioningTable from './AuctioningTable';
+import AuctionHistoryDetail from './AuctionHistoryDetail';
 
 const styles = {
     card: {
@@ -278,14 +280,23 @@ export default function ProductDetail() {
                         : null
                     }
                     {
-                        owner ?
+                        owner && data.compare_day?
                             <Row className='m-auto'>
                                 <Col md='12'>
-                                    <AutionHistory />
+                                    <AuctioningTable />
                                 </Col>
                             </Row>
                             : null
                     }
+                    {/* {
+                         !data.compare_day? */}
+                            <Row className='m-auto'>
+                                <Col md='12'>
+                                    <AuctionHistoryDetail />
+                                </Col>
+                            </Row>
+                            {/* : null
+                    } */}
 
                 </div>
 

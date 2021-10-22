@@ -12,7 +12,7 @@ export function parseJwt(token) {
 
 
 export function formatProductName(name){
-  return name.substring(0, 22) +'...';
+  return name.length > 21 ? name.substring(0, 22) +'...': name;
 
 }
 
@@ -23,4 +23,10 @@ export function formatPrice(price){
 
 export function formatDateTime(dateTime){
   return dateTime ? dateFormat(dateTime, "dd/mm/yyyy hh:mm:ss") : "Không có";
+}
+
+export function formatBiddertName(name){
+  const length = name.length - 5;
+  return "****" + name.substring(length)   ;
+
 }
