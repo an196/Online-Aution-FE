@@ -44,6 +44,9 @@ export default function ReviewProduct() {
 
     useEffect(() => {
         getReviews();
+        if(localStorage.x_accessToken){
+            jwt_decode(localStorage.x_accessToken).role_id === 2 ?  setBuyer(false): setBuyer(true);
+        }
     }, []);
 
     console.log(reviews)

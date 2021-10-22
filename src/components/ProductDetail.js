@@ -280,7 +280,7 @@ export default function ProductDetail() {
                         : null
                     }
                     {
-                        owner && data.compare_day?
+                        owner && data.compare_day < 0?
                             <Row className='m-auto'>
                                 <Col md='12'>
                                     <AuctioningTable />
@@ -288,15 +288,15 @@ export default function ProductDetail() {
                             </Row>
                             : null
                     }
-                    {/* {
-                         !data.compare_day? */}
+                    {
+                         data.compare_day > 0?
                             <Row className='m-auto'>
                                 <Col md='12'>
                                     <AuctionHistoryDetail />
                                 </Col>
                             </Row>
-                            {/* : null
-                    } */}
+                             : null
+                    } 
 
                 </div>
 

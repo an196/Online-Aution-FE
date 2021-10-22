@@ -1,4 +1,4 @@
-import { Card, Row, Col,Container } from 'react-bootstrap';
+import { Card, Row, Col, Container } from 'react-bootstrap';
 import UserNavBar from '../../components/UserNavBar';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
@@ -6,6 +6,7 @@ import WatchListCard from '../../components/WatchListCard'
 import { withRouter, useHistory } from 'react-router';
 import axios from 'axios';
 import { NotifyHelper } from '../../helper/NotifyHelper';
+
 
 const FavoriteProducts = () => {
     const dispatch = useDispatch();
@@ -41,6 +42,7 @@ const FavoriteProducts = () => {
 
     useEffect(() => {
         if (localStorage.x_accessToken) {
+          
             getWatchList();
         }
     }, [dispatch])

@@ -5,12 +5,10 @@ import { FaSignOutAlt } from 'react-icons/fa';
 import { useHistory } from "react-router";
 import { useState, useEffect} from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { selectUser, getUserInfo } from '../features/User/UserSlice';    
-
+import jwt_decode from 'jwt-decode';
 
 export default function UserNavBar(props) {
     const history = useHistory();
-    const user = useSelector(selectUser);
     const dispatch = useDispatch();
     const [buyer,setBuyer] = useState(true);
 
@@ -21,14 +19,11 @@ export default function UserNavBar(props) {
         history.push('/login')
     }
 
-    
     useEffect(() => {
-        dispatch(getUserInfo());
-        if(user && user.role_id == 2){
-            setBuyer(false);
+        if(localStorage.x_accessToken){
+            jwt_decode(localStorage.x_accessToken).role_id === 2 ?  setBuyer(false): setBuyer(true);
         }
-       
-    }, [dispatch]);
+    }, []);
 
     return (
         <div >

@@ -60,6 +60,9 @@ export default function UserProfile() {
     }
 
     useEffect(() => {
+        if(localStorage.x_accessToken){
+            jwt_decode(localStorage.x_accessToken).role_id === 2 ?  setBuyer(false): setBuyer(true);
+        }
         getUseInfo();
     }, [dispatch])
 

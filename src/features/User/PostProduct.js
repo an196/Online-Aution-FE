@@ -353,9 +353,9 @@ export default function PostProduct() {
                                 <Form.Group as={Col} md="3" controlId="validationFormik01" onChange={handleStepCost}>
                                     <Form.Label>Bước giá</Form.Label>
                                     <Form.Select defaultValue="Chọn bước giá">
-                                        <option value={1000} >1000đ</option>
-                                        <option value={2000}>2000đ</option>
-                                        <option value={3000}>3000đ</option>
+                                        <option value={100000}>100,000đ</option>
+                                        <option value={200000}>200,000đ</option>
+                                        <option value={500000}>500,000đ</option>
                                     </Form.Select>
                                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                                 </Form.Group>

@@ -5,18 +5,16 @@ import UserNavBar from '../../components/UserNavBar';
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser, getUserInfo } from './UserSlice';
 import { useState, useEffect } from 'react';
+import jwt_decode from 'jwt-decode';
 
 export default function AutionProducts() {
-    const user = useSelector(selectUser);
     const dispatch = useDispatch();
     const [buyer, setBuyer] = useState(true);
 
     useEffect(() => {
-        dispatch(getUserInfo());
-        if (user && user.role_id == 2) {
-            setBuyer(false);
+        if(localStorage.x_accessToken){
+            jwt_decode(localStorage.x_accessToken).role_id === 2 ?  setBuyer(false): setBuyer(true);
         }
-
     }, [dispatch])
 
     return (
