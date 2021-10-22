@@ -56,6 +56,7 @@ export default function ProductDetail() {
     //ower
     const [owner, setOwner] = useState();
 
+
     //get id
     const query = new URLSearchParams(useLocation().search);
     const id = query.get("productid");
@@ -242,10 +243,13 @@ export default function ProductDetail() {
                                         <p className="card-text">
                                             Giá hiện tại: {data.start_cost} <br />
                                             {validUser ?
-                                                <>
+                                                ( data.buy_now ?
+                                                    <>
                                                     <Button className='m-2 ' onClick={handleBuynow} variant="success"> <AiOutlineShoppingCart></AiOutlineShoppingCart>&nbsp; Mua ngay
                                                     </Button> {data.buy_now}
                                                 </>
+                                                :null)
+                                               
                                                 : null}
                                             <br />
                                             Người bán: {data.seller_name} &nbsp;&nbsp;&nbsp;&nbsp;  Đánh giá: {data.evaluation_score} điểm
