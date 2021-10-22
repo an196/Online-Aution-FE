@@ -135,7 +135,7 @@ export default function ProductCard({ item }) {
                             <br />
                             Lượt đấu giá: {data.count_auction}
                             <br />
-                            <Link to={`/product/detail?productid=${data.product_id}&like=${like}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
+                            <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
 
 
 

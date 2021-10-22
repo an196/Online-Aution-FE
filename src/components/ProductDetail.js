@@ -18,6 +18,7 @@ import { useLocation } from "react-router-dom";
 import axios from 'axios';
 import { NotifyHelper } from '../helper/NotifyHelper';
 import socketIOClient from "socket.io-client";
+import jwt_decode from 'jwt-decode';
 
 const styles = {
     card: {
@@ -46,16 +47,22 @@ const styles = {
 export default function ProductDetail() {
     const infoProduct = useSelector(selectInfoProduct);
     const realationProduct = useSelector(selectRelationProduct);
-    const [modalShow, setModalShow] = useState(false);
+
     const [watchList, setWatchList] = useState();
     const [validUser, setValidUser] = useState(false);
     const dispatch = useDispatch();
     const location = useLocation();
 
+    //ower
+    const [owner, setOwner] = useState();
+
+    //get id
     const query = new URLSearchParams(useLocation().search);
     const id = query.get("productid");
     const [like, setlike] = useState();
 
+    // aution history list
+    const [autionHistoryList, setAutionHistoryList] = useState();
 
     //socket
     const host = "http://localhost:3002";
@@ -96,10 +103,8 @@ export default function ProductDetail() {
         axios
             .get("http://localhost:3002/api/bidder/watch_list", config)
             .then(function (res) {
-                console.log(res.data.watch_list);
                 if (res.status === 200) {
                     setWatchList(res.data.watch_list);
-
                     if (res.data.watch_list.some(item => Number(id) === item.product_id))
                         setlike(true);
                 }
@@ -132,7 +137,6 @@ export default function ProductDetail() {
     function handleBuynow() {
         if (socketRef.current.connected) {
             // thông tin đấu giá gửi lên server
-
             socketRef.current.emit("mua_ngay", { product_id: 1, cost: 3000000 });
         } else {
             console.log("không thể kết nối đến server");
@@ -142,12 +146,15 @@ export default function ProductDetail() {
 
     useEffect(() => {
         dispatch(getInfoProduct(id));
+
         if (localStorage.x_accessToken) {
             setValidUser(true);
             getWatchList();
+
+            jwt_decode(localStorage.x_accessToken).account_id === data.seller_id ? setOwner(true) : setOwner(false);
         }
 
-    }, [dispatch, location]);
+    }, [dispatch, location, NotifyHelper]);
 
     useEffect(() => {
         socketRef.current = socketIOClient.connect('http://localhost:3002', {
@@ -157,20 +164,20 @@ export default function ProductDetail() {
         });
 
         socketRef.current.on("ket_qua_dau_gia_nguoi_mua", (res) => {
-            console.log(res)
-            if (res.status === 200) {
-                NotifyHelper.success(res.message, 'Thông báo')
+            if (localStorage.x_accessToken && res.account_id === jwt_decode(localStorage.x_accessToken).account_id) {
+                if (res.status === 200) {
 
+                    NotifyHelper.success(res.message, 'Thông báo')
+                }
+                else {
+                    NotifyHelper.error(res.message, 'Thông báo')
+
+                }
             }
-            else {
-                NotifyHelper.error(res.message, 'Thông báo')
-
-            }
-
         });
 
         socketRef.current.on("ket_qua_dau_gia_nguoi_mua_ngay", (res) => {
-            console.log(res)
+
             if (res.status === 200) {
                 NotifyHelper.success(res.message, 'Thông báo')
 
@@ -182,8 +189,10 @@ export default function ProductDetail() {
 
         });
 
-        socketRef.current.on("cap_nhat_giao_dien_xem_chi_tiet_san_pham_nguoi_ban", (data) => {
-            console.log(data);
+        socketRef.current.on("cap_nhat_giao_dien_xem_chi_tiet_san_pham_nguoi_ban", (res) => {
+
+            setAutionHistoryList(res.info_auction_detail)
+
         });
 
         return () => {
@@ -250,9 +259,9 @@ export default function ProductDetail() {
                                                 <Button className='mb-2' onClick={handleAution} variant="warning"> <ImHammer2 /> &nbsp;Đấu giá
                                                 </Button>
                                                 &nbsp;&nbsp;&nbsp;&nbsp;
-                                                <Button className='mb-2' variant="info" onClick={() => setModalShow(true)}> <AiOutlineHistory /> &nbsp;Lịch sử
-                                                </Button>
-                                                <AutionHistory show={modalShow} onHide={() => setModalShow(false)} />
+                                                {/* <Button className='mb-2' variant="info" onClick={() => setModalShow(true)}> <AiOutlineHistory /> &nbsp;Lịch sử
+                                                </Button> */}
+
                                             </>
                                             : null}
                                         <br /><br />
@@ -264,11 +273,22 @@ export default function ProductDetail() {
                         </Row>
                         : null
                     }
+                    {
+                        owner ?
+                            <Row className='m-auto'>
+                                <Col md='12'>
+                                    <AutionHistory />
+                                </Col>
+                            </Row>
+                            : null
+                    }
+
                 </div>
+
             </div>
             <h5 >Sản phẩm cùng mục</h5>
             <div className="card mb-3 mt-4 no-gutters" >
-                <Row  className="no-gutters">
+                <Row className="no-gutters">
                     {
                         realationProduct ?
                             <Row xs={1} md={5} className="g-4 m-auto mb-3">
@@ -282,3 +302,5 @@ export default function ProductDetail() {
         </>
     );
 }
+
+
