@@ -120,7 +120,8 @@ export default function ProductDetail() {
 
     const data = {
         ...infoProduct,
-        start_day: formatDateTime(infoProduct.created_at),
+        created_at: formatDateTime(infoProduct.created_at),
+        start_day: formatDateTime(infoProduct.start_day),
         buy_now: formatPrice(infoProduct.buy_now),
         start_cost: formatPrice(infoProduct.start_cost),
         end_day: formatDateTime(infoProduct.end_day),
@@ -157,7 +158,7 @@ export default function ProductDetail() {
             jwt_decode(localStorage.x_accessToken).account_id === data.seller_id ? setOwner(true) : setOwner(false);
         }
 
-    }, [dispatch, location, NotifyHelper]);
+    }, [dispatch, location]);
 
     useEffect(() => {
         socketRef.current = socketIOClient.connect('http://localhost:3002', {
@@ -256,7 +257,9 @@ export default function ProductDetail() {
                                             <br />
                                             Người bán: {data.seller_name} &nbsp;&nbsp;&nbsp;&nbsp;  Đánh giá: {data.evaluation_score} điểm
                                             <br />
-                                            Đăng: {data.start_day}
+                                            Đăng: {data.created_at}
+                                            <br />
+                                            Bắtđầu: {data.start_day}
                                             <br />
                                             Kết thúc: <a role='text' style={{ textDecoration: 'none' }} className="text-danger">{data.end_day}</a>
                                         </p>

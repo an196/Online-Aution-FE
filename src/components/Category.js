@@ -2,21 +2,23 @@ import { useEffect, useState } from 'react';
 import { Pagination, Row, Form, Col } from 'react-bootstrap';
 import { useParams } from 'react-router';
 import {
-    selectProductsByCategory,
-    getProductsByCategory,
     selectCategoryName,
 } from '../features/product/productSlice';
-import { formatDateTime, formatProductName } from '../utils/utils';
+import { formatDateTime, formatProductName, sortProductAscendingByPrice, sortProductDescendingByCreateDate } from '../utils/utils';
 import ProductCard from './ProductCard';
 import { useDispatch, useSelector } from "react-redux";
 import { selectWatchList, getWatchList } from '../features/User/UserSlice';
+import { useLocation } from "react-router-dom";
+import axios from 'axios';
+import { NotifyHelper } from '../helper/NotifyHelper';
 
 export default function Category(props) {
-    const products = useSelector(selectProductsByCategory);
+    const [products, setProducts] = useState();
     const category = useSelector(selectCategoryName);
     const { id } = useParams();
     const dispatch = useDispatch();
     const watchList = useSelector(selectWatchList);
+    const location = useLocation();
 
     //pagiantion
     const [totalPage, setTotalPage] = useState();
@@ -26,11 +28,10 @@ export default function Category(props) {
     const productPerPage = 5;
 
     //data to show
-    const [data, setData] = useState();
+    const [data, setData] = useState([]);
 
     useEffect(() => {
-        dispatch(getProductsByCategory(id));
-
+        getProductsByCategory(id);
         if (localStorage.x_accessToken) {
             dispatch(getWatchList());
         }
@@ -55,10 +56,8 @@ export default function Category(props) {
             setIsNextPage(true);
         }
 
-        //fetch data
-        setData(products.filter((_, index) => (index <= currentPage * productPerPage - 1 && index >= (currentPage - 1) * productPerPage)));
 
-    }, [dispatch, currentPage]);
+    }, [currentPage, location, axios.get]);
 
 
     function handlePreviousPage() {
@@ -73,8 +72,48 @@ export default function Category(props) {
         }
     }
 
-    console.log(currentPage)
-    console.log(data)
+    function handleSort(event) {
+        console.log(event.target.value);
+        const selected = event.target.value;
+        if (selected === 'ascending') {
+            setData(sortProductAscendingByPrice(products)
+                .filter((_, index) => (index <= currentPage * productPerPage - 1 && index >= (currentPage - 1) * productPerPage)));
+            
+        }
+        else if (selected === 'newest') {
+            setData(sortProductDescendingByCreateDate(products)
+                .filter((_, index) => (index <= currentPage * productPerPage - 1 && index >= (currentPage - 1) * productPerPage)));
+        }
+        setCurentPage(1);
+    }
+
+    function getProductsByCategory() {
+        let data = {
+        };
+
+        const config = {
+            headers: {
+                'x-access-token': localStorage.x_accessToken,
+                'x-refresh-token': localStorage.x_refreshToken
+            }
+        }
+
+        axios
+            .get(`http://localhost:3002/api/products/category/${id}`, config)
+            .then(function (res) {
+                console.log(res)
+                if (res.status === 200) {
+                    console.log(res.data.info_types)
+                    setProducts(res.data.info_types);
+                    setData(res.data.info_types.filter((_, index) => (index <= currentPage * productPerPage - 1 && index >= (currentPage - 1) * productPerPage)));
+                }
+            })
+            .catch(function (error) {
+                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
+            });
+    }
+
+    
     return (
         <div className="container mt-4" fluid>
             <Row>
@@ -83,7 +122,7 @@ export default function Category(props) {
                 </Col>
                 <Col></Col>
                 <Col md={3}>
-                    <Form.Select size="sm">
+                    <Form.Select size="sm" onChange={handleSort}>
                         <option value="newest">Mới nhất</option>
                         <option value="ascending">Giá tăng dần</option>
                     </Form.Select>
@@ -92,9 +131,10 @@ export default function Category(props) {
             </Row>
 
             <Row xs={1} md={5} className="g-4 "  >
-                {data.map((item) => (
+                {data ? data.map((item) => (
                     <ProductCard key={item.auction_id} item={item} watchList={watchList} />
-                ))}
+                ))
+                    : <h6>Không có dữ liệu!</h6>}
             </Row>
             <div style={{ height: '2rem' }}></div>
             <Pagination className='d-flex justify-content-center'>
