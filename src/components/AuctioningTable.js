@@ -1,14 +1,14 @@
 import { Modal, Container, Row, Button, Table, Form, FormControl } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useRef } from 'react';
 import axios from 'axios';
 import { NotifyHelper } from '../helper/NotifyHelper';
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import {
-
     getInfoProduct,
     selectInfoAuctioneers,
-    selectInfoProduct
+    selectInfoProduct,
+    setInfoProduct
 } from '../features/product/productSlice';
 import { formatDateTime, formatPrice,formatBiddertName } from '../utils/utils';
 
@@ -26,6 +26,15 @@ export default function AuctioningTable() {
     const dispatch = useDispatch();
     const location = useLocation();
 
+    //socket
+    const host = "http://localhost:3002";
+    const [connect, setConnect] = useState(true);
+    const socketRef = useRef();
+    const querySocket = {
+        query: {
+            token: localStorage.x_accessToken ? localStorage.x_accessToken : null
+        }
+    }
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -50,7 +59,6 @@ export default function AuctioningTable() {
             .then(function (res) {
                 console.log(res)
                 if (res.status === 200) {
-
                     NotifyHelper.success(res.data.message, "Thông báo");
                     dispatch(getInfoProduct(id))
                 }
@@ -71,6 +79,16 @@ export default function AuctioningTable() {
         dispatch(getInfoProduct(id));
     }, [dispatch, axios.post]);
 
+    
+    useEffect(() => {
+        socketRef.current.on("cap_nhat_giao_dien_xem_chi_tiet_san_pham_nguoi_ban", (res) => {
+            setInfoProduct(res.info_auction_detail);
+        });
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+    }, []);
     console.log(infoAuctioneers)
     return (
 

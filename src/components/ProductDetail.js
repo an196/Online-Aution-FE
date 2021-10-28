@@ -49,11 +49,11 @@ const styles = {
 export default function ProductDetail() {
     const infoProduct = useSelector(selectInfoProduct);
     const realationProduct = useSelector(selectRelationProduct);
+    const dispatch = useDispatch();
+    const location = useLocation();
 
     const [watchList, setWatchList] = useState();
     const [validUser, setValidUser] = useState(false);
-    const dispatch = useDispatch();
-    const location = useLocation();
 
     //ower
     const [owner, setOwner] = useState();
@@ -130,7 +130,8 @@ export default function ProductDetail() {
     function handleAution() {
         if (socketRef.current.connected) {
             // thông tin đấu giá gửi lên server
-            socketRef.current.emit("dau_gia_san_pham", { product_id: Number(id), cost: 15000000 });
+            const auctionCost = infoProduct.current_cost? infoProduct.current_cost : infoProduct.start_cost;
+            socketRef.current.emit("dau_gia_san_pham", { product_id: Number(id), cost: auctionCost });
 
         } else {
             console.log("không thể kết nối đến server");
@@ -141,7 +142,7 @@ export default function ProductDetail() {
     function handleBuynow() {
         if (socketRef.current.connected) {
             // thông tin đấu giá gửi lên server
-            socketRef.current.emit("mua_ngay", { product_id: 1, cost: 3000000 });
+            socketRef.current.emit("mua_ngay", { product_id: Number(id), cost: infoProduct.buy_now });
         } else {
             console.log("không thể kết nối đến server");
             NotifyHelper.error("Có lỗi đã xảy ra", 'Thông báo');

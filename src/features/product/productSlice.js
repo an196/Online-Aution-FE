@@ -70,7 +70,11 @@ export const productSlice = createSlice({
     name: 'product',
     initialState,
     reducers: {
-
+        setInfoProduct: (state, action) => {
+            state.infoProduct = action.payload.infoProduct;
+            state.relationProduct =  action.payload.relation_product;
+            state.infoAuctioneers = action.payload.infoAuctioneers;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -100,7 +104,7 @@ export const productSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { } = productSlice.actions;
+export const { setInfoProduct} = productSlice.actions;
 export const selectRunOutItems = state => state.product.runOutItems;
 export const selectTopHighestCost = state => state.product.topHighestCost;
 export const selectTopHighestAutions = state => state.product.topHighestAutions;
