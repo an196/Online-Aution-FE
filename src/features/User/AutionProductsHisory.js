@@ -27,11 +27,11 @@ export default function AutionProductsHistory() {
                     <UserNavBar />
                     <Tabs defaultActiveKey="buyer" id="uncontrolled-tab-example" className="mb-3">
                         <Tab eventKey="buyer" title="Mua">
-                            <h5 className="d-flex justify-content-center mt-4">Lịch sử sản phẩm bạn đã mua!</h5>
+                            <h5 className="d-flex justify-content-center mt-4">Lịch sử sản phẩm bạn đã tham gia đấu giá!</h5>
                             <SellerAutionHistory />
                         </Tab>
                         <Tab eventKey="seller" title="Bán" disabled={buyer}>
-                            <h5 className="d-flex justify-content-center mt-4">Lịch sử sản phẩm bạn đem đấu giá!</h5>
+                            <h5 className="d-flex justify-content-center mt-4">Lịch sử sản phẩm bạn trưng bày đấu giá!</h5>
                             <BidderAutionHistory />
                         </Tab>
                     </Tabs>

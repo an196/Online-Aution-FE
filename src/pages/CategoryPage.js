@@ -3,7 +3,9 @@ import Footer from '../components/Footer.js';
 import NavigationBar from '../components/NavigationBar.js';
 import { Container,Col,Row  } from 'react-bootstrap';
 
+
 export default function HomePage(props) {
+    
     return (
         <Container>
         <Row>

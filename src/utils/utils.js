@@ -32,14 +32,13 @@ export function formatBiddertName(name) {
 }
 
 export function sortProductAscendingByPrice(data) {
-  return data.sort((a, b) => a.start_cost > b.start_cost);
+  return data.sort((a, b) => a.start_cost - b.start_cost);
 }
 
 export function sortProductDescendingByCreateDate(data) {
-  console.log(data)
+  
   return data.sort((a, b) => {
-    return new Date(a.created_at).getTime() -
-      new Date(b.created_at).getTime()
+    return (new Date(a.created_at)  - new Date(b.created_at))
   }).reverse();
 }
 

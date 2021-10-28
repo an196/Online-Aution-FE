@@ -14,6 +14,7 @@ import { NotifyHelper } from '../helper/NotifyHelper';
 
 export default function Category(props) {
     const [products, setProducts] = useState();
+    const [selectedSort, setSelectedSort] = useState();
     const category = useSelector(selectCategoryName);
     const { id } = useParams();
     const dispatch = useDispatch();
@@ -31,34 +32,25 @@ export default function Category(props) {
     const [data, setData] = useState([]);
 
     useEffect(() => {
+
         getProductsByCategory(id);
         if (localStorage.x_accessToken) {
             dispatch(getWatchList());
         }
+    }, [dispatch,location]);
 
-        //pagination
 
+    useEffect(() => {
         if (products) {
-            const t = Math.ceil(products.length / 5);
-            setTotalPage(t);
-            console.log(t)
+            setData(products
+                .filter((_, index) => (index <= currentPage * productPerPage - 1 && index >= (currentPage - 1) * productPerPage)));
+            
+            pagination();
         }
+        console.log(data)
+    }, [currentPage,selectedSort]);
 
-        if (currentPage === 1) {
-            setIsPreviousPage(false);
-        } else {
-            setIsPreviousPage(true);
-        }
-
-        if (currentPage === totalPage) {
-            setIsNextPage(false);
-        } else {
-            setIsNextPage(true);
-        }
-
-
-    }, [currentPage, location, axios.get]);
-
+    
 
     function handlePreviousPage() {
         if (currentPage !== 1) {
@@ -72,18 +64,40 @@ export default function Category(props) {
         }
     }
 
+    function pagination() {
+
+
+        if (currentPage === 1) {
+            setIsPreviousPage(false);
+            setIsNextPage(true);
+        } else {
+            setIsPreviousPage(true);
+        }
+
+        if (currentPage === totalPage) {
+            setIsNextPage(false);
+            setIsPreviousPage(true);
+        } else {
+            setIsNextPage(true);
+        }
+    }
+
     function handleSort(event) {
         console.log(event.target.value);
         const selected = event.target.value;
+
+
         if (selected === 'ascending') {
-            setData(sortProductAscendingByPrice(products)
-                .filter((_, index) => (index <= currentPage * productPerPage - 1 && index >= (currentPage - 1) * productPerPage)));
-            
+
+            setProducts(sortProductAscendingByPrice(products));
+
         }
         else if (selected === 'newest') {
-            setData(sortProductDescendingByCreateDate(products)
-                .filter((_, index) => (index <= currentPage * productPerPage - 1 && index >= (currentPage - 1) * productPerPage)));
+            setProducts(sortProductDescendingByCreateDate(products));
+
         }
+        console.log(products)
+        setSelectedSort(selected);
         setCurentPage(1);
     }
 
@@ -101,11 +115,16 @@ export default function Category(props) {
         axios
             .get(`http://localhost:3002/api/products/category/${id}`, config)
             .then(function (res) {
-                console.log(res)
                 if (res.status === 200) {
-                    console.log(res.data.info_types)
+                    //console.log(res.data.info_types)
                     setProducts(res.data.info_types);
                     setData(res.data.info_types.filter((_, index) => (index <= currentPage * productPerPage - 1 && index >= (currentPage - 1) * productPerPage)));
+
+                    const t = Math.ceil(res.data.info_types.length / productPerPage);
+                    setTotalPage(t);
+                    setCurentPage(1);
+                    pagination();
+
                 }
             })
             .catch(function (error) {
@@ -113,7 +132,7 @@ export default function Category(props) {
             });
     }
 
-    
+
     return (
         <div className="container mt-4" fluid>
             <Row>

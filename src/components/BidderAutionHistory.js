@@ -2,7 +2,9 @@ import { Card, Row, Col } from 'react-bootstrap';
 import { FaThumbsDown,FaThumbsUp } from 'react-icons/fa';
 import { FiThumbsUp, FiThumbsDown } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
+import { NotifyHelper } from '../helper/NotifyHelper';
+import axios from 'axios';
 
 const styles = {
     card: {
@@ -63,6 +65,36 @@ export default function BidderAutionHistory(){
             setEvaluate(true);
         }
     }
+
+
+    function getAuctionHistory(){
+        let data = {
+        };
+
+        const config = {
+            headers: {
+                'x-access-token': localStorage.x_accessToken,
+                'x-refresh-token': localStorage.x_refreshToken
+            }
+        }
+
+        axios
+            .get("http://localhost:3002/api/bidder/product/history_auction", config)
+            .then(function (res) {
+              
+                if (res.status === 200) {
+                    //console.log(res)
+                }
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
+            });
+    }
+
+    useEffect(() => {
+        getAuctionHistory();
+    }, []);
 
     return (
         <>
