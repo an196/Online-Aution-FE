@@ -3,7 +3,6 @@ import Card from 'react-bootstrap/Card'
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { Link, Redirect } from 'react-router-dom';
 import ReactHtmlParser from "react-html-parser";
-import {  addWatchList,  removeWatchList } from '../features/User/UserSlice';
 import {
     formatDateTime,
     formatProductName,
@@ -77,15 +76,6 @@ export default function AuctionHistoryCard({ item }) {
                         <Card.Text style={styles.cardText} >
                             Giá: {data.current_cost}
                             <br />
-                            Người bán:  {data.seller_name.length > 13 ? data.seller_name :
-                                <>
-                                    {data.seller_name}
-                                    {ReactHtmlParser('&nbsp;')}
-                                </>
-                            }
-                            <br />
-                            Người thắng: {data.bidder_name}
-                            <br />
                             Ngày đăng: {data.start_day}
                             <br />
                             <a role='text' style={{ textDecoration: 'none' }} className="text-danger">Hạn: {data.end_day}</a>
@@ -105,6 +95,7 @@ export default function AuctionHistoryCard({ item }) {
                                     </p>
                                     : null
                             }
+
                         </Row> */}
                     </Card.Body>
                 </Card>

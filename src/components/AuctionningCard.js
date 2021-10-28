@@ -3,7 +3,6 @@ import Card from 'react-bootstrap/Card'
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { Link, Redirect } from 'react-router-dom';
 import ReactHtmlParser from "react-html-parser";
-import {  addWatchList,  removeWatchList } from '../features/User/UserSlice';
 import {
     formatDateTime,
     formatProductName,
