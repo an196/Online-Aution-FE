@@ -6,7 +6,7 @@ import { ImHammer2 } from "react-icons/im";
 import AutionHistory from './AuctioningTable';
 import ProductCard from './ProductCard';
 import ReactHtmlParser from "react-html-parser";
-import { formatDateTime, formatProductName, formatPrice } from '../utils/utils';
+import { formatDateTime, formatProductName, formatPrice, formatEndDay } from '../utils/utils';
 import { addWatchList, removeWatchList } from '../features/User/UserSlice';
 import {
     selectInfoProduct,
@@ -124,7 +124,7 @@ export default function ProductDetail() {
         start_day: formatDateTime(infoProduct.start_day),
         buy_now: formatPrice(infoProduct.buy_now),
         start_cost: formatPrice(infoProduct.start_cost),
-        end_day: formatDateTime(infoProduct.end_day),
+        end_day: formatEndDay(infoProduct.end_day),
     }
 
     function handleAution() {
@@ -262,7 +262,8 @@ export default function ProductDetail() {
                                             <br />
                                             Bắtđầu: {data.start_day}
                                             <br />
-                                            Kết thúc: <a role='text' style={{ textDecoration: 'none' }} className="text-danger">{data.end_day}</a>
+                                            {/* Kết thúc: <a role='text' style={{ textDecoration: 'none' }} className="text-danger">{data.end_day}</a> */}
+                                            {ReactHtmlParser(data.end_day)}
                                         </p>
                                         {validUser ?
                                             <>

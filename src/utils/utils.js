@@ -36,13 +36,42 @@ export function sortProductAscendingByPrice(data) {
 }
 
 export function sortProductDescendingByCreateDate(data) {
-  
+
   return data.sort((a, b) => {
-    return (new Date(a.created_at)  - new Date(b.created_at))
+    return (new Date(a.created_at) - new Date(b.created_at))
   }).reverse();
+}
+
+export function formatEndDay(dateTime) {
+  const maxDiff = 259200; // miliseconds
+  //const diff = 50000 ;
+  const diff = new Date(dateTime) -  new Date() ;
+  return diff > 259200 ? 'Kết thúc: ' + formatDateTime(dateTime) : remainTime(diff);
+
 }
 
 const stringToDate = function (dateString) {
   const [dd, mm, yyyy] = dateString.split("/");
   return new Date(`${yyyy}-${mm}-${dd}`);
 };
+
+const remainTime = function (time) {
+  const days = 84600;
+
+  if (time > days) {
+    const end_day = new Date(time).getDay() - 1 + ' ngày';
+    return `Còn: ${end_day}`;
+  }
+  else {
+    const hour = new Date(time).getHours();
+    const minute = new Date(time).getMinutes();
+    const second = new Date(time).getSeconds();
+    const end_day = hour.toString() + ' giờ '
+      + minute.toString() + ' phút '
+      + second.toString() + ' giây';
+    
+    //return  `<a   color="red" role='text' >${end_day}</a>`
+    return `Còn: ${end_day}`;
+
+  }
+}
