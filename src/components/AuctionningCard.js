@@ -84,8 +84,6 @@ export default function AuctionHistoryCard({ item }) {
                                 </>
                             }
                             <br />
-                            Người thắng: {data.bidder_name}
-                            <br />
                             Ngày đăng: {data.start_day}
                             <br />
                             <a role='text' style={{ textDecoration: 'none' }} className="text-danger">Hạn: {data.end_day}</a>
