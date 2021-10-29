@@ -1,5 +1,4 @@
 import dateFormat from 'dateformat';
-
 export function parseJwt(token) {
   var base64Url = token.split('.')[1];
   var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -22,7 +21,13 @@ export function formatPrice(price) {
 }
 
 export function formatDateTime(dateTime) {
-  return dateTime ? dateFormat(dateTime, "dd/mm/yyyy hh:mm:ss") : "Không có";
+  
+  return dateTime ? dateFormat(dateTime, "dd/mm/yyyy HH:MM:ss") : "Không có";
+}
+
+export function formatDateTimeToPost(dateTime) {
+  
+  return dateFormat(dateTime, "yyyy-mm-dd HH:MM:ss");
 }
 
 export function formatBiddertName(name) {

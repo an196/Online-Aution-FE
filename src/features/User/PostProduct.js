@@ -10,12 +10,13 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { getCategories, selectCategories } from '../product/categorySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from "react-router";
-import { formatDateTime } from '../../utils/utils';
+import { formatDateTime, formatDateTimeToPost } from '../../utils/utils';
 import { NotifyHelper } from '../../helper/NotifyHelper';
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { TimePicker } from 'antd';
+import moment from 'moment';
 
 const schema = yup.object().shape({
     productName: yup.string().required(),
@@ -65,7 +66,6 @@ export default function PostProduct() {
     const dispatch = useDispatch();
     const history = useHistory();
     const [validated, setValidated] = useState(false);
-    const [startDate, setStartDate] = useState(new Date());
 
     //decription
     const [description, setDescription] = useState("");
@@ -76,7 +76,7 @@ export default function PostProduct() {
     const [extra1Image, setExtra1Image] = useState(null);
     const [extra2Image, setExtra2Image] = useState(null);
     const [extra3Image, setExtra3Image] = useState(null);
-    const [stepCost, setStepCost] = useState(1000);
+    const [stepCost, setStepCost] = useState(100000);
     const [progress, setProgress] = useState(0);
     const [urlMainImage, setUrlMainImage] = useState();
     const [urlExtra1Image, setUrlExtra1Image] = useState();
@@ -87,11 +87,17 @@ export default function PostProduct() {
     //define categories
     const categories = useSelector(selectCategories);
 
+    //time picker
+    const timePickerFormat = 'HH:mm';
+    const [startDate, setStartDate] = useState((new Date()));
+    const [startTime, setStartTime] = useState(moment('00:00', timePickerFormat));
+
+
     async function handleSubmit(e) {
         e.preventDefault();
         e.stopPropagation();
 
-
+        
         const form = e.currentTarget;
         if (form.checkValidity()) {
             const currentTime = new Date();
@@ -106,13 +112,24 @@ export default function PostProduct() {
             const start_cost = e.target.start_cost.value;
             const step_cost = stepCost;
             const buy_now = e.target.but_now.value ? e.target.but_now.value : null;
-            const start_day = formatDateTime(startDate);
+
+            //caculate startday
+            const start_day = new Date();
+            start_day.setDate(startDate.getDate());
+            start_day.setMonth(startDate.getMonth());
+            start_day.setFullYear(startDate.getFullYear());
+            start_day.setHours(startTime.toDate().getHours());
+            start_day.setMinutes(startTime.toDate().getMinutes());
+            start_day.setSeconds('00');
+            console.log(start_day)
+            const o_start_day = formatDateTimeToPost(start_day);
+            //console.log(start_day)
+
 
             //caculate end day
-            var myDate = startDate;
+            var myDate = start_day;
             myDate.setDate(myDate.getDate() + 7);
-            const end_day = formatDateTime(myDate);
-
+            const end_day = formatDateTimeToPost(myDate);
 
             const urlImg = mainImage + ',' + extra1Image + ',' + extra2Image + ',' + extra3Image;
             //up img to firebase
@@ -124,8 +141,8 @@ export default function PostProduct() {
                 image: urlImg,
                 start_cost: Number(start_cost),
                 step_cost: Number(step_cost),
-                buy_now: 0,
-                start_day: start_day,
+                buy_now: buy_now? buy_now : 0,
+                start_day: o_start_day,
                 end_day: end_day,
                 description: description,
                 is_auto_renew: autoRenew,
@@ -268,7 +285,8 @@ export default function PostProduct() {
         dispatch(getCategories());
     }, [dispatch]);
 
-
+    //console.log(startDate)
+    //console.log(startTime.toDate())
     return (
         <Container>
             <Row>
@@ -352,7 +370,7 @@ export default function PostProduct() {
                                 </Form.Group>
                                 <Form.Group as={Col} md="3" controlId="validationFormik01" onChange={handleStepCost}>
                                     <Form.Label>Bước giá</Form.Label>
-                                    <Form.Select defaultValue="Chọn bước giá">
+                                    <Form.Select defaultValue="Chọn bước giá" onChange={(e)=>setStepCost(e.target.value)}>
                                         <option value={100000}>100,000đ</option>
                                         <option value={200000}>200,000đ</option>
                                         <option value={500000}>500,000đ</option>
@@ -365,19 +383,31 @@ export default function PostProduct() {
                                         type="number"
                                         name="but_now"
                                         // onChange={(e) => {
-                                        //     handleChange("but_now")(e);
+                                        //    setBuyNow(e)
+                                        //    console.log(e)
                                         // }}
 
                                         min={0} max={10000000}
                                     />
                                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                                 </Form.Group>
+
+
+                            </Row>
+                            <Row className='mb-3 mt-3'>
                                 <Form.Group as={Col} md="3" >
                                     <Form.Label>Ngày bắt đầu đấu giá</Form.Label>
                                     <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                                 </Form.Group>
-
+                                <Form.Group as={Col} md="3" >
+                                    <Form.Label>Thời gian bắt đầu </Form.Label>
+                                    <TimePicker defaultValue={moment('00:00', timePickerFormat)}
+                                        onChange={(time) => setStartTime(time)}
+                                        selected={startTime}
+                                        format={timePickerFormat} />
+                                </Form.Group>
                             </Row>
+
                             <Row className='mb-3 mt-3'>
                                 <Form.Group as={Col} md="3" id="formGridCheckbox">
                                     <Form.Check type="checkbox" label="Tự động gia hạn" name='auto_renew' onChange={handleAutoRenew} />

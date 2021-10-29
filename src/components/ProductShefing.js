@@ -82,15 +82,13 @@ export default function AutionProducts() {
     return (
         <>
             <div className="card mb-3 mt-4 no-gutters" >
-                <div className="row no-gutters m-auto p-auto">
-                    <Row xs={1} className=" mt-4 m-auto p-auto">
+                    <Row xs={1} >
                         <Row xs={1} md={5} className="g-4 m-auto mb-3" >
                             {shefingProducts ? shefingProducts.map((item) => (
                                 <ShefingCard key={item.auction_id} item={item} />
                             )) : null}
                         </Row>
                     </Row>
-                </div>
             </div>
         </>
     )
