@@ -46,7 +46,7 @@ export function formatEndDay(dateTime) {
   const maxDiff = 259200; // miliseconds
   //const diff = 50000 ;
   const diff = new Date(dateTime) -  new Date() ;
-  return diff > 259200 ? 'Kết thúc: ' + formatDateTime(dateTime) : remainTime(diff);
+  return diff > 259200 ? 'Kết thúc: <br />' + formatDateTime(dateTime) : remainTime(diff);
 
 }
 
@@ -60,7 +60,7 @@ const remainTime = function (time) {
 
   if (time > days) {
     const end_day = new Date(time).getDay() - 1 + ' ngày';
-    return `Còn: ${end_day}`;
+    return `Còn: <br /> ${end_day}`;
   }
   else {
     const hour = new Date(time).getHours();
@@ -71,7 +71,7 @@ const remainTime = function (time) {
       + second.toString() + ' giây';
     
     //return  `<a   color="red" role='text' >${end_day}</a>`
-    return `Còn: ${end_day}`;
+    return `Còn:<br /> ${end_day}`;
 
   }
 }

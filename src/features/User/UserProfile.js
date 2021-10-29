@@ -78,7 +78,7 @@ export default function UserProfile() {
                             <Col className="col-md-4 m-2">
                                 <Row>
                                     <title>Avatar</title>
-                                    <Image src="https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png" fluid />
+                                    <Image src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNL_ZnOTpXSvhf1UaK7beHey2BX42U6solRA&usqp=CAU"  />
                                     {buyer && !requestUpgrade?
                                         <Button variant="success" onClick={handleUpgrade} size="sm" className='mt-4 m-auto col-md-10'>
                                             <BsArrowBarUp />
