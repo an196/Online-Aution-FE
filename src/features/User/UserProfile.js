@@ -115,14 +115,14 @@ export default function UserProfile() {
                                             </div>
 
                                         </div>
+                                        <Row className="m-auto">
+                                            <Col></Col>
+                                            <Col md={12}><Button variant="primary" size="sm" className='mb-3' onClick={handleUpdate}><GrUpdate /> Cập nhật</Button></Col>
+                                            {/* <Col md={4}><Button variant="primary" size="sm" className='mb-3'><GrUpdate /> Đổi mật khẩu</Button> </Col> */}
+                                            <Col></Col>
+                                        </Row>
                                     </Col >
                                     : null}
-                            </Row>
-                            <Row className="m-auto">
-                                <Col></Col>
-                                <Col md={4}><Button variant="primary" size="sm" className='mb-3' onClick={handleUpdate}><GrUpdate /> Cập nhật</Button></Col>
-                                <Col md={4}><Button variant="primary" size="sm" className='mb-3'><GrUpdate /> Đổi mật khẩu</Button> </Col>
-                                <Col></Col>
                             </Row>
                         </div>
                     </div>

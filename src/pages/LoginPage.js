@@ -132,7 +132,7 @@ function Login(props) {
                     <div className='container col-md-5'>
                         <div className='card  mt-5 p-4'  >
                             <h3 className='d-flex justify-content-center'>Đăng nhập</h3>
-                            <Form className='p-2' noValidate validated={validated} onSubmit={handleSubmit} method="get" >
+                            <Form className='p-2' noValidate validated={validated} onSubmit={handleSubmit} method="post" >
                                 <Row className="">
                                     <Form.Group as={Col} controlId="validationCustom01">
                                         <Form.Label column="sm">Email</Form.Label>
