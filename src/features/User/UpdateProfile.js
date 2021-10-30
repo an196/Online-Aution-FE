@@ -11,6 +11,7 @@ import { NotifyHelper } from '../../helper/NotifyHelper';
 export default function UpdateProfile() {
     const [validatedFullName, setValidatedFullName] = useState(false);
     const [validatedEmail, setValidatedEmail] = useState(false);
+    const [validatedPassword, setValidatedPassword] = useState(false);
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -42,7 +43,7 @@ export default function UpdateProfile() {
         
         const form = e.currentTarget;
         if (form.checkValidity()) {
-            console.log(e.target.email.value);
+            //console.log(e.target.email.value);
             let data = {
                 "email": e.target.email.value,
                 "full_name": e.target.fullName.value
@@ -52,6 +53,27 @@ export default function UpdateProfile() {
             Update(data,url);
         }
         setValidatedEmail(true);
+    }
+
+
+    function handleChangePassword(e){
+        e.preventDefault();
+        e.stopPropagation();
+        
+
+        const form = e.currentTarget;
+        if (form.checkValidity()) {
+            
+            console.log(e.target.password.value);
+            let data = {
+                "pass_word": e.target.password.value,
+                "new_pass_word": e.target.newpassword.value
+            };
+
+            const url = "http://localhost:3002/api/accounts/password";
+            Update(data,url);
+        }
+        setValidatedPassword(true);
     }
 
 
@@ -125,16 +147,16 @@ export default function UpdateProfile() {
                         <Col></Col>
                         <Col className="card mb-3 m-4 p-4 no-gutters" md={5}>
                             <h6 className="d-flex justify-content-center mt-4">Đổi mật khẩu!</h6>
-                            <Form noValidate onSubmit={handleSubmit}  method="post" >
+                            <Form noValidate onSubmit={handleChangePassword} validated={validatedPassword} method="post" >
                                 <Row className="mb-3">
                                     <Form.Group controlId="validationFormik01">
                                         <Form.Label>Nhập mật khẩu cũ</Form.Label>
                                         <Form.Control
                                             required
                                             type="password"
-                                            name="fullName"
+                                            name="password"
                                             //onChange={handleChange}
-                                            maxLength='255'
+                                            maxLength='50'
                                         />
                                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                                     </Form.Group>
@@ -145,9 +167,9 @@ export default function UpdateProfile() {
                                         <Form.Control
                                             required
                                             type="password"
-                                            name="fullName"
+                                            name="newpassword"
                                             //onChange={handleChange}
-                                            maxLength='255'
+                                            maxLength='50'
                                         />
                                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                                     </Form.Group>
