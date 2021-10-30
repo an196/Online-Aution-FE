@@ -7,6 +7,7 @@ import {
     formatDateTime,
     formatProductName,
     formatPrice,
+    formatEndDay,
 } from '../utils/utils';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -46,10 +47,10 @@ export default function AuctionHistoryCard({ item }) {
     const data = {
         ...item,
         name: formatProductName(item.name),
-        current_cost: formatPrice(item.current_cost),
+        current_cost: item.current_cost ? formatPrice(item.current_cost) : formatPrice(item.start_cost),
         buy_now: formatPrice(item.buy_now),
         start_day: formatDateTime(item.start_day),
-        end_day: formatDateTime(item.end_day),
+        end_day: formatEndDay(item.end_day),
         image: item.image ? item.image : defaultImg
     };
 
@@ -76,14 +77,16 @@ export default function AuctionHistoryCard({ item }) {
                         <Card.Text style={styles.cardText} >
                             Giá: {data.current_cost}
                             <br />
-                            Ngày đăng: {data.start_day}
+                            Ngày đăng: <br />{data.start_day}
                             <br />
-                            <a role='text' style={{ textDecoration: 'none' }} className="text-danger">Hạn: {data.end_day}</a>
+                            {/* <a role='text' style={{ textDecoration: 'none' }} className="text-danger">Hạn: {data.end_day}</a> */}
+                            {ReactHtmlParser(data.end_day)}
                             <br />
                             Lượt đấu giá: {data.count_auction}
                             <br />
                             <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
-
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <Link to={`/user/update-post-product`} style={{ fontSize: '0.6rem' }}>Cập nhật</Link>
 
 
                         </Card.Text>

@@ -17,41 +17,13 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { TimePicker } from 'antd';
 import moment from 'moment';
-
+import { modules, formats } from '../../utils/quillConfig';
 const schema = yup.object().shape({
     productName: yup.string().required(),
 
 });
 
-const modules = {
-    toolbar: [
-        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-        [{ size: [] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' },
-        { 'indent': '-1' }, { 'indent': '+1' }],
-        ['link', 'image', 'video'],
-        ['clean']
-    ],
-    clipboard: {
-        // toggle to add extra line breaks when pasting HTML:
-        matchVisual: false,
-    }
-}
-/* 
- * Quill editor formats
- * See https://quilljs.com/docs/formats/
- */
-const formats = [
-    'header', 'font', 'size',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image', 'video'
-]
 
-/* 
- * PropType validation
- */
 const propTypes = {
     placeholder: PropTypes.string,
 }
@@ -77,11 +49,6 @@ export default function PostProduct() {
     const [extra2Image, setExtra2Image] = useState(null);
     const [extra3Image, setExtra3Image] = useState(null);
     const [stepCost, setStepCost] = useState(100000);
-    const [progress, setProgress] = useState(0);
-    const [urlMainImage, setUrlMainImage] = useState();
-    const [urlExtra1Image, setUrlExtra1Image] = useState();
-    const [urlExtra2Image, setUrlExtra2Image] = useState();
-    const [urlExtra3Image, setUrlExtra3Image] = useState();
 
 
     //define categories
@@ -97,7 +64,7 @@ export default function PostProduct() {
         e.preventDefault();
         e.stopPropagation();
 
-        
+
         const form = e.currentTarget;
         if (form.checkValidity()) {
             const currentTime = new Date();
@@ -141,7 +108,7 @@ export default function PostProduct() {
                 image: urlImg,
                 start_cost: Number(start_cost),
                 step_cost: Number(step_cost),
-                buy_now: buy_now? buy_now : 0,
+                buy_now: buy_now ? buy_now : 0,
                 start_day: o_start_day,
                 end_day: end_day,
                 description: description,
@@ -150,39 +117,28 @@ export default function PostProduct() {
 
             //post data to server
             post(data);
-            console.log(data)
+            //console.log(data)
         }
         setValidated(true);
-
-
-
     }
-
-
 
 
     //post
     async function post(data) {
-
-
         let headers = {};
         headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
         headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
         let config = {
             headers: { ...headers, 'Content-Type': 'application/json' }
         }
-        console.log(config)
         axios
             .post("http://localhost:3002/api/seller/product", data, config)
             .then(function (res) {
-                console.log('dd')
                 if (res.status === 200)
                     NotifyHelper.success(res.data.message, "Thông báo")
-
             })
             .catch(function (error) {
                 NotifyHelper.error(error, "Thông báo");
-                console.log(error)
             });
 
     }
@@ -359,18 +315,13 @@ export default function PostProduct() {
                                         required
                                         type="number"
                                         name="start_cost"
-                                        // onChange={(e) => {
-                                        //     handleChange("price")(e);
-
-                                        // }}
-
                                         min={0} max={10000000}
                                     />
                                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                                 </Form.Group>
                                 <Form.Group as={Col} md="3" controlId="validationFormik01" onChange={handleStepCost}>
                                     <Form.Label>Bước giá</Form.Label>
-                                    <Form.Select defaultValue="Chọn bước giá" onChange={(e)=>setStepCost(e.target.value)}>
+                                    <Form.Select defaultValue="Chọn bước giá" onChange={(e) => setStepCost(e.target.value)}>
                                         <option value={100000}>100,000đ</option>
                                         <option value={200000}>200,000đ</option>
                                         <option value={500000}>500,000đ</option>
@@ -382,11 +333,6 @@ export default function PostProduct() {
                                     <Form.Control
                                         type="number"
                                         name="but_now"
-                                        // onChange={(e) => {
-                                        //    setBuyNow(e)
-                                        //    console.log(e)
-                                        // }}
-
                                         min={0} max={10000000}
                                     />
                                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>

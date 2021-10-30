@@ -205,7 +205,7 @@ export default function ProductDetail() {
         };
     }, []);
 
-    console.log(data)
+    //console.log(data)
     return (
         <>
             <div className="card mb-3 mt-4 no-gutters" >
