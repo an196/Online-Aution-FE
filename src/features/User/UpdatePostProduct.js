@@ -11,6 +11,7 @@ import { ImHammer2 } from "react-icons/im";
 import ReactQuill from "react-quill";
 import { modules, formats } from '../../utils/quillConfig';
 import Footer from '../../components/Footer';
+import { useLocation } from "react-router-dom";
 
 const styles = {
     card: {
@@ -40,14 +41,15 @@ export default function UpadtePostProduct() {
     const [infoProduct, setInfoProduct] = useState();
     const [data, setData] = useState();
     const [description, setDescription] = useState("");
+    const [newDescription, setNewDescription] = useState("");
     const [validated, setValidated] = useState(false);
+   
 
+    const query = new URLSearchParams(useLocation().search);
+    const id = query.get("productid");
 
     //function call api --------------------------------------------------------------------------------------------->
     function getInfoProdduct() {
-        let data = {
-        };
-
         const config = {
             headers: {
                 'x-access-token': localStorage.x_accessToken,
@@ -56,7 +58,7 @@ export default function UpadtePostProduct() {
         }
 
         axios
-            .get(`http://localhost:3002/api/products/info/1`, config)
+            .get(`http://localhost:3002/api/products/info/${id}`, config)
             .then(function (res) {
                 if (res.status === 200) {
                     setInfoProduct(res.data.infoProduct)
@@ -70,6 +72,7 @@ export default function UpadtePostProduct() {
                         end_day: formatEndDay(temp.end_day),
                     }
                     setData(_data);
+                    setNewDescription(_data.description)
                 }
 
             })
@@ -90,19 +93,24 @@ export default function UpadtePostProduct() {
         axios
             .patch("http://localhost:3002/api/seller/product", data, config)
             .then(function (res) {
-                console.log(res)
-                if (res.status === 200){
-                    NotifyHelper.success("Cập nhật thành công", "Thông báo")
-                    getInfoProdduct();
+                //console.log(res)
+                if (res.status === 200) {
+                    NotifyHelper.success("Cập nhật thành công", "Thông báo");
+                    setDescription("");
+                    const newData = {
+                        ...data,
+                        description: newDescription,
+                    }
+                    setData(newData);
                 }
-                    
+
 
             })
             .catch(function (error) {
                 NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
-                
+
             });
-            
+
     }
 
     //function handle
@@ -113,25 +121,16 @@ export default function UpadtePostProduct() {
 
         const form = e.currentTarget;
         if (form.checkValidity() && data) {
-            // const newData = {
-            //     product_id : data.product_id,
-            //     cateogry_id: data.cateogry_id,
-            //     description: data.description +  description,
-            //     end_day: data.end_day,
-            //     image: data.image,
-               
-            //     name: data.name,
-            //     start_cost: data.start_cost,
-            //     start_day: data.start_day,
-            //     step_cost: data.step_cost
-            // }
+
+            const d = data.description ? data.description.replace(/<[^>]*>?/gm, '') : "";
+            const nd = description ? description.replace(/<[^>]*>?/gm, '') : "";
+            setNewDescription("<p>" + d + nd + "</p>");
             const newData = {
-                product_id : data.product_id,
-                description: "<p>" + data.description.replace(/<[^>]*>?/gm, '') + description.replace(/<[^>]*>?/gm, '') + "</p>"
+                product_id: data.product_id,
+                description: "<p>" + d + nd + "</p>"
             }
-            console.log(newData)
             updateDescription(newData)
-            
+
         }
         setValidated(true);
     }
@@ -140,9 +139,9 @@ export default function UpadtePostProduct() {
     useEffect(() => {
         getInfoProdduct();
 
-    }, [data]);
+    }, [newDescription]);
 
-   
+
     return (
         <Container>
             <Row>

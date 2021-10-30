@@ -86,7 +86,7 @@ export default function AuctionHistoryCard({ item }) {
                             <br />
                             <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <Link to={`/user/update-post-product`} style={{ fontSize: '0.6rem' }}>Cập nhật</Link>
+                            <Link to={`/user/update-post-product?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Cập nhật</Link>
 
 
                         </Card.Text>
