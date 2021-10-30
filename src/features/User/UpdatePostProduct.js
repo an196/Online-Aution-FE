@@ -221,7 +221,7 @@ export default function UpadtePostProduct() {
                             placeholder=''
                         />
                         <Row className='d-flex justify-content-center'>
-                            <Button type="submit" className='mt-3 col-md-2'>Đăng bài</Button>
+                            <Button type="submit" className='mt-3 col-md-2'>Cập nhật</Button>
                         </Row>
                     </Form>
                     <Footer />

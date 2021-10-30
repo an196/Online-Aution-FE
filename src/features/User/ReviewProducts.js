@@ -14,7 +14,7 @@ export default function ReviewProduct() {
     const dispatch = useDispatch();
     const [buyer, setBuyer] = useState(true);
     const userId = jwt_decode(localStorage.x_accessToken).account_id;
-
+    
 
     function getReviews() {
         let data = {
@@ -28,7 +28,7 @@ export default function ReviewProduct() {
         }
 
         axios
-            .get(`http://localhost:3002/api/evaluation_historys/${userId}`, data, config)
+            .get(`http://localhost:3002/api/evaluation_historys/${userId}`, config)
             .then(function (res) {
                 console.log(res);
                 if (res.status === 200) {
@@ -43,14 +43,18 @@ export default function ReviewProduct() {
     }
 
     useEffect(() => {
-        getReviews();
+        
+        if( Number(userId)){
+            getReviews();
+        }
+
         if(localStorage.x_accessToken){
             jwt_decode(localStorage.x_accessToken).role_id === 2 ?  setBuyer(false): setBuyer(true);
         }
     }, []);
 
-    console.log(reviews)
-    console.log(userId)
+    //console.log(reviews)
+    //console.log(userId)
     return (
         <Container>
             <Row>
@@ -60,7 +64,9 @@ export default function ReviewProduct() {
                     <h5 className="d-flex justify-content-center mt-4">Các đánh giá!</h5>
                     {reviews ? reviews.map((item) =>
                         (<Review item={item} key={item.evaluation_id} />)
-                    ) : null}
+                    ) : 
+                    <h6 className="d-flex justify-content-center mt-4">Chưa có đánh giá nào!</h6>
+                    }
                     <Footer />
                 </Col>
                 <Col></Col>
