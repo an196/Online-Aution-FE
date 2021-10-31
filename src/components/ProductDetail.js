@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef } from 'react';
-import { Image, Row, Col, Button } from 'react-bootstrap';
+import { Image, Row, Col, Button, Modal, Form, FormControl } from 'react-bootstrap';
 import { AiFillHeart, AiOutlineHeart, AiOutlineShoppingCart, AiOutlineHistory } from "react-icons/ai";
 import { ImHammer2 } from "react-icons/im";
 import AutionHistory from './AuctioningTable';
@@ -54,10 +54,19 @@ export default function ProductDetail() {
 
     const [watchList, setWatchList] = useState();
     const [validUser, setValidUser] = useState(false);
+    const [winner, setWinner] = useState();
+    const [evaluated, setEvaluated] = useState();
 
     //ower
     const [owner, setOwner] = useState();
 
+    //evaluation
+    const [show, setShow] = useState(false);
+    const [message, setMessage] = useState();
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const [auctionId, setAuctionId] = useState();
+    const [accountId, setAccountId] = useState();
 
     //get id
     const query = new URLSearchParams(useLocation().search);
@@ -92,6 +101,8 @@ export default function ProductDetail() {
         }
     }
 
+
+    //call api --------------------------------------------------------------------------------------->
     function getWatchList() {
         let data = {
         };
@@ -118,6 +129,65 @@ export default function ProductDetail() {
             });
     }
 
+    function getEvaluationBidder(id) {
+        const config = {
+            headers: {
+                'x-access-token': localStorage.x_accessToken,
+                'x-refresh-token': localStorage.x_refreshToken
+            }
+        }
+
+        axios
+            .get(`http://localhost:3002/api/bidder/product/evaluation?seller_id=${id}`, config)
+            .then(function (res) {
+                console.log(res)
+                if (res.status === 200) {
+                    if (res.data.description) {
+                        setEvaluated(true);
+                    } else {
+                        setEvaluated(false);
+                    }
+
+                }
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
+            });
+    }
+
+    const handleSubmit = function () {
+
+        let data = {
+            account_id: accountId,
+            auction_id: auctionId,
+            description: message,
+            score: 1
+        };
+
+        const config = {
+            headers: {
+                'x-access-token': localStorage.x_accessToken,
+                'x-refresh-token': localStorage.x_refreshToken
+            }
+        }
+
+        axios
+            .post("http://localhost:3002/api/evaluation_historys", data, config)
+            .then(function (res) {
+                if (res.status === 200) {
+                    NotifyHelper.success(res.data.message, "Thông báo");
+                }
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
+            });
+        setShow(false)
+
+    };
+
+    //hanlde 
     const data = {
         ...infoProduct,
         created_at: formatDateTime(infoProduct.created_at),
@@ -130,11 +200,11 @@ export default function ProductDetail() {
     function handleAution() {
         if (socketRef.current.connected) {
             // thông tin đấu giá gửi lên server
-            const auctionCost = infoProduct.current_cost? infoProduct.current_cost : infoProduct.start_cost;
+            const auctionCost = infoProduct.current_cost ? infoProduct.current_cost : infoProduct.start_cost;
             socketRef.current.emit("dau_gia_san_pham", { product_id: Number(id), cost: auctionCost });
 
         } else {
-            console.log("không thể kết nối đến server");
+            // console.log("không thể kết nối đến server");
             NotifyHelper.error("Có lỗi đã xảy ra", 'Thông báo');
         }
     }
@@ -144,9 +214,13 @@ export default function ProductDetail() {
             // thông tin đấu giá gửi lên server
             socketRef.current.emit("mua_ngay", { product_id: Number(id), cost: infoProduct.buy_now });
         } else {
-            console.log("không thể kết nối đến server");
+            // console.log("không thể kết nối đến server");
             NotifyHelper.error("Có lỗi đã xảy ra", 'Thông báo');
         }
+    }
+
+    function handleChaneMessage(e) {
+        setMessage(e.target.value);
     }
 
     useEffect(() => {
@@ -156,56 +230,69 @@ export default function ProductDetail() {
             setValidUser(true);
             getWatchList();
 
+
             jwt_decode(localStorage.x_accessToken).account_id === data.seller_id ? setOwner(true) : setOwner(false);
+            jwt_decode(localStorage.x_accessToken).account_id === data.bidder_id ? setWinner(true) : setWinner(false);
+            if (data.compare_day < 0) {
+                getEvaluationBidder(data.bidder_id);
+
+            }
         }
 
-    }, [dispatch, location]);
+    }, [dispatch, winner, location, autionHistoryList, evaluated]);
 
     useEffect(() => {
-        socketRef.current = socketIOClient.connect('http://localhost:3002', {
-            query: {
-                token: localStorage.x_accessToken ? localStorage.x_accessToken : null
-            }
-        });
-
-        socketRef.current.on("ket_qua_dau_gia_nguoi_mua", (res) => {
-            if (localStorage.x_accessToken && res.account_id === jwt_decode(localStorage.x_accessToken).account_id) {
-                if (res.status === 200) {
-
-                    NotifyHelper.success(res.message, 'Thông báo')
+        if (localStorage.x_accessToken) {
+            socketRef.current = socketIOClient.connect('http://localhost:3002', {
+                query: {
+                    token: localStorage.x_accessToken ? localStorage.x_accessToken : null
                 }
-                else {
-                    NotifyHelper.error(res.message, 'Thông báo')
+            });
 
+            socketRef.current.on("ket_qua_dau_gia_nguoi_mua", (res) => {
+                if (localStorage.x_accessToken && res.account_id === jwt_decode(localStorage.x_accessToken).account_id) {
+                    if (res.status === 200) {
+
+                        NotifyHelper.success(res.message, 'Thông báo')
+                    }
+                    else {
+                        NotifyHelper.error(res.message, 'Thông báo')
+
+                    }
                 }
-            }
-        });
+            });
 
-        socketRef.current.on("ket_qua_dau_gia_nguoi_mua_ngay", (res) => {
+            socketRef.current.on("ket_qua_dau_gia_nguoi_mua_ngay", (res) => {
+                if (localStorage.x_accessToken && res.account_id === jwt_decode(localStorage.x_accessToken).account_id) {
+                    if (res.status === 200) {
+                        NotifyHelper.success(res.message, 'Thông báo')
 
-            if (res.status === 200) {
-                NotifyHelper.success(res.message, 'Thông báo')
+                    }
+                    else {
+                        NotifyHelper.error(res.message, 'Thông báo')
 
-            }
-            else {
-                NotifyHelper.error(res.message, 'Thông báo')
+                    }
+                }
 
-            }
 
-        });
+            });
 
-        socketRef.current.on("cap_nhat_giao_dien_xem_chi_tiet_san_pham_nguoi_ban", (res) => {
+            socketRef.current.on("cap_nhat_giao_dien_xem_chi_tiet_san_pham_nguoi_ban", (res) => {
+                if (localStorage.x_accessToken && res.account_id === jwt_decode(localStorage.x_accessToken).account_id) {
+                    setAutionHistoryList(res.info_auction_detail)
+                }
+            });
 
-            setAutionHistoryList(res.info_auction_detail)
+            return () => {
+                socketRef.current.disconnect();
+            };
+        }
 
-        });
-
-        return () => {
-            socketRef.current.disconnect();
-        };
     }, []);
 
     //console.log(data)
+
+
     return (
         <>
             <div className="card mb-3 mt-4 no-gutters" >
@@ -247,13 +334,13 @@ export default function ProductDetail() {
                                         <p className="card-text">
                                             Giá hiện tại: {data.start_cost} <br />
                                             {validUser ?
-                                                ( data.buy_now ?
+                                                (data.buy_now ?
                                                     <>
-                                                    <Button className='m-2 ' onClick={handleBuynow} variant="success"> <AiOutlineShoppingCart></AiOutlineShoppingCart>&nbsp; Mua ngay
-                                                    </Button> {data.buy_now}
-                                                </>
-                                                :null)
-                                               
+                                                        <Button className='m-2 ' onClick={handleBuynow} variant="success"> <AiOutlineShoppingCart></AiOutlineShoppingCart>&nbsp; Mua ngay
+                                                        </Button> {data.buy_now}
+                                                    </>
+                                                    : null)
+
                                                 : null}
                                             <br />
                                             Người bán: {data.seller_name} &nbsp;&nbsp;&nbsp;&nbsp;  Đánh giá: {data.evaluation_score} điểm
@@ -285,24 +372,79 @@ export default function ProductDetail() {
                         : null
                     }
                     {
-                        owner && data.compare_day < 0?
+                        data.compare_day > 0 ?
+
                             <Row className='m-auto'>
-                                <Col md='12'>
-                                    <AuctioningTable />
-                                </Col>
-                            </Row>
-                            : null
-                    }
-                    {
-                         data.compare_day > 0?
-                            <Row className='m-auto'>
+                                {owner ?
+                                    <Row className='m-3'>
+                                        <h6>Thông tin người chiến thắng:</h6>
+                                        <span>Id: {data.bidder_id}</span>
+                                        <span>Tên: {data.bidder_name}</span>
+                                        {
+                                            evaluated ?
+                                                <Button className="col-md-2 m-3" size="sm"
+                                                    onClick={() => {
+                                                        setShow(true);
+                                                        setAccountId(data.bidder_id);
+                                                        setAuctionId(data.auction_id)
+                                                    }}
+                                                    variant="primary">
+                                                    Đánh giá
+                                                </Button>
+                                                : null
+                                        }
+
+                                    </Row>
+                                    : null
+                                }
+                                {
+                                    winner ?
+                                        <Row className='m-3'>
+                                            <h6>Thông tin người chiến thắng:</h6>
+                                            <span>Id: {data.bidder_id}</span>
+                                            <span>Tên: {data.bidder_name}</span>
+                                            {
+                                                evaluated ?
+                                                    <Button className="col-md-2 m-3" size="sm"
+                                                        onClick={() => {
+                                                            setShow(true);
+                                                            setAccountId(jwt_decode(localStorage.x_accessToken).account_id);
+                                                            setAuctionId(data.auction_id)
+                                                        }}
+                                                        variant="primary">
+                                                        Đánh giá
+                                                    </Button>
+                                                    : null
+                                            }
+                                        </Row>
+                                        : null
+                                }
                                 <Col md='12'>
                                     <AuctionHistoryDetail />
                                 </Col>
                             </Row>
-                             : null
-                    } 
-
+                            : null
+                    }
+                    {/* {
+                        owner && data.compare_day < 0 ?
+                           <AuctioningTable />
+                            : null
+                    } */}
+                    {/* <Row className='m-auto'>
+                        <Row className='m-3'>
+                            <h6>Thông tin người chiến thắng:</h6>
+                            <span>Id: {data.bidder_id}</span>
+                            <span>Tên: {data.bidder_name}</span>
+                            <Button className="col-md-2 m-3" size="sm"
+                                onClick={() => { setShow(true); }}
+                                variant="primary">
+                                Đánh giá
+                            </Button>
+                        </Row>
+                        <Col md='12'>
+                            <AuctionHistoryDetail />
+                        </Col>
+                    </Row> */}
                 </div>
 
             </div>
@@ -319,6 +461,32 @@ export default function ProductDetail() {
                             : null}
                 </Row>
             </div>
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Thông tin đánh giá</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form className="d-flex justify-content-around" >
+                        <FormControl
+                            type="text"
+                            className="mr-2"
+                            aria-label="Search"
+                            name='message'
+                            onChange={handleChaneMessage}
+                        />
+                        <div style={{ width: 10 }}></div>
+
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Đóng
+                    </Button>
+                    <Button variant="primary" type='submit' onClick={handleSubmit}>
+                        Gửi
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 }

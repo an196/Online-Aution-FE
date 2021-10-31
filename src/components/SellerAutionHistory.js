@@ -99,6 +99,7 @@ export default function SellerAutionHistory() {
         getAuctionHistory();
     }, []);
 
+    console.log(buyHistory)
     return (
         <>
             <div className="card mb-3 mt-4 no-gutters" >

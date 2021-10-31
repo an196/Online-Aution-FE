@@ -12,10 +12,14 @@ export default function UserNavBar(props) {
     const dispatch = useDispatch();
     const [buyer,setBuyer] = useState(true);
 
+    //google login
+   
     const handleLogout = function (e) {
         e.preventDefault();
+       
         localStorage.removeItem('x_accessToken');
         localStorage.removeItem('x_refreshToken');
+       
         history.push('/login')
     }
 

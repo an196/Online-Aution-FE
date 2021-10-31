@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Col, Row, Nav, Navbar, Image } from 'react-bootstrap';
+import { Col, Row, Nav, Navbar, Image, Badge } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card'
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { Link, Redirect } from 'react-router-dom';
@@ -134,10 +134,10 @@ export default function ProductCard({ item }) {
         }
     }, [dispatch])
 
-    useEffect(() => {
-        const _flicker = setInterval(setFlicker(!flicker), 20000);
-        return () => clearInterval(_flicker);
-    }, [flicker])
+    // useEffect(() => {
+    //     const _flicker = setInterval(setFlicker(!flicker), 2000);
+    //     return () => clearInterval(_flicker);
+    // })
 
 
 
@@ -148,9 +148,10 @@ export default function ProductCard({ item }) {
                     <div style={styles.container}>
                         <Card.Img variant="top" src={data.image} style={styles.cardImage} />
                         {isNewProduct ?
-                            <div style={styles.bottomLeft, flicker ? styles.whiteLable : styles.blackLable}>Mới</div>
+                            <Badge pill bg="warning" text="dark" style={styles.bottomLeft, flicker ? styles.whiteLable : styles.blackLable}>
+                                Mới
+                            </Badge>
                             : null}
-
                     </div>
                     <Card.Body style={styles.cardBody}>
                         <Card.Title style={styles.cardTitle} className='mt-1'> {data.name} &nbsp;&nbsp;&nbsp;&nbsp;

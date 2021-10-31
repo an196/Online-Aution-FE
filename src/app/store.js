@@ -15,5 +15,9 @@ export const store = configureStore({
       admin: AdminReducer,
       seller: SellerReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false
+    })
 })
 

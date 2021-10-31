@@ -45,7 +45,7 @@ export default function Reivew({ item }) {
         setlike(!like);
     }
 
-    console.log(item)
+    //console.log(item)
     return (
         <div>
             {data ?

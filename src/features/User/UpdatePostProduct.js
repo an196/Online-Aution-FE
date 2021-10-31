@@ -124,10 +124,10 @@ export default function UpadtePostProduct() {
 
             const d = data.description ? data.description.replace(/<[^>]*>?/gm, '') : "";
             const nd = description ? description.replace(/<[^>]*>?/gm, '') : "";
-            setNewDescription("<p>" + d + nd + "</p>");
+            setNewDescription("<p> " + d + " " + nd + " </p> ");
             const newData = {
                 product_id: data.product_id,
-                description: "<p>" + d + nd + "</p>"
+                description: "<p> " + d + " " + nd + " </p> "
             }
             updateDescription(newData)
 
