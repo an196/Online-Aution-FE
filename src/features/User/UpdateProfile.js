@@ -28,7 +28,7 @@ export default function UpdateProfile() {
         const form = e.currentTarget;
         if (form.checkValidity()) {
             let data = {
-               
+               "full_name" : "asd"
             };
             const url = "http://localhost:3002/api/accounts/fullname";
             Update(data,url);
@@ -51,6 +51,9 @@ export default function UpdateProfile() {
 
             const url = "http://localhost:3002/api/accounts/email";
             Update(data,url);
+
+            const url2 = "http://localhost:3002/api/accounts/fullname";
+            Update(data,url2);
         }
         setValidatedEmail(true);
     }
@@ -72,6 +75,8 @@ export default function UpdateProfile() {
 
             const url = "http://localhost:3002/api/accounts/password";
             Update(data,url);
+            
+           
         }
         setValidatedPassword(true);
     }
