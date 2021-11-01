@@ -21,6 +21,8 @@ import socketIOClient from "socket.io-client";
 import jwt_decode from 'jwt-decode';
 import AuctioningTable from './AuctioningTable';
 import AuctionHistoryDetail from './AuctionHistoryDetail';
+import { FaThumbsDown, FaThumbsUp } from 'react-icons/fa';
+import { FiThumbsUp, FiThumbsDown } from 'react-icons/fi';
 
 const styles = {
     card: {
@@ -67,6 +69,7 @@ export default function ProductDetail() {
     const handleShow = () => setShow(true);
     const [auctionId, setAuctionId] = useState();
     const [accountId, setAccountId] = useState();
+    const [isThumbsUp, setIsThumbsUp] = useState(true);
 
     //get id
     const query = new URLSearchParams(useLocation().search);
@@ -162,7 +165,7 @@ export default function ProductDetail() {
             account_id: accountId,
             auction_id: auctionId,
             description: message,
-            score: 1
+            score: isThumbsUp ? 1 : -1
         };
 
         const config = {
@@ -225,6 +228,11 @@ export default function ProductDetail() {
         setMessage(e.target.value);
     }
 
+    function handleIsValuate() {
+      
+       setIsThumbsUp(!isThumbsUp);
+    }
+
     useEffect(() => {
         dispatch(getInfoProduct(id));
 
@@ -244,7 +252,7 @@ export default function ProductDetail() {
     }, [dispatch, winner, location]);
 
     useEffect(() => {
-    }, [getEvaluationBidder,setEvaluated,autionHistoryList,winner,dispatch,infoProduct]);
+    }, [getEvaluationBidder, setEvaluated, handleSubmit]);
 
 
 
@@ -297,7 +305,7 @@ export default function ProductDetail() {
 
     }, []);
 
-    //console.log(data)
+    console.log(isThumbsUp)
 
 
     return (
@@ -478,6 +486,8 @@ export default function ProductDetail() {
                     <Modal.Title>Thông tin đánh giá</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <span>Đánh giá</span>
+
                     <Form className="d-flex justify-content-around" >
                         <FormControl
                             type="text"
@@ -487,8 +497,26 @@ export default function ProductDetail() {
                             onChange={handleChaneMessage}
                         />
                         <div style={{ width: 10 }}></div>
-
                     </Form>
+                    {
+
+                        <Row className='m-3'>
+                            <Col className='d-flex justify-content-center'>
+                                {  isThumbsUp === true ?
+                                    <FaThumbsUp onClick={handleIsValuate} style={{color : 'blue'}}/>
+                                    :<FiThumbsUp  onClick={handleIsValuate}/>
+                                }
+
+                            </Col>
+                            <Col className='d-flex justify-content-center'>
+                               
+                                {   isThumbsUp === false ?
+                                    <FaThumbsDown onClick={handleIsValuate} style={{color : 'blue'}}/>
+                                    :  <FiThumbsDown onClick={handleIsValuate} />
+                                }
+                            </Col>
+                        </Row>
+                    }
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
