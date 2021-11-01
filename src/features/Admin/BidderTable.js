@@ -15,7 +15,6 @@ import { NotifyHelper } from '../../helper/NotifyHelper';
 export default function BidderTable() {
     const sellers = useSelector(selectSellers);
     const [biiders,setBidders] = useState();
-    const dispatch = useDispatch();
     const [selectedRows, setSelectedRows] = useState([]);
     const [toggleCleared, setToggleCleared] = useState(false);
     const [reload, setReload] = useState(false);
@@ -35,10 +34,8 @@ export default function BidderTable() {
             .then(function (res) {
                 console.log(res.data)
                 if (res.status === 200) {
-                    setBidders(res.data)
+                    setBidders(res.data.filter(user => user.role_id  === 1))
                 }
-
-
             })
             .catch(function (error) {
                 NotifyHelper.error(error, "Thông báo");
@@ -62,7 +59,7 @@ export default function BidderTable() {
         axios
             .patch(`http://localhost:3002/api/admin/account/upgrade?account_id=${id}`, data, config)
             .then(function (res) {
-                console.log(res)
+                //console.log(res)
                 if (res.status === 200) {
                     NotifyHelper.success(res.data.message, "Thông báo")
                     setReload(!reload);
@@ -155,6 +152,7 @@ export default function BidderTable() {
 
     useEffect(() => {
     }, [biiders]);
+
     return (
         <div className="container">
             <AdminNav/>

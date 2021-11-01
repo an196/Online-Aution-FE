@@ -1,32 +1,90 @@
 import AdminNav from '../../components/AdminNav';
-import {getAccount, 
-    inferiorAccount, 
+import {
+    getAccount,
+    inferiorAccount,
     refreshAccount,
-    selectSellers 
+    selectSellers
 } from './AdminSlice';
-import {  Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import React, { useEffect } from 'react';
-import DataTable  from 'react-data-table-component';
+import React, { useEffect, useState } from 'react';
+import DataTable from 'react-data-table-component';
 import memoize from 'memoize-one';
+import axios from 'axios';
+import { NotifyHelper } from '../../helper/NotifyHelper';
 
 export default function UserTable() {
-    const sellers = useSelector(selectSellers);
-   
-    const dispatch = useDispatch();
+    const [ sellers, setSellers ] = useState();
+    const [reload, setReload] = useState(false);
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [toggleCleared, setToggleCleared] = React.useState(false);
 
-    useEffect(() => {
-        dispatch(getAccount());
-    }, [dispatch]);
+
+
+    //call api ------------------------------------------------------------------------------------------------->
+    function getAccount() {
+        let headers = {};
+        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
+        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
+
+        let config = {
+            headers: { ...headers }
+        }
+
+        axios
+            .get(`http://localhost:3002/api/admin/account`, config)
+            .then(function (res) {
+                console.log(res.data)
+                if (res.status === 200) {
+                    setSellers(res.data.filter(user => user.role_id  === 2))
+                }
+
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error(error, "Thông báo");
+                console.log(error)
+            });
+
+
+    }
+
+    function inferiorAccount(id) {
+        console.log(id)
+        const data = {};
+        let headers = {};
+        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
+        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
+
+        let config = {
+            headers: { ...headers }
+        }
+
+        axios
+            .patch(`http://localhost:3002/api/admin/account/inferior?account_id=${id}`, data, config)
+            .then(function (res) {
+                console.log(res)
+                if (res.status === 200) {
+                    NotifyHelper.success(res.data.message, "Thông báo")
+                    setReload(!reload);
+                }
+
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error(error, "Thông báo");
+                console.log(error)
+            });
+
+
+    }
 
 
     const handleRowSelected = React.useCallback(state => {
         setSelectedRows(state.selectedRows);
     }, []);
 
-    
+
     const contextActions = React.useMemo(() => {
         const handleDelete = () => {
             if (window.confirm(`Are you sure you want to delete:\r ${selectedRows.map(r => r.name)}?`)) {
@@ -45,17 +103,16 @@ export default function UserTable() {
     }, [sellers, selectedRows, toggleCleared]);
 
 
-    function clickHandler(e){
+    function clickHandler(e) {
         console.log(e)
-        
-        dispatch(inferiorAccount(e));
-        dispatch(refreshAccount(e));
-       
+        inferiorAccount(e);
     }
 
-    const columns=[
+
+
+    const columns = [
         {
-            cell: (row) => row.role_id === 2? <button onClick={()=>clickHandler(row.account_id)}>Hạ cấp</button>: null,
+            cell: (row) => row.role_id === 2 ? <button onClick={() => clickHandler(row.account_id)}>Hạ cấp</button> : null,
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
@@ -98,9 +155,17 @@ export default function UserTable() {
         },
     ];
 
+    useEffect(() => {
+        getAccount();
+    }, [reload]);
+
+    useEffect(() => {
+    }, [sellers]);
+
+    console.log(sellers)
     return (
         <div className="container">
-            <AdminNav/>
+            <AdminNav />
             <DataTable
                 title="Danh sách tài khoản người bán"
                 columns={columns}

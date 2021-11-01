@@ -129,7 +129,7 @@ export default function ProductTable() {
     }
 
     useEffect(() => {
-       getProduct()
+       getProduct();
     }, [reload]);
 
     //console.log(products)
