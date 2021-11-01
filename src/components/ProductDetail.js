@@ -9,9 +9,8 @@ import ReactHtmlParser from "react-html-parser";
 import { formatDateTime, formatProductName, formatPrice, formatEndDay } from '../utils/utils';
 import { addWatchList, removeWatchList } from '../features/User/UserSlice';
 import {
-    selectInfoProduct,
-    getInfoProduct,
     selectRelationProduct,
+
 } from '../features/product/productSlice';
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -49,8 +48,8 @@ const styles = {
 }
 
 export default function ProductDetail() {
-    const infoProduct = useSelector(selectInfoProduct);
-    const realationProduct = useSelector(selectRelationProduct);
+    const [infoProduct, setInfoProduct] = useState();
+    const [realationProduct, setRealationProduct] = useState();
     const dispatch = useDispatch();
     const location = useLocation();
 
@@ -58,6 +57,7 @@ export default function ProductDetail() {
     const [validUser, setValidUser] = useState(false);
     const [winner, setWinner] = useState();
     const [evaluated, setEvaluated] = useState();
+    const [data, setData] = useState();
 
     //ower
     const [owner, setOwner] = useState();
@@ -88,6 +88,7 @@ export default function ProductDetail() {
             token: localStorage.x_accessToken ? localStorage.x_accessToken : null
         }
     }
+
 
     function handleLike(e) {
 
@@ -143,7 +144,7 @@ export default function ProductDetail() {
         axios
             .get(`http://localhost:3002/api/bidder/product/evaluation?seller_id=${id}`, config)
             .then(function (res) {
-                console.log(res)
+               //console.log(res)
                 if (res.status === 200) {
                     if (res.data.description) {
                         setEvaluated(true);
@@ -192,15 +193,39 @@ export default function ProductDetail() {
 
     };
 
-    //hanlde 
-    const data = {
-        ...infoProduct,
-        created_at: formatDateTime(infoProduct.created_at),
-        start_day: formatDateTime(infoProduct.start_day),
-        buy_now: formatPrice(infoProduct.buy_now),
-        start_cost: formatPrice(infoProduct.start_cost),
-        end_day: formatEndDay(infoProduct.end_day),
+    function getInfoProduct() {
+        const config = {
+            headers: {
+                'x-access-token': localStorage.x_accessToken,
+                'x-refresh-token': localStorage.x_refreshToken
+            }
+        }
+
+        axios
+            .get(`http://localhost:3002/api/products/info/${id}`, config)
+            .then(function (res) {
+                console.log(res.data)
+                if (res.status === 200) {
+                    setInfoProduct(res.data.infoProduct)
+                    setRealationProduct(res.data.relation_product)
+                    setData({
+                        ...res.data.infoProduct,
+                        created_at: formatDateTime(res.data.infoProduct.created_at),
+                        start_day: formatDateTime(res.data.infoProduct.start_day),
+                        buy_now: formatPrice(res.data.infoProduct.buy_now),
+                        start_cost: formatPrice(res.data.infoProduct.start_cost),
+                        end_day: formatEndDay(res.data.infoProduct.end_day),
+                    })
+
+                }
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
+            });
     }
+    //hanlde ----------------------------------------------------------------------------------------->
+
 
     function handleAution() {
         if (socketRef.current.connected) {
@@ -229,14 +254,19 @@ export default function ProductDetail() {
     }
 
     function handleIsValuate() {
-      
-       setIsThumbsUp(!isThumbsUp);
+
+        setIsThumbsUp(!isThumbsUp);
     }
 
+    //-------------------------------------------------------------------------------------------------------------------->
     useEffect(() => {
-        dispatch(getInfoProduct(id));
+       if(id > 0)
+            getInfoProduct();
+    }, [location, autionHistoryList]);
 
-        if (localStorage.x_accessToken) {
+
+    useEffect(() => {
+        if (localStorage.x_accessToken && data) {
             setValidUser(true);
             getWatchList();
 
@@ -249,12 +279,7 @@ export default function ProductDetail() {
             }
         }
 
-    }, [dispatch, winner, location]);
-
-    useEffect(() => {
-    }, [getEvaluationBidder, setEvaluated, handleSubmit]);
-
-
+    }, [data]);
 
     useEffect(() => {
         if (localStorage.x_accessToken) {
@@ -305,14 +330,12 @@ export default function ProductDetail() {
 
     }, []);
 
-    console.log(isThumbsUp)
-
 
     return (
         <>
             <div className="card mb-3 mt-4 no-gutters" >
                 <div className="row no-gutters">
-                    {data ?
+                    { data ?
                         <Row >
                             <Col className="col-md-4 m-2">
                                 <Row >
@@ -387,7 +410,7 @@ export default function ProductDetail() {
                         : null
                     }
                     {
-                        data.compare_day < 0 ?
+                        data && data.compare_day < 0 ?
 
                             <Row className='m-auto'>
                                 {owner ?
@@ -441,7 +464,7 @@ export default function ProductDetail() {
                             : null
                     }
                     {
-                        owner && data.compare_day > 0 ?
+                        data && owner && data.compare_day > 0 ?
                             <Row className='m-auto'>
                                 <Col>
                                     <AuctioningTable />
@@ -502,17 +525,17 @@ export default function ProductDetail() {
 
                         <Row className='m-3'>
                             <Col className='d-flex justify-content-center'>
-                                {  isThumbsUp === true ?
-                                    <FaThumbsUp onClick={handleIsValuate} style={{color : 'blue'}}/>
-                                    :<FiThumbsUp  onClick={handleIsValuate}/>
+                                {isThumbsUp === true ?
+                                    <FaThumbsUp onClick={handleIsValuate} style={{ color: 'blue' }} />
+                                    : <FiThumbsUp onClick={handleIsValuate} />
                                 }
 
                             </Col>
                             <Col className='d-flex justify-content-center'>
-                               
-                                {   isThumbsUp === false ?
-                                    <FaThumbsDown onClick={handleIsValuate} style={{color : 'blue'}}/>
-                                    :  <FiThumbsDown onClick={handleIsValuate} />
+
+                                {isThumbsUp === false ?
+                                    <FaThumbsDown onClick={handleIsValuate} style={{ color: 'blue' }} />
+                                    : <FiThumbsDown onClick={handleIsValuate} />
                                 }
                             </Col>
                         </Row>
