@@ -162,7 +162,6 @@ export default function BidderTable() {
                 data={biiders}
                 //selectableRows
                 contextActions={contextActions}
-                onSelectedRowsChange={handleRowSelected}
                 clearSelectedRows={toggleCleared}
                 pagination
             />
