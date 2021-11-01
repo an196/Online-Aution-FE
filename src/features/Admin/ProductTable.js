@@ -103,7 +103,7 @@ export default function ProductTable() {
 
     useEffect(() => {
         dispatch(getProduct());
-    }, [dispatch]);
+    }, [dispatch,getProduct]);
 
 
     return (

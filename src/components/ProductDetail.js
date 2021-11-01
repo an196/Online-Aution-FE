@@ -177,11 +177,13 @@ export default function ProductDetail() {
             .then(function (res) {
                 if (res.status === 200) {
                     NotifyHelper.success(res.data.message, "Thông báo");
+                    setEvaluated(true)
                 }
 
             })
             .catch(function (error) {
                 NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
+                setEvaluated(true)
             });
         setShow(false)
 
@@ -239,7 +241,12 @@ export default function ProductDetail() {
             }
         }
 
-    }, [dispatch, winner, location, autionHistoryList, evaluated]);
+    }, [dispatch, winner, location]);
+
+    useEffect(() => {
+    }, [getEvaluationBidder,setEvaluated,autionHistoryList,winner,dispatch,infoProduct]);
+
+
 
     useEffect(() => {
         if (localStorage.x_accessToken) {
@@ -372,7 +379,7 @@ export default function ProductDetail() {
                         : null
                     }
                     {
-                        data.compare_day > 0 ?
+                        data.compare_day < 0 ?
 
                             <Row className='m-auto'>
                                 {owner ?
@@ -381,7 +388,7 @@ export default function ProductDetail() {
                                         <span>Id: {data.bidder_id}</span>
                                         <span>Tên: {data.bidder_name}</span>
                                         {
-                                            evaluated ?
+                                            !evaluated ?
                                                 <Button className="col-md-2 m-3" size="sm"
                                                     onClick={() => {
                                                         setShow(true);
@@ -425,11 +432,16 @@ export default function ProductDetail() {
                             </Row>
                             : null
                     }
-                    {/* {
-                        owner && data.compare_day < 0 ?
-                           <AuctioningTable />
+                    {
+                        owner && data.compare_day > 0 ?
+                            <Row className='m-auto'>
+                                <Col>
+                                    <AuctioningTable />
+                                </Col>
+                            </Row>
+
                             : null
-                    } */}
+                    }
                     {/* <Row className='m-auto'>
                         <Row className='m-3'>
                             <h6>Thông tin người chiến thắng:</h6>
