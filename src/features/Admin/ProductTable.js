@@ -10,10 +10,11 @@ import { NotifyHelper } from '../../helper/NotifyHelper';
 import Footer from '../../components/Footer';
 
 export default function ProductTable() {
-    const products = useSelector(selectProducts);
+    const [products, setProducts] = useState();
+    const [reload, setReload] = useState(false);
     const dispatch = useDispatch();
-    const [selectedRows, setSelectedRows] = React.useState([]);
-    const [toggleCleared, setToggleCleared] = React.useState(false);
+    const [selectedRows, setSelectedRows] = useState([]);
+    const [toggleCleared, setToggleCleared] = useState(false);
 
 
     const handleRowSelected = React.useCallback(state => {
@@ -70,6 +71,7 @@ export default function ProductTable() {
         },
     ];
 
+    //call api ------------------------------------------------------------------------------------------------->
     function handleDelete(id) {
         console.log(id)
         const data = {};
@@ -88,7 +90,32 @@ export default function ProductTable() {
                 console.log(res)
                 if (res.status === 200) {
                     NotifyHelper.success(res.data.message, "Thông báo")
-                    dispatch(remove(id))
+                    setReload(!reload);
+                }
+
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error(error, "Thông báo");
+                console.log(error)
+            });
+    }
+
+    function getProduct() {
+        let headers = {};
+        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
+        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
+
+        let config = {
+            headers: { ...headers }
+        }
+
+        axios
+            .get(`http://localhost:3002/api/admin/product`,  config)
+            .then(function (res) {
+                console.log(res.data)
+                if (res.status === 200) {
+                   setProducts(res.data)
                 }
 
 
@@ -102,10 +129,10 @@ export default function ProductTable() {
     }
 
     useEffect(() => {
-        dispatch(getProduct());
-    }, [dispatch,getProduct]);
+       getProduct()
+    }, [reload]);
 
-
+    //console.log(products)
     return (
         <div className="container">
             <AdminNav />

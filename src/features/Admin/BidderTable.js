@@ -1,35 +1,90 @@
 import AdminNav from '../../components/AdminNav';
-import {getAccount, 
-    inferiorAccount, 
-    selectAccounts, 
+import { 
     refreshAccount,
-    selectBidders,
     selectSellers, 
     upgradeAccount
 } from './AdminSlice';
 import {  Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import DataTable  from 'react-data-table-component';
 import memoize from 'memoize-one';
+import axios from 'axios';
+import { NotifyHelper } from '../../helper/NotifyHelper';
 
 export default function BidderTable() {
     const sellers = useSelector(selectSellers);
-    const biiders = useSelector(selectBidders);
+    const [biiders,setBidders] = useState();
     const dispatch = useDispatch();
-    const [selectedRows, setSelectedRows] = React.useState([]);
-    const [toggleCleared, setToggleCleared] = React.useState(false);
+    const [selectedRows, setSelectedRows] = useState([]);
+    const [toggleCleared, setToggleCleared] = useState(false);
+    const [reload, setReload] = useState(false);
 
-    useEffect(() => {
-        dispatch(getAccount());
-    }, [dispatch]);
+    //call api ------------------------------------------------------------------------------------------------->
+    function getAccount() {
+        let headers = {};
+        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
+        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
+
+        let config = {
+            headers: { ...headers }
+        }
+
+        axios
+            .get(`http://localhost:3002/api/admin/account`,  config)
+            .then(function (res) {
+                console.log(res.data)
+                if (res.status === 200) {
+                    setBidders(res.data)
+                }
+
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error(error, "Thông báo");
+                console.log(error)
+            });
+
+
+    }
+
+    function upgradeAccount(id) {
+        console.log(id)
+        const data ={};
+        let headers = {};
+        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
+        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
+
+        let config = {
+            headers: { ...headers }
+        }
+
+        axios
+            .patch(`http://localhost:3002/api/admin/account/upgrade?account_id=${id}`, data, config)
+            .then(function (res) {
+                console.log(res)
+                if (res.status === 200) {
+                    NotifyHelper.success(res.data.message, "Thông báo")
+                    setReload(!reload);
+                }
+
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error(error, "Thông báo");
+                console.log(error)
+            });
+
+
+    }
+    
 
 
     const handleRowSelected = React.useCallback(state => {
         setSelectedRows(state.selectedRows);
     }, []);
 
-    
+    //---------------------------------------------------------------------------------------------------------->
     const contextActions = React.useMemo(() => {
         const handleDelete = () => {
             if (window.confirm(`Are you sure you want to delete:\r ${selectedRows.map(r => r.name)}?`)) {
@@ -50,8 +105,7 @@ export default function BidderTable() {
 
     function clickHandler(e){
         console.log(e)
-        dispatch(upgradeAccount(e));
-        dispatch(refreshAccount(e));
+        upgradeAccount(e);
     }
 
     const columns=[
@@ -94,6 +148,13 @@ export default function BidderTable() {
         },
     ];
 
+    //---------------------------------------------------------------------------------------------------------->
+    useEffect(() => {
+        getAccount();
+    }, [reload]);
+
+    useEffect(() => {
+    }, [biiders]);
     return (
         <div className="container">
             <AdminNav/>
