@@ -217,10 +217,10 @@ export default function CategoryTable() {
         setSelectedType(e.target.value)
     }
 
-    function handleUpdateCategory(e){
+    function handleUpdateCategory(e) {
         e.preventDefault();
         e.stopPropagation();
-        
+
         const form = e.currentTarget;
         if (form.checkValidity()) {
             const data = {
@@ -262,7 +262,7 @@ export default function CategoryTable() {
                 <Row>
                     {
                         visibleAddForm ?
-                            <Col className="card mb-3 m-auto p-3 no-gutters " md={10}>
+                            <Col className="card mb-3 m-auto p-3 no-gutters " md={8}>
                                 <h6 className="d-flex justify-content-center mt-4">Thêm danh mục!</h6>
 
                                 <Form noValidate validated={validated} onSubmit={handleAddCategory} method="post" >
@@ -273,7 +273,7 @@ export default function CategoryTable() {
                                                 required
                                                 type="text"
                                                 name="categoryName"
-                                                
+
                                                 maxLength='255'
                                             />
                                             <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
@@ -312,16 +312,25 @@ export default function CategoryTable() {
 
                                         </Form.Group>
                                     </Row>
-                                    <Button type="submit" size="sm" className='mt-3'>Thêm</Button>
+                                    <Row>
+                                        <Col md={1}>
+                                            <Button type="submit" onClick={()=>setVisibleAddForm(false)} size="sm" variant="secondary" className='mt-3 ml-3'>Hủy</Button>
+                                        </Col>
+                                        <Col md={1}>
+                                            <Button type="submit" size="sm" className='mt-3'>Thêm</Button>
+                                        </Col>
+                                        <Col />
+                                    </Row>
+                                   
                                 </Form>
                             </Col>
                             : null}
 
                     {
                         visibleUpdateForm ?
-                            <Col className="card mb-3 m-auto p-3 no-gutters " md={10}>
+                            <Col className="card mb-3 m-auto p-3 no-gutters " md={8}>
                                 <h6 className="d-flex justify-content-center mt-4">Cập nhật danh mục!</h6>
-
+                                <Col/>
                                 <Form noValidate validated={validated} onSubmit={handleUpdateCategory} method="post" >
                                     <Row className="mb-12">
                                         <Form.Group as={Col} md="6">
@@ -330,11 +339,11 @@ export default function CategoryTable() {
                                                 required
                                                 type="text"
                                                 name="categoryName"
-                                                onChange={(e)=>setDataUpdate({
+                                                onChange={(e) => setDataUpdate({
                                                     ...dataUpdate,
                                                     name: e.target.value
                                                 })}
-                                                value={dataUpdate ? dataUpdate.name: ''}
+                                                value={dataUpdate ? dataUpdate.name : ''}
                                                 maxLength='255'
                                             />
                                             <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
@@ -345,11 +354,11 @@ export default function CategoryTable() {
                                                 required
                                                 type="text"
                                                 name="alias"
-                                                onChange={(e)=>setDataUpdate({
+                                                onChange={(e) => setDataUpdate({
                                                     ...dataUpdate,
                                                     alias: e.target.value
                                                 })}
-                                                value={dataUpdate ? dataUpdate.alias: ''}
+                                                value={dataUpdate ? dataUpdate.alias : ''}
                                                 maxLength='100'
                                             />
                                             <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
@@ -362,18 +371,18 @@ export default function CategoryTable() {
                                                 required
                                                 type="text"
                                                 name="description"
-                                                onChange={(e)=>setDataUpdate({
+                                                onChange={(e) => setDataUpdate({
                                                     ...dataUpdate,
                                                     description: e.target.value
                                                 })}
-                                                value={dataUpdate.description ? dataUpdate.description: ''}
+                                                value={dataUpdate.description ? dataUpdate.description : ''}
                                                 maxLength='100'
                                             />
                                             <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
                                         </Form.Group>
                                         <Form.Group as={Col} md="4" >
                                             <Form.Label>Danh mục</Form.Label>
-                                            <Form.Select onChange={handleSelectType}  defaultValue="Chọn chuyên mục sản phẩm" >
+                                            <Form.Select onChange={handleSelectType} defaultValue="Chọn chuyên mục sản phẩm" >
                                                 {types.map(item => <option key={item.type_id} value={item.type_id}>{item.name} </option>
 
                                                 )}
@@ -381,7 +390,15 @@ export default function CategoryTable() {
 
                                         </Form.Group>
                                     </Row>
-                                    <Button type="submit" size="sm" className='mt-3'>Cập nhật</Button>
+                                    <Row>
+                                        <Col md={1}>
+                                            <Button type="submit" onClick={()=>setVisibleUpdateForm(false)}  size="sm" variant="secondary" className='mt-3 ml-3'>Hủy</Button>
+                                        </Col>
+                                        <Col md={2}>
+                                            <Button type="submit" size="sm" className='mt-3'>Cập nhật</Button>
+                                        </Col>
+                                        <Col />
+                                    </Row>
                                 </Form>
                             </Col>
                             : null}
