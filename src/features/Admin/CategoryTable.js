@@ -351,7 +351,7 @@ export default function CategoryTable() {
                                         <Form.Group as={Col} md="4">
                                             <Form.Label>Alias</Form.Label>
                                             <Form.Control
-                                                required
+                                                disabled
                                                 type="text"
                                                 name="alias"
                                                 onChange={(e) => setDataUpdate({
@@ -368,7 +368,7 @@ export default function CategoryTable() {
                                         <Form.Group as={Col} md="6">
                                             <Form.Label>Mô tả</Form.Label>
                                             <Form.Control
-                                                required
+                                                disabled
                                                 type="text"
                                                 name="description"
                                                 onChange={(e) => setDataUpdate({
@@ -382,7 +382,7 @@ export default function CategoryTable() {
                                         </Form.Group>
                                         <Form.Group as={Col} md="4" >
                                             <Form.Label>Danh mục</Form.Label>
-                                            <Form.Select onChange={handleSelectType} defaultValue="Chọn chuyên mục sản phẩm" >
+                                            <Form.Select onChange={handleSelectType} disabled defaultValue="Chọn chuyên mục sản phẩm" >
                                                 {types.map(item => <option key={item.type_id} value={item.type_id}>{item.name} </option>
 
                                                 )}
