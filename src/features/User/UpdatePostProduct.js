@@ -52,13 +52,13 @@ export default function UpadtePostProduct() {
     function getInfoProdduct() {
         const config = {
             headers: {
-                'x-access-token': localStorage.x_accessToken,
-                'x-refresh-token': localStorage.x_refreshToken
+                'x-access-token': localStorage.x_accessToken ? localStorage.x_accessToken : null,
+                'x-refresh-token': localStorage.x_refreshToken ?  localStorage.x_refreshToken : null
             }
         }
 
         axios
-            .get(`http://localhost:3002/api/products/info/${id}`, config)
+            .get(`http://localhost:3002/api/seller/product/info/${id}`, config)
             .then(function (res) {
                 if (res.status === 200) {
                     setInfoProduct(res.data.infoProduct)
@@ -121,9 +121,8 @@ export default function UpadtePostProduct() {
 
         const form = e.currentTarget;
         if (form.checkValidity() && data) {
-
-            const d = data.description ? data.description.replace(/<[^>]*>?/gm, '') : "";
-            const nd = description ? description.replace(/<[^>]*>?/gm, '') : "";
+            const d = data.description ? data.description : "";
+            const nd = description ? description: "";
             setNewDescription("<p> " + d + " " + nd + " </p> ");
             const newData = {
                 product_id: data.product_id,
@@ -141,7 +140,7 @@ export default function UpadtePostProduct() {
 
     }, [newDescription]);
 
-
+    
     return (
         <Container>
             <Row>

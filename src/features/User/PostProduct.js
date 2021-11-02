@@ -116,8 +116,8 @@ export default function PostProduct() {
             }
 
             //post data to server
-            post(data);
-            //console.log(data)
+            //post(data);
+            console.log(data)
         }
         setValidated(true);
     }
@@ -266,8 +266,8 @@ export default function PostProduct() {
                                 </Form.Group>
                                 <Form.Group as={Col} md="4" >
                                     <Form.Label>Danh mục</Form.Label>
-                                    <Form.Select onChange={handleCategory} defaultValue="Chọn danh mục sản phẩm" >
-                                        {categories.map(item => <option key={item.category_id} value={item.category_id}>{item.name} </option>
+                                    <Form.Select onChange={handleCategory} value={categorySelected} defaultValue="Chọn danh mục sản phẩm" >
+                                        {categories.map(item => <option key={item.category_id}  value={item.category_id}>{item.name} </option>
 
                                         )}
                                     </Form.Select>

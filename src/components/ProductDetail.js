@@ -144,7 +144,7 @@ export default function ProductDetail() {
         axios
             .get(`http://localhost:3002/api/bidder/product/evaluation?seller_id=${id}`, config)
             .then(function (res) {
-               //console.log(res)
+                //console.log(res)
                 if (res.status === 200) {
                     if (res.data.description) {
                         setEvaluated(true);
@@ -260,7 +260,7 @@ export default function ProductDetail() {
 
     //-------------------------------------------------------------------------------------------------------------------->
     useEffect(() => {
-       if(id > 0)
+        if (id > 0)
             getInfoProduct();
     }, [location, autionHistoryList]);
 
@@ -335,7 +335,7 @@ export default function ProductDetail() {
         <>
             <div className="card mb-3 mt-4 no-gutters" >
                 <div className="row no-gutters">
-                    { data ?
+                    {data ?
                         <Row >
                             <Col className="col-md-4 m-2">
                                 <Row >
@@ -383,8 +383,8 @@ export default function ProductDetail() {
                                             <br />
                                             Người bán: {data.seller_name} &nbsp;&nbsp;&nbsp;&nbsp;  Đánh giá: {data.evaluation_score} điểm
                                             <br />
-                                            Đăng: {data.created_at}
-                                            <br />
+                                            {/* Đăng: {data.created_at}
+                                            <br /> */}
                                             Bắtđầu: {data.start_day}
                                             <br />
                                             {/* Kết thúc: <a role='text' style={{ textDecoration: 'none' }} className="text-danger">{data.end_day}</a> */}
@@ -407,7 +407,7 @@ export default function ProductDetail() {
                                 </div>
                             </Col >
                         </Row>
-                        : null
+                        : <h6 className='d-flex justify-content-center'>Không có sản phẩm!</h6>
                     }
                     {
                         data && data.compare_day < 0 ?
@@ -495,13 +495,14 @@ export default function ProductDetail() {
             <div className="card mb-3 mt-4 no-gutters" >
                 <Row className="no-gutters">
                     {
-                        realationProduct ?
+                        realationProduct && realationProduct.length > 0 ?
                             <Row xs={1} md={5} className="g-4 m-auto mb-3">
                                 {realationProduct.map((item) => (
                                     <ProductCard key={item.product_id} item={item} />
                                 ))}
                             </Row>
-                            : null}
+                            : <h6 className='d-flex justify-content-center'>Không có sản phẩm!</h6>
+                    }
                 </Row>
             </div>
             <Modal show={show} onHide={handleClose}>
