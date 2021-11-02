@@ -118,7 +118,6 @@ export default function SignupPage() {
                                             placeholder="Họ và tên"
                                             defaultValue=""
                                             name="fullname"
-
                                         />
                                         <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
                                     </Form.Group>
@@ -132,6 +131,7 @@ export default function SignupPage() {
                                             placeholder="Địa chỉ"
                                             defaultValue=""
                                             name="address"
+                                           
                                         />
                                         <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
                                     </Form.Group>

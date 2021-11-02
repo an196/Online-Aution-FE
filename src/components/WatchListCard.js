@@ -7,10 +7,13 @@ import {
     formatDateTime,
     formatProductName,
     formatPrice,
+    formatEndDay,
 } from '../utils/utils';
 import { useEffect } from 'react';
 import { addWatchList, removeWatchList } from '../features/User/UserSlice';
 import {  useDispatch } from "react-redux";
+import ReactHtmlParser from "react-html-parser";
+
 
 const styles = {
     card: {
@@ -45,7 +48,7 @@ export default function WatchListCard({ item, watchList }) {
         product_name: formatProductName(item.product_name),
         start_cost: formatPrice(item.start_cost),
         start_day: formatDateTime(item.start_day),
-        end_day: formatDateTime(item.end_day),
+        end_day: formatEndDay(item.end_day),
         image: item.image ? item.image : defaultImg
     };
 
@@ -87,9 +90,10 @@ export default function WatchListCard({ item, watchList }) {
                             <br />
                             Ngày bắt đầu: {data.start_day}
                             <br />
-                            <a role='text' style={{ textDecoration: 'none' }} className="text-danger">Hạn: {data.end_day}</a>
+                            {/* <a role='text' style={{ textDecoration: 'none' }} className="text-danger">Hạn: {data.end_day}</a> */}
+                            {ReactHtmlParser(data.end_day)}
                             <br />
-                            <Link to={`/product/detail?productid=${data.product_id}&like=${like}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
+                            <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
                         </Card.Text>
                         <Row className="d-flex justify-content-center">
                             <p role='button' className='d-flex justify-content-center' onClick={handleLike}>

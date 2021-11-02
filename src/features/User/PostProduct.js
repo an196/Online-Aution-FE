@@ -10,47 +10,20 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { getCategories, selectCategories } from '../product/categorySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from "react-router";
-import { formatDateTime } from '../../utils/utils';
+import { formatDateTime, formatDateTimeToPost } from '../../utils/utils';
 import { NotifyHelper } from '../../helper/NotifyHelper';
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
-
+import { TimePicker } from 'antd';
+import moment from 'moment';
+import { modules, formats } from '../../utils/quillConfig';
 const schema = yup.object().shape({
     productName: yup.string().required(),
 
 });
 
-const modules = {
-    toolbar: [
-        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-        [{ size: [] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' },
-        { 'indent': '-1' }, { 'indent': '+1' }],
-        ['link', 'image', 'video'],
-        ['clean']
-    ],
-    clipboard: {
-        // toggle to add extra line breaks when pasting HTML:
-        matchVisual: false,
-    }
-}
-/* 
- * Quill editor formats
- * See https://quilljs.com/docs/formats/
- */
-const formats = [
-    'header', 'font', 'size',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image', 'video'
-]
 
-/* 
- * PropType validation
- */
 const propTypes = {
     placeholder: PropTypes.string,
 }
@@ -65,7 +38,7 @@ export default function PostProduct() {
     const dispatch = useDispatch();
     const history = useHistory();
     const [validated, setValidated] = useState(false);
-    const [startDate, setStartDate] = useState(new Date());
+    const [dayCountAuction, setDayCountAuction] = useState(3);
 
     //decription
     const [description, setDescription] = useState("");
@@ -76,27 +49,28 @@ export default function PostProduct() {
     const [extra1Image, setExtra1Image] = useState(null);
     const [extra2Image, setExtra2Image] = useState(null);
     const [extra3Image, setExtra3Image] = useState(null);
-    const [stepCost, setStepCost] = useState(1000);
-    const [progress, setProgress] = useState(0);
-    const [urlMainImage, setUrlMainImage] = useState();
-    const [urlExtra1Image, setUrlExtra1Image] = useState();
-    const [urlExtra2Image, setUrlExtra2Image] = useState();
-    const [urlExtra3Image, setUrlExtra3Image] = useState();
+    const [stepCost, setStepCost] = useState(100000);
 
 
     //define categories
     const categories = useSelector(selectCategories);
 
+    //time picker
+    const timePickerFormat = 'HH:mm';
+    const [startDate, setStartDate] = useState((new Date()));
+    const [startTime, setStartTime] = useState(moment('00:00', timePickerFormat));
+
+
     async function handleSubmit(e) {
         e.preventDefault();
         e.stopPropagation();
-       
+
 
         const form = e.currentTarget;
         if (form.checkValidity()) {
             const currentTime = new Date();
 
-            if(startDate.getDate() <= currentTime.getDate()){
+            if (startDate.getDate() <= currentTime.getDate()) {
                 NotifyHelper.error('Ngày bắt đầu đấu giá phải lớn hơn ngày hiện tại', 'Thông báo');
                 return;
             }
@@ -106,13 +80,24 @@ export default function PostProduct() {
             const start_cost = e.target.start_cost.value;
             const step_cost = stepCost;
             const buy_now = e.target.but_now.value ? e.target.but_now.value : null;
-            const start_day = formatDateTime(startDate);
+
+            //caculate startday
+            const start_day = new Date();
+            start_day.setDate(startDate.getDate());
+            start_day.setMonth(startDate.getMonth());
+            start_day.setFullYear(startDate.getFullYear());
+            start_day.setHours(startTime.toDate().getHours());
+            start_day.setMinutes(startTime.toDate().getMinutes());
+            start_day.setSeconds('00');
+            console.log(start_day)
+            const o_start_day = formatDateTimeToPost(start_day);
+            //console.log(start_day)
+
 
             //caculate end day
-            var myDate = startDate;
-            myDate.setDate(myDate.getDate() + 7);
-            const end_day = formatDateTime(myDate);
-
+            var myDate = start_day;
+            myDate.setDate(myDate.getDate() + dayCountAuction);
+            const end_day = formatDateTimeToPost(myDate);
 
             const urlImg = mainImage + ',' + extra1Image + ',' + extra2Image + ',' + extra3Image;
             //up img to firebase
@@ -124,8 +109,8 @@ export default function PostProduct() {
                 image: urlImg,
                 start_cost: Number(start_cost),
                 step_cost: Number(step_cost),
-                buy_now: 0,
-                start_day: start_day,
+                buy_now: buy_now ? buy_now : 0,
+                start_day: o_start_day,
                 end_day: end_day,
                 description: description,
                 is_auto_renew: autoRenew,
@@ -133,39 +118,31 @@ export default function PostProduct() {
 
             //post data to server
             post(data);
-            console.log(data)
+            //console.log(data)
+
+            //clear form
+            //e.target.productName.value = "";
         }
         setValidated(true);
-
-
-
     }
-
-
 
 
     //post
     async function post(data) {
-
-
         let headers = {};
         headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
         headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
         let config = {
             headers: { ...headers, 'Content-Type': 'application/json' }
         }
-        console.log(config)
         axios
             .post("http://localhost:3002/api/seller/product", data, config)
             .then(function (res) {
-                console.log('dd')
                 if (res.status === 200)
                     NotifyHelper.success(res.data.message, "Thông báo")
-
             })
             .catch(function (error) {
                 NotifyHelper.error(error, "Thông báo");
-                console.log(error)
             });
 
     }
@@ -226,7 +203,6 @@ export default function PostProduct() {
 
     //handle main image
     function handleMainImage(e) {
-
         if (e.target.files[0]) {
             upImgToFireBase(e.target.files[0], 1);
         }
@@ -239,14 +215,12 @@ export default function PostProduct() {
     }
 
     function handleExtra2Image(e) {
-
         if (e.target.files[0]) {
             upImgToFireBase(e.target.files[0], 3);
         }
     }
 
     function handleExtra3Image(e) {
-
         if (e.target.files[0]) {
             upImgToFireBase(e.target.files[0], 4);
         }
@@ -271,138 +245,157 @@ export default function PostProduct() {
         dispatch(getCategories());
     }, [dispatch]);
 
-
+    //console.log(startDate)
+    //console.log(startTime.toDate())
     return (
-        <Row>
-        <Col></Col>
-        <Col xs={8}>
-            <UserNavBar />
-            <Container className='p-4'>
-                <h5 className="d-flex justify-content-center mt-4">Đăng sản phẩm!</h5>
+        <Container>
+            <Row>
+                <Col></Col>
+                <Col xs={8}>
+                    <UserNavBar />
+                    <Container className='p-4'>
+                        <h5 className="d-flex justify-content-center mt-4">Đăng sản phẩm!</h5>
+                        <Form noValidate onSubmit={handleSubmit} validated={validated} method="get" >
+                            <Row className="mb-3">
+                                <Form.Group as={Col} md="8" controlId="validationFormik01">
+                                    <Form.Label>Tên sản phẩm</Form.Label>
+                                    <Form.Control
+                                        required
+                                        type="text"
+                                        name="productName"
+                                        //onChange={handleChange}
+                                        maxLength='255'
+                                    />
+                                     <Form.Control.Feedback type="invalid">
+                                        Tối đa: 255 ký tự
+                                    </Form.Control.Feedback>
+                                    <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
+                                </Form.Group>
+                                <Form.Group as={Col} md="4" >
+                                    <Form.Label>Danh mục</Form.Label>
+                                    <Form.Select onChange={handleCategory} value={categorySelected} defaultValue="Chọn danh mục sản phẩm" >
+                                        {categories.map(item => <option key={item.category_id} value={item.category_id}>{item.name} </option>
 
-                <Form noValidate onSubmit={handleSubmit} validated={validated} method="get" >
-                    <Row className="mb-3">
-                        <Form.Group as={Col} md="8" controlId="validationFormik01">
-                            <Form.Label>Tên sản phẩm</Form.Label>
-                            <Form.Control
-                                required
-                                type="text"
-                                name="productName"
-                                //onChange={handleChange}
-                                maxLength='255'
-                            />
-                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group as={Col} md="4" >
-                            <Form.Label>Danh mục</Form.Label>
-                            <Form.Select onChange={handleCategory} defaultValue="Chọn danh mục sản phẩm" >
-                                {categories.map(item => <option key={item.category_id} value={item.category_id}>{item.name} </option>
+                                        )}
+                                    </Form.Select>
 
-                                )}
-                            </Form.Select>
+                                </Form.Group>
+                            </Row>
+                            <Row className="mb-3">
+                                <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
+                                    <Form.Label>Ảnh chính</Form.Label>
+                                    <Form.Control type="file"
+                                        required
+                                        name="mainImage"
+                                        onChange={handleMainImage}
+                                    />
+                                </Form.Group>
+                                <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
+                                    <Form.Label>Ảnh phụ 1</Form.Label>
+                                    <Form.Control type="file"
+                                        required
+                                        name="extraImage1"
+                                        onChange={handleExtra1Image}
+                                    />
+                                </Form.Group>
+                                <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
+                                    <Form.Label>Ảnh phụ 2</Form.Label>
+                                    <Form.Control type="file"
+                                        required
+                                        name="extraImage2"
+                                        onChange={handleExtra2Image}
+                                    />
+                                </Form.Group>
+                                <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
+                                    <Form.Label>Ảnh phụ 3</Form.Label>
+                                    <Form.Control type="file"
+                                        required
+                                        name="extraImage3"
+                                        onChange={handleExtra3Image}
+                                    />
+                                </Form.Group>
+                            </Row>
+                            <Row>
+                                <Form.Group as={Col} md="3" controlId="validationFormik01">
+                                    <Form.Label>Giá khởi điểm</Form.Label>
+                                    <Form.Control
+                                        required
+                                        type="number"
+                                        name="start_cost"
+                                        min={10000} max={10000000}
 
-                        </Form.Group>
-                    </Row>
-                    <Row className="mb-3">
-                        <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
-                            <Form.Label>Ảnh chính</Form.Label>
-                            <Form.Control type="file"
-                                required
-                                name="mainImage"
-                                onChange={handleMainImage}
-                            />
-                        </Form.Group>
-                        <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
-                            <Form.Label>Ảnh phụ 1</Form.Label>
-                            <Form.Control type="file"
-                                required
-                                name="extraImage1"
-                                onChange={handleExtra1Image}
-                            />
-                        </Form.Group>
-                        <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
-                            <Form.Label>Ảnh phụ 2</Form.Label>
-                            <Form.Control type="file"
-                                required
-                                name="extraImage2"
-                                onChange={handleExtra2Image}
-                            />
-                        </Form.Group>
-                        <Form.Group as={Col} md="3" controlId="formFile" className="mb-3">
-                            <Form.Label>Ảnh phụ 3</Form.Label>
-                            <Form.Control type="file"
-                                required
-                                name="extraImage3"
-                                onChange={handleExtra3Image}
-                            />
-                        </Form.Group>
-                    </Row>
-                    <Row>
-                        <Form.Group as={Col} md="2" controlId="validationFormik01">
-                            <Form.Label>Giá khởi điểm</Form.Label>
-                            <Form.Control
-                                required
-                                type="number"
-                                name="start_cost"
-                                // onChange={(e) => {
-                                //     handleChange("price")(e);
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        Thấp nhất: 10,000 và  cao nhất: 10,000,000
+                                    </Form.Control.Feedback>
+                                    <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
+                                </Form.Group>
+                                <Form.Group as={Col} md="3" controlId="validationFormik01" onChange={handleStepCost}>
+                                    <Form.Label>Bước giá</Form.Label>
+                                    <Form.Select defaultValue="Chọn bước giá" onChange={(e) => setStepCost(e.target.value)}>
+                                        <option value={100000}>100,000đ</option>
+                                        <option value={200000}>200,000đ</option>
+                                        <option value={500000}>500,000đ</option>
+                                    </Form.Select>
+                                    <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
+                                </Form.Group>
+                                <Form.Group as={Col} md="3" controlId="validationFormik01">
+                                    <Form.Label>Giá mua ngay(nếu có)</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        name="but_now"
+                                        min={0} max={99999999}
+                                    />
+                                    <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
+                                </Form.Group>
 
-                                // }}
 
-                                min={0} max={10000000}
+                            </Row>
+                            <Row className='mb-3 mt-3'>
+                                <Form.Group as={Col} md="3" >
+                                    <Form.Label>Ngày bắt đầu đấu giá</Form.Label>
+                                    <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+                                </Form.Group>
+                                <Form.Group as={Col} md="3" >
+                                    <Form.Label>Thời gian bắt đầu </Form.Label>
+                                    <TimePicker defaultValue={moment('00:00', timePickerFormat)}
+                                        onChange={(time) => setStartTime(time)}
+                                        selected={startTime}
+                                        format={timePickerFormat} />
+                                </Form.Group>
+                                <Form.Group as={Col} md="3" >
+                                    <Form.Label>Khoảng thời gian đấu giá </Form.Label>
+                                    <Form.Select defaultValue="Chọn thời gian" onChange={(e) => setDayCountAuction(e.target.value)}>
+                                        <option value={3}>3 ngày</option>
+                                        <option value={5}>5 ngày</option>
+                                        <option value={7}>7 ngày</option>
+                                    </Form.Select>
+                                </Form.Group>
+                            </Row>
+
+                            <Row className='mb-3 mt-3'>
+                                <Form.Group as={Col} md="3" id="formGridCheckbox">
+                                    <Form.Check type="checkbox" label="Tự động gia hạn" name='auto_renew' onChange={handleAutoRenew} />
+                                </Form.Group>
+                            </Row>
+                            <h6>Mô tả sản phẩm</h6>
+                            <ReactQuill
+                                onChange={setDescription}
+                                value={description}
+                                modules={modules}
+                                formats={formats}
+                                bounds={'.app'}
+                                placeholder=''
                             />
-                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group as={Col} md="2" controlId="validationFormik01" onChange={handleStepCost}>
-                            <Form.Label>Bước giá</Form.Label>
-                            <Form.Select defaultValue="Chọn bước giá">
-                                <option value={1000} >1000đ</option>
-                                <option value={2000}>2000đ</option>
-                                <option value={3000}>3000đ</option>
-                            </Form.Select>
-                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group as={Col} md="2" controlId="validationFormik01">
-                            <Form.Label>Giá mua ngay(nếu có)</Form.Label>
-                            <Form.Control
-                                type="number"
-                                name="but_now"
-                                // onChange={(e) => {
-                                //     handleChange("but_now")(e);
-                                // }}
 
-                                min={0} max={10000000}
-                            />
-                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group as={Col} md="2" >
-                        <Form.Label>Ngày bắt đầu đấu giá</Form.Label>
-                        <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
-                        </Form.Group>
-                        
-                    </Row>
-                    <Row className='mb-3 mt-3'>
-                        <Form.Group as={Col} md="2" id="formGridCheckbox">
-                            <Form.Check type="checkbox" label="Tự động gia hạn" name='auto_renew' onChange={handleAutoRenew} />
-                        </Form.Group>
-                    </Row>
-                    <h6>Mô tả sản phẩm</h6>
-                    <ReactQuill
-                        onChange={setDescription}
-                        value={description}
-                        modules={modules}
-                        formats={formats}
-                        bounds={'.app'}
-                        placeholder=''
-                    />
-
-                    <Row className='d-flex justify-content-center'>
-                        <Button type="submit" className='mt-3 col-md-2'>Đăng bài</Button>
-                    </Row>
-                </Form>
-            </Container>
-            </Col>
-            <Col></Col>
-        </Row>
+                            <Row className='d-flex justify-content-center'>
+                                <Button type="submit" className='mt-3 col-md-2'>Đăng bài</Button>
+                            </Row>
+                        </Form>
+                    </Container>
+                </Col>
+                <Col></Col>
+            </Row>
+        </Container>
     )
 }

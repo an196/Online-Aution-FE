@@ -9,7 +9,8 @@ const initialState = {
     relationProduct: [],
     productsByCategory: [],
     categoryName: '',
-    searchResult: []
+    searchResult: [],
+    infoAuctioneers: [],
 }
 
 export const getTopItemRunOut = createAsyncThunk("product/getTopItemRunOut",
@@ -39,8 +40,12 @@ export const getTopHighestAutions = createAsyncThunk("product/getTopHighestAutio
 export const getInfoProduct = createAsyncThunk("product/getInfoProduct",
     async (id) => {
         const response = await productApi.getInfoProduct(id);
-        if(response.status === 200)
+        if(response.status === 200){
+            //console.log(response.data)
             return response.data;
+        }
+        
+            
         return 0;
 });
 
@@ -65,7 +70,11 @@ export const productSlice = createSlice({
     name: 'product',
     initialState,
     reducers: {
-
+        setInfoProduct: (state, action) => {
+            state.infoProduct = action.payload.infoProduct;
+            state.relationProduct =  action.payload.relation_product;
+            state.infoAuctioneers = action.payload.infoAuctioneers;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -81,6 +90,7 @@ export const productSlice = createSlice({
             .addCase(getInfoProduct.fulfilled, (state, { payload }) => {
                 state.infoProduct = payload.infoProduct;
                 state.relationProduct = payload.relation_product;
+                state.infoAuctioneers = payload.infoAuctioneers;
             })
             .addCase(getProductsByCategory.fulfilled, (state, { payload }) => {
                 state.productsByCategory = payload.info_types;
@@ -94,7 +104,7 @@ export const productSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { } = productSlice.actions;
+export const { setInfoProduct} = productSlice.actions;
 export const selectRunOutItems = state => state.product.runOutItems;
 export const selectTopHighestCost = state => state.product.topHighestCost;
 export const selectTopHighestAutions = state => state.product.topHighestAutions;
@@ -103,4 +113,5 @@ export const selectRelationProduct = state => state.product.relationProduct;
 export const selectProductsByCategory = state => state.product.productsByCategory;
 export const selectCategoryName = state => state.product.categoryName;
 export const selectSearchResult = state => state.product.searchResult;
+export const selectInfoAuctioneers = state => state.product.infoAuctioneers;
 export default productSlice.reducer;

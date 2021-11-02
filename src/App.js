@@ -29,6 +29,8 @@ import { createBrowserHistory  } from 'history';
 import UserDashboard from './features/User/UserDashboard';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
+import UpdateProfile from './features/User/UpdateProfile';
+import UpadtePostProduct from './features/User/UpdatePostProduct';
 
 function App() {
   const history = createBrowserHistory();
@@ -75,6 +77,12 @@ function App() {
           </PrivateRoute>
           <PrivateRoute path="/user/post" exact>
             <PostProduct />
+          </PrivateRoute>
+          <PrivateRoute path="/user/update-profile" exact>
+            <UpdateProfile/>
+          </PrivateRoute>
+          <PrivateRoute path="/user/update-post-product" exact>
+            <UpadtePostProduct/>
           </PrivateRoute>
           <PrivateRoute path="/admin" exact>
             <AdminPage />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Col, Row, Nav, Navbar } from 'react-bootstrap';
+import { Col, Row, Nav, Navbar, Image, Badge } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card'
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { Link, Redirect } from 'react-router-dom';
@@ -9,14 +9,37 @@ import {
     formatDateTime,
     formatProductName,
     formatPrice,
+    formatEndDay,
 } from '../utils/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import axios from 'axios';
 import { NotifyHelper } from '../helper/NotifyHelper';
+import { timeLimit } from '../helper/timeLimitHelper';
 
 const styles = {
+    container: {
+        position: 'relative',
+        textAlign: 'center',
 
+    },
+    bottomLeft: {
+        position: 'absolute',
+        bottom: '8px',
+        left: '16px',
+    },
+    whiteLable: {
+        position: 'absolute',
+        top: ' 0.8rem',
+        left: '0.8rem',
+        color: 'white',
+    },
+    blackLable: {
+        color: 'red',
+        position: 'absolute',
+        top: '0.8rem',
+        left: '0.8rem',
+    },
     card: {
         //backgroundColor: '#B7E0F2',
         borderRadius: 5,
@@ -45,7 +68,8 @@ export default function ProductCard({ item }) {
     const [validUser, setValidUser] = useState(false);
     const [watchList, setWatchList] = useState();
     const history = useHistory();
-
+    const [flicker, setFlicker] = useState(false);
+    const [isNewProduct, setIsNewProduct] = useState(false);
 
     const id = item.product_id;
     const data = {
@@ -54,7 +78,7 @@ export default function ProductCard({ item }) {
         start_cost: formatPrice(item.start_cost),
         buy_now: formatPrice(item.buy_now),
         created_at: formatDateTime(item.created_at),
-        end_day: formatDateTime(item.end_day),
+        end_day: formatEndDay(item.end_day),
         image: item.image ? item.image : defaultImg
     };
 
@@ -83,7 +107,7 @@ export default function ProductCard({ item }) {
         axios
             .get("http://localhost:3002/api/bidder/watch_list", config)
             .then(function (res) {
-              
+
                 if (res.status === 200) {
                     setWatchList(res.data.watch_list);
                     if (res.data.watch_list.some(item => id === item.product_id))
@@ -99,13 +123,21 @@ export default function ProductCard({ item }) {
 
 
     useEffect(() => {
+        if (item) {
+            if ((new Date() - new Date(item.created_at)) < timeLimit.NewProduct) {
+                setIsNewProduct(true);
+            }
+        }
         if (localStorage.x_accessToken) {
             getWatchList();
             setValidUser(true);
         }
     }, [dispatch])
 
-
+    // useEffect(() => {
+    //     const _flicker = setInterval(setFlicker(!flicker), 2000);
+    //     return () => clearInterval(_flicker);
+    // })
 
 
 
@@ -113,14 +145,21 @@ export default function ProductCard({ item }) {
         <Col>{data ?
             <div>
                 <Card style={styles.card}>
-                    <Card.Img variant="top" src={data.image} style={styles.cardImage} />
+                    <div style={styles.container}>
+                        <Card.Img variant="top" src={data.image} style={styles.cardImage} />
+                        {isNewProduct ?
+                            <Badge pill bg="warning" text="dark" style={styles.bottomLeft, flicker ? styles.whiteLable : styles.blackLable}>
+                                Mới
+                            </Badge>
+                            : null}
+                    </div>
                     <Card.Body style={styles.cardBody}>
                         <Card.Title style={styles.cardTitle} className='mt-1'> {data.name} &nbsp;&nbsp;&nbsp;&nbsp;
                         </Card.Title>
                         <Card.Text style={styles.cardText} >
                             Đấu giá: {data.start_cost}
                             <br />
-                            Người bán:  {data.seller_name.length > 13 ? data.seller_name :
+                            Seller:  {data.seller_name.length > 13 ? data.seller_name :
                                 <>
                                     {data.seller_name}
                                     {ReactHtmlParser('&nbsp;')}
@@ -129,13 +168,14 @@ export default function ProductCard({ item }) {
                             <br />
                             Mua Ngay: {data.buy_now}
                             <br />
-                            Ngày đăng: {data.created_at}
+                            Ngày đăng: <br />{data.created_at}
                             <br />
-                            <a role='text' style={{ textDecoration: 'none' }} className="text-danger">Hạn: {data.end_day}</a>
+                            {/* <a role='text' style={{ textDecoration: 'none' }} className="text-danger">Hạn: {data.end_day}</a> */}
+                            {ReactHtmlParser(data.end_day)}
                             <br />
                             Lượt đấu giá: {data.count_auction}
                             <br />
-                            <Link to={`/product/detail?productid=${data.product_id}&like=${like}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
+                            <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
 
 
 

@@ -10,10 +10,12 @@ import { NotifyHelper } from '../../helper/NotifyHelper';
 import Footer from '../../components/Footer';
 
 export default function ProductTable() {
-    const products = useSelector(selectProducts);
+    const [products, setProducts] = useState();
+    const [allProducts, setAllProducts] = useState();
+    const [reload, setReload] = useState(false);
     const dispatch = useDispatch();
-    const [selectedRows, setSelectedRows] = React.useState([]);
-    const [toggleCleared, setToggleCleared] = React.useState(false);
+    const [selectedRows, setSelectedRows] = useState([]);
+    const [toggleCleared, setToggleCleared] = useState(false);
 
 
     const handleRowSelected = React.useCallback(state => {
@@ -70,6 +72,33 @@ export default function ProductTable() {
         },
     ];
 
+    const columns2 = [
+        {
+            name: 'id',
+            selector: row => row.product_id,
+            sortable: true,
+        },
+        {
+            name: 'Tên sản phẩm',
+            selector: row => row.name,
+            sortable: true,
+        },
+        {
+            name: 'Người bán',
+            selector: row => row.seller_name,
+        },
+        {
+            name: 'Ngày tạo',
+            selector: row => row.created_at,
+            sortable: true,
+        },
+        {
+            name: 'Danh mục',
+            selector: row => row.type_name,
+            sortable: true,
+        }
+    ];
+    //call api ------------------------------------------------------------------------------------------------->
     function handleDelete(id) {
         console.log(id)
         const data = {};
@@ -88,7 +117,59 @@ export default function ProductTable() {
                 console.log(res)
                 if (res.status === 200) {
                     NotifyHelper.success(res.data.message, "Thông báo")
-                    dispatch(remove(id))
+                    setReload(!reload);
+                }
+
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error(error, "Thông báo");
+                console.log(error)
+            });
+    }
+
+    function getProduct() {
+        let headers = {};
+        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
+        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
+
+        let config = {
+            headers: { ...headers }
+        }
+
+        axios
+            .get(`http://localhost:3002/api/admin/product`,  config)
+            .then(function (res) {
+                console.log(res.data)
+                if (res.status === 200) {
+                   setProducts(res.data)
+                }
+
+
+            })
+            .catch(function (error) {
+                NotifyHelper.error(error, "Thông báo");
+                console.log(error)
+            });
+
+
+    }
+
+    function getAllProduct() {
+        let headers = {};
+        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
+        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
+
+        let config = {
+            headers: { ...headers }
+        }
+
+        axios
+            .get(`http://localhost:3002/api/admin/product?condition_end_day=true`,  config)
+            .then(function (res) {
+                console.log(res.data)
+                if (res.status === 200) {
+                   setAllProducts(res.data)
                 }
 
 
@@ -102,17 +183,28 @@ export default function ProductTable() {
     }
 
     useEffect(() => {
-        dispatch(getProduct());
-    }, [dispatch]);
+       getProduct();
+       getAllProduct()
+    }, [reload]);
 
-
+    //console.log(products)
     return (
         <div className="container">
             <AdminNav />
             <DataTable name='product-table'
-                title="Danh sách các sản phẩm"
+                title="Danh sách các sản phẩm đang đấu giá"
                 columns={columns}
                 data={products}
+                //selectableRows
+                contextActions={contextActions}
+                onSelectedRowsChange={handleRowSelected}
+                clearSelectedRows={toggleCleared}
+                pagination
+            />
+            <DataTable name='product-table'
+                title="Danh sách tất cả các sản phẩm đấu giá"
+                columns={columns2}
+                data={allProducts}
                 //selectableRows
                 contextActions={contextActions}
                 onSelectedRowsChange={handleRowSelected}

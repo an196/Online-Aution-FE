@@ -58,7 +58,6 @@ export default function NavigationBar() {
       
     useEffect(() => {
         dispatch(getTypeInfo());
-        
     }, [dispatch]);
    
     return (

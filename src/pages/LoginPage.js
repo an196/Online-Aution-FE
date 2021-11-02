@@ -8,12 +8,13 @@ import { selectUser, setUser, refresh } from "../features/User/UserSlice";
 import { Link } from "react-router-dom";
 import { NotifyHelper } from "../helper/NotifyHelper";
 import { withRouter } from 'react-router-dom';
+import { GoogleLogin,GoogleLogout } from 'react-google-login';
 
 function Login(props) {
 
     const [validated, setValidated] = useState(false);
     const [errors, setErrors] = useState({});
-   
+
     const history = useHistory();
     const user = useSelector(selectUser);
     const dispatch = useDispatch();
@@ -33,7 +34,7 @@ function Login(props) {
 
     };
 
-
+    //function call api------------------------------------------------------------------------>
     function getUsers(data) {
         // With error handling
 
@@ -62,7 +63,7 @@ function Login(props) {
                                         dispatch(setUser());
                                         NotifyHelper.success("Đăng nhập thành công", "Thông báo");
                                         history.push("/");
-                                       
+
                                         break;
                                     case 3:
                                         dispatch(setUser());
@@ -85,6 +86,56 @@ function Login(props) {
         }
     }
 
+    function loginGoogle(data) {
+        // With error handling
+
+        if (data) {
+            const body = {
+                email: data
+            };
+
+            axios
+                .post("http://localhost:3002/api/accounts/login-google", body)
+                .then(function (res) {
+                    if (res.status === 200)
+                        if (res.data.authenticated === true) {
+                            const { accessToken, refreshToken } = res.data;
+
+                            localStorage.setItem('x_accessToken', accessToken);
+                            localStorage.setItem('x_refreshToken', refreshToken);
+
+                            const user = jwt_decode(accessToken);
+                            if (user.role_id !== undefined) {
+                                switch (user.role_id) {
+                                    case 1:
+                                    case 2:
+                                        dispatch(setUser());
+                                        NotifyHelper.success("Đăng nhập thành công", "Thông báo");
+                                        history.push("/");
+
+                                        break;
+                                    case 3:
+                                        dispatch(setUser());
+                                        history.push("/admin");
+                                        NotifyHelper.success("Đăng nhập thành công", "Thông báo");
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+
+                        }
+                    if (res.status === 400) {
+                        console.log(res.data)
+                    }
+                })
+                .catch(function (error) {
+                    NotifyHelper.error("Đăng nhập thất bại", "Thông báo");
+                });
+        }
+    }
+
+    //function handle ----------------------------------------------------------------------------------->
     function handleEmail(e) {
         const mail = e.target.value;
         if (mail.length === 0 || mail === "") {
@@ -120,10 +171,23 @@ function Login(props) {
         }
     }
 
+
+    const responseGoogleSuccessed = (response) => {
+        console.log(response.profileObj.email)
+        const data = response.profileObj.email;
+        loginGoogle(data)
+    }
+    const responseGoogleFailed = (response) => {
+        const rs = JSON.stringify(response)
+        console.log(rs.email);
+    }
+    
+    
+
     useEffect(() => {
-        history.replace() 
        
     }, [dispatch])
+
     return (
         <Container>
             <Row>
@@ -132,7 +196,7 @@ function Login(props) {
                     <div className='container col-md-5'>
                         <div className='card  mt-5 p-4'  >
                             <h3 className='d-flex justify-content-center'>Đăng nhập</h3>
-                            <Form className='p-2' noValidate validated={validated} onSubmit={handleSubmit} method="get" >
+                            <Form className='p-2' noValidate validated={validated} onSubmit={handleSubmit} method="post" >
                                 <Row className="">
                                     <Form.Group as={Col} controlId="validationCustom01">
                                         <Form.Label column="sm">Email</Form.Label>
@@ -177,10 +241,17 @@ function Login(props) {
                                 </Row>
                                 <Link to='/' style={{ fontSize: '0.72rem', textDecoration: 'underline' }}>Quay về trang chủ</Link>
                             </Form>
-
+                            <hr />
+                            <h6 className='d-flex justify-content-center'>Đăng nhập với google</h6>
+                            <GoogleLogin
+                                clientId="870000679676-1m2jdosvasi9l3cko23u7ss06bujcagg.apps.googleusercontent.com"
+                                buttonText="Login"
+                                onSuccess={responseGoogleSuccessed}
+                                onFailure={responseGoogleFailed}
+                                cookiePolicy={'single_host_origin'}
+                            />
                         </div>
                     </div>
-
                 </Col>
                 <Col></Col>
             </Row>

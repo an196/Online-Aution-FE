@@ -45,7 +45,7 @@ export default function Reivew({ item }) {
         setlike(!like);
     }
 
-    console.log(item)
+    //console.log(item)
     return (
         <div>
             {data ?
@@ -77,7 +77,7 @@ export default function Reivew({ item }) {
                                     <br />
                                     Thời gian: {data.created_at}
                                     <br />
-                                    <Link to={`/product/detail/${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
+                                    <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
                                 </p>
 
                             </Col >
