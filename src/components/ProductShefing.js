@@ -82,13 +82,16 @@ export default function AutionProducts() {
     return (
         <>
             <div className="card mb-3 mt-4 no-gutters" >
-                    <Row xs={1} >
+                <Row xs={1} >
+                    {shefingProducts && shefingProducts.length > 0 ?
                         <Row xs={1} md={5} className="g-4 m-auto mb-3" >
-                            {shefingProducts ? shefingProducts.map((item) => (
+                            {shefingProducts.map((item) => (
                                 <ShefingCard key={item.auction_id} item={item} />
-                            )) : null}
+                            ))}
                         </Row>
-                    </Row>
+                    : <h6 className='d-flex justify-content-center'>Không có sản phẩm!</h6>
+                    }
+                </Row>
             </div>
         </>
     )

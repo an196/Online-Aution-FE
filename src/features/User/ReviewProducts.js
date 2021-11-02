@@ -14,7 +14,7 @@ export default function ReviewProduct() {
     const dispatch = useDispatch();
     const [buyer, setBuyer] = useState(true);
     const userId = jwt_decode(localStorage.x_accessToken).account_id;
-    
+
 
     function getReviews() {
         let data = {
@@ -43,13 +43,13 @@ export default function ReviewProduct() {
     }
 
     useEffect(() => {
-        
-        if( Number(userId)){
+
+        if (Number(userId)) {
             getReviews();
         }
 
-        if(localStorage.x_accessToken){
-            jwt_decode(localStorage.x_accessToken).role_id === 2 ?  setBuyer(false): setBuyer(true);
+        if (localStorage.x_accessToken) {
+            jwt_decode(localStorage.x_accessToken).role_id === 2 ? setBuyer(false) : setBuyer(true);
         }
     }, []);
 
@@ -62,10 +62,11 @@ export default function ReviewProduct() {
                 <Col xs={8}>
                     <UserNavBar />
                     <h5 className="d-flex justify-content-center mt-4">Các đánh giá!</h5>
-                    {reviews ? reviews.map((item) =>
-                        (<Review item={item} key={item.evaluation_id} />)
-                    ) : 
-                    <h6 className="d-flex justify-content-center mt-4">Chưa có đánh giá nào!</h6>
+                    {
+                        reviews && reviews.length > 0 ?
+                            reviews.map((item) =>
+                                (<Review item={item} key={item.evaluation_id} />))
+                            : <h6 className="d-flex justify-content-center mt-4">Chưa có đánh giá nào!</h6>
                     }
                     <Footer />
                 </Col>

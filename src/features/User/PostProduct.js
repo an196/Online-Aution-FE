@@ -116,8 +116,11 @@ export default function PostProduct() {
             }
 
             //post data to server
-            //post(data);
-            console.log(data)
+            post(data);
+            //console.log(data)
+
+            //clear form
+            //e.target.productName.value = "";
         }
         setValidated(true);
     }

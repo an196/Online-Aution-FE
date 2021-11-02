@@ -103,12 +103,15 @@ export default function SellerAutionHistory() {
         <>
             <div className="card mb-3 mt-4 no-gutters" >
                 <Row xs={1} >
-                    <Row xs={1} md={5} className="g-4 m-auto mb-3" >
-                        {/*  */}
-                        {sellHistory ? sellHistory.map((item) => (
-                            <AuctionHistoryCard key={item.auction_id} item={item} />
-                        )) : null}
-                    </Row>
+                    {sellHistory && sellHistory.length > 0 ?
+                        <Row xs={1} md={5} className="g-4 m-auto mb-3" >
+                            {/*  */}
+                            {sellHistory.map((item) => (
+                                <AuctionHistoryCard key={item.auction_id} item={item} />
+                            ))}
+                        </Row>
+                        : <h6 className='d-flex justify-content-center'>Không có sản phẩm!</h6>
+                    }
                 </Row>
             </div>
         </>

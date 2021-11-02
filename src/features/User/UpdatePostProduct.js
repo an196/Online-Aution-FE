@@ -123,10 +123,10 @@ export default function UpadtePostProduct() {
         if (form.checkValidity() && data) {
             const d = data.description ? data.description : "";
             const nd = description ? description: "";
-            setNewDescription("<p> " + d + " " + nd + " </p> ");
+            setNewDescription("<p> " + d +  nd + " </p> ");
             const newData = {
                 product_id: data.product_id,
-                description: "<p> " + d + " " + nd + " </p> "
+                description: "<p> " + d +  nd + " </p> "
             }
             updateDescription(newData)
 

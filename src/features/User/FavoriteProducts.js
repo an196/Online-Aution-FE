@@ -42,7 +42,7 @@ const FavoriteProducts = () => {
 
     useEffect(() => {
         if (localStorage.x_accessToken) {
-          
+
             getWatchList();
         }
     }, [dispatch])
@@ -56,13 +56,15 @@ const FavoriteProducts = () => {
                     <h5 className="d-flex justify-content-center mt-4">Sản phẩm yêu thích của bạn!</h5>
                     <div className="card mb-3 mt-4 no-gutters" >
                         <div className="row no-gutters">
-                            <Row xs={1} md={5} className="g-4 m-auto mb-3" >
-                                {watchList ? watchList.map((item) => (
-                                    <WatchListCard key={item.product_id} item={item}>
-                                    </WatchListCard>
-                                ))
-                                    : null}
-                            </Row>
+                            {watchList && watchList.length > 0 ?
+                                <Row xs={1} md={5} className="g-4 m-auto mb-3" >
+                                    {watchList.map((item) => (
+                                        <WatchListCard key={item.product_id} item={item}>
+                                        </WatchListCard>
+                                    ))}
+
+                                </Row>
+                                : <h6 className='d-flex justify-content-center'>Không có sản phẩm!</h6>}
                         </div>
                     </div>
                 </Col>
