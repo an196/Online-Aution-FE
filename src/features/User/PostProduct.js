@@ -38,6 +38,7 @@ export default function PostProduct() {
     const dispatch = useDispatch();
     const history = useHistory();
     const [validated, setValidated] = useState(false);
+    const [dayCountAuction, setDayCountAuction] = useState(3);
 
     //decription
     const [description, setDescription] = useState("");
@@ -95,7 +96,7 @@ export default function PostProduct() {
 
             //caculate end day
             var myDate = start_day;
-            myDate.setDate(myDate.getDate() + 7);
+            myDate.setDate(myDate.getDate() + dayCountAuction);
             const end_day = formatDateTimeToPost(myDate);
 
             const urlImg = mainImage + ',' + extra1Image + ',' + extra2Image + ',' + extra3Image;
@@ -265,12 +266,15 @@ export default function PostProduct() {
                                         //onChange={handleChange}
                                         maxLength='255'
                                     />
-                                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                     <Form.Control.Feedback type="invalid">
+                                        Tối đa: 255 ký tự
+                                    </Form.Control.Feedback>
+                                    <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
                                 </Form.Group>
                                 <Form.Group as={Col} md="4" >
                                     <Form.Label>Danh mục</Form.Label>
                                     <Form.Select onChange={handleCategory} value={categorySelected} defaultValue="Chọn danh mục sản phẩm" >
-                                        {categories.map(item => <option key={item.category_id}  value={item.category_id}>{item.name} </option>
+                                        {categories.map(item => <option key={item.category_id} value={item.category_id}>{item.name} </option>
 
                                         )}
                                     </Form.Select>
@@ -318,9 +322,13 @@ export default function PostProduct() {
                                         required
                                         type="number"
                                         name="start_cost"
-                                        min={0} max={10000000}
+                                        min={10000} max={10000000}
+
                                     />
-                                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">
+                                        Thấp nhất: 10,000 và  cao nhất: 10,000,000
+                                    </Form.Control.Feedback>
+                                    <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
                                 </Form.Group>
                                 <Form.Group as={Col} md="3" controlId="validationFormik01" onChange={handleStepCost}>
                                     <Form.Label>Bước giá</Form.Label>
@@ -329,16 +337,16 @@ export default function PostProduct() {
                                         <option value={200000}>200,000đ</option>
                                         <option value={500000}>500,000đ</option>
                                     </Form.Select>
-                                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                    <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
                                 </Form.Group>
                                 <Form.Group as={Col} md="3" controlId="validationFormik01">
                                     <Form.Label>Giá mua ngay(nếu có)</Form.Label>
                                     <Form.Control
                                         type="number"
                                         name="but_now"
-                                        min={0} max={10000000}
+                                        min={0} max={99999999}
                                     />
-                                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                    <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
                                 </Form.Group>
 
 
@@ -354,6 +362,14 @@ export default function PostProduct() {
                                         onChange={(time) => setStartTime(time)}
                                         selected={startTime}
                                         format={timePickerFormat} />
+                                </Form.Group>
+                                <Form.Group as={Col} md="3" >
+                                    <Form.Label>Khoảng thời gian đấu giá </Form.Label>
+                                    <Form.Select defaultValue="Chọn thời gian" onChange={(e) => setDayCountAuction(e.target.value)}>
+                                        <option value={3}>3 ngày</option>
+                                        <option value={5}>5 ngày</option>
+                                        <option value={7}>7 ngày</option>
+                                    </Form.Select>
                                 </Form.Group>
                             </Row>
 
