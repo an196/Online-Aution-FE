@@ -70,7 +70,7 @@ export default function AuctioningTable() {
     }, [dispatch, axios.post]);
 
     
-    console.log(infoAuctioneers)
+    //console.log(infoAuctioneers)
     return (
 
         <Container className='mt-3'>
