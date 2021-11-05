@@ -35,10 +35,10 @@ export default function Home(props) {
         axios
             .get("http://localhost:3002/api/bidder/watch_list", config)
             .then(function (res) {
-                console.log(res.data.watch_list);
+                //console.log(res.data.watch_list);
                 if (res.status === 200) {
                     setWatchList(res.data.watch_list);
-                    console.log(res.data.watch_list);
+                    //console.log(res.data.watch_list);
                 }
 
             })

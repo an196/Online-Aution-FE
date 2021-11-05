@@ -48,10 +48,10 @@ export function sortProductDescendingByCreateDate(data) {
 }
 
 export function formatEndDay(dateTime) {
-  const maxDiff = 259200; // miliseconds
+  const maxDiff = 1000 *60*60*24*3; // miliseconds
   //const diff = 50000 ;
-  const diff = new Date(dateTime) -  new Date() ;
-  return diff > 259200 ? 'Kết thúc: <br />' + formatDateTime(dateTime) : remainTime(diff);
+  const diff = new Date(dateTime) - new Date();
+  return diff > maxDiff ? 'Kết thúc: <br />' + formatDateTime(dateTime) : remainTime(diff);
 
 }
 

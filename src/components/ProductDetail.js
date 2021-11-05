@@ -204,7 +204,7 @@ export default function ProductDetail() {
         axios
             .get(`http://localhost:3002/api/products/info/${id}`, config)
             .then(function (res) {
-                console.log(res.data)
+                //console.log(res.data)
                 if (res.status === 200) {
                     setInfoProduct(res.data.infoProduct)
                     setRealationProduct(res.data.relation_product)
@@ -385,7 +385,7 @@ export default function ProductDetail() {
                                             <br />
                                             {/* Đăng: {data.created_at}
                                             <br /> */}
-                                            Bắtđầu: {data.start_day}
+                                            Bắt đầu: <br />{data.start_day}
                                             <br />
                                             {/* Kết thúc: <a role='text' style={{ textDecoration: 'none' }} className="text-danger">{data.end_day}</a> */}
                                             {ReactHtmlParser(data.end_day)}

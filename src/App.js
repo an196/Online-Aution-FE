@@ -25,15 +25,37 @@ import SearchResultPage from './pages/SearchResultPage';
 import WaitUpgrade from '../src/features/Admin/WaitUpgrade';
 import BidderTable from './features/Admin/BidderTable';
 import SellerTable from './features/Admin/SellerTable';
-import { createBrowserHistory  } from 'history';
+import { createBrowserHistory } from 'history';
 import UserDashboard from './features/User/UserDashboard';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
 import UpdateProfile from './features/User/UpdateProfile';
 import UpadtePostProduct from './features/User/UpdatePostProduct';
 
+
+// common --------------------------------------------------------------------------------->
+import eventBus from './common/EvenBus';
+import AuthVerify from './common/AuthVerify';
+import { useEffect, useCallback } from 'react';
+import logout from '../src/actions/auth';
+
 function App() {
   const history = createBrowserHistory();
+
+
+  const logOut = () => {
+    logout();
+  };
+
+  useEffect(() => {
+    eventBus.on("logout", () => {
+      logOut();
+    });
+
+    return () => {
+      eventBus.remove("logout");
+    };
+  }, []);
 
   return (
     <Router history={history}>
@@ -79,10 +101,10 @@ function App() {
             <PostProduct />
           </PrivateRoute>
           <PrivateRoute path="/user/update-profile" exact>
-            <UpdateProfile/>
+            <UpdateProfile />
           </PrivateRoute>
           <PrivateRoute path="/user/update-post-product" exact>
-            <UpadtePostProduct/>
+            <UpadtePostProduct />
           </PrivateRoute>
           <PrivateRoute path="/admin" exact>
             <AdminPage />
@@ -106,11 +128,13 @@ function App() {
             {/* <CategoryPage/> */}
           </Route>
         </Switch>
-        </Provider>
+      </Provider>
+      <AuthVerify logOut={logout} />
     </Router>
 
   );
 }
+
 
 function PrivateRoute({ children, ...rest }) {
   return (

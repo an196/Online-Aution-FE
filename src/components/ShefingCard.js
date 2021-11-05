@@ -1,4 +1,4 @@
-import { Col} from 'react-bootstrap';
+import { Col,Row} from 'react-bootstrap';
 import Card from 'react-bootstrap/Card'
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { Link, Redirect } from 'react-router-dom';
@@ -84,9 +84,23 @@ export default function AuctionHistoryCard({ item }) {
                             <br />
                             Lượt đấu giá: {data.count_auction}
                             <br />
-                            <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
+                            <Row>
+                                {
+                                    new Date().getTime() - new Date(item.start_day).getTime() > 0 ?
+                                        <Col className='pl-2'>
+                                            <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>
+                                                Xem chi tiết
+                                            </Link>
+                                        </Col>
+                                        : <Col className='pl-2'>
+                                        </Col>
+                                }
+
+                                <Col className='p-0'>   <Link to={`/user/update-post-product?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Cập nhật</Link> </Col>
+                            </Row>
+                            {/* <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <Link to={`/user/update-post-product?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Cập nhật</Link>
+                            <Link to={`/user/update-post-product?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Cập nhật</Link> */}
 
 
                         </Card.Text>

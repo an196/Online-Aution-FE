@@ -1,3 +1,5 @@
 export const timeLimit = {
-    "NewProduct": 60*60*24,
+    "NewProduct": 1000*60*60*24*3,
 }
+
+
