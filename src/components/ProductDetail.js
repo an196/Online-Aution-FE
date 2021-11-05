@@ -79,6 +79,9 @@ export default function ProductDetail() {
     // aution history list
     const [autionHistoryList, setAutionHistoryList] = useState();
 
+    // current cost
+    const [currentCost,setCurrentCost] = useState();
+
     //socket
     const host = "http://localhost:3002";
     const [connect, setConnect] = useState(true);
@@ -214,9 +217,12 @@ export default function ProductDetail() {
                         start_day: formatDateTime(res.data.infoProduct.start_day),
                         buy_now: formatPrice(res.data.infoProduct.buy_now),
                         start_cost: formatPrice(res.data.infoProduct.start_cost),
+                        current_cost: formatPrice(res.data.infoProduct.current_cost),
                         end_day: formatEndDay(res.data.infoProduct.end_day),
                     })
 
+                    // const cCost = res.data.infoProduct.current_cost ? res.data.infoProduct.current_cost : res.data.infoProduct.start_cost
+                    // setCurrentCost(cCost);
                 }
 
             })
@@ -231,8 +237,8 @@ export default function ProductDetail() {
         if (socketRef.current.connected) {
             // thông tin đấu giá gửi lên server
             const auctionCost = infoProduct.current_cost ? infoProduct.current_cost : infoProduct.start_cost;
-            socketRef.current.emit("dau_gia_san_pham", { product_id: Number(id), cost: auctionCost });
-
+            socketRef.current.emit("dau_gia_san_pham", { product_id: Number(id), cost: auctionCost + infoProduct.step_cost*2});
+            console.log( auctionCost + infoProduct.step_cost)
         } else {
             // console.log("không thể kết nối đến server");
             NotifyHelper.error("Có lỗi đã xảy ra", 'Thông báo');
@@ -264,6 +270,9 @@ export default function ProductDetail() {
             getInfoProduct();
     }, [location, autionHistoryList]);
 
+    useEffect(() => {
+       
+    }, [infoProduct]);
 
     useEffect(() => {
         if (localStorage.x_accessToken && data) {
@@ -306,7 +315,7 @@ export default function ProductDetail() {
                 if (localStorage.x_accessToken && res.account_id === jwt_decode(localStorage.x_accessToken).account_id) {
                     if (res.status === 200) {
                         NotifyHelper.success(res.message, 'Thông báo')
-
+                        
                     }
                     else {
                         NotifyHelper.error(res.message, 'Thông báo')
@@ -318,8 +327,11 @@ export default function ProductDetail() {
             });
 
             socketRef.current.on("cap_nhat_giao_dien_xem_chi_tiet_san_pham_nguoi_ban", (res) => {
+                console.log(res)
                 if (localStorage.x_accessToken && res.account_id === jwt_decode(localStorage.x_accessToken).account_id) {
                     setAutionHistoryList(res.info_auction_detail)
+
+                    console.log(res.info_auction_detail)
                 }
             });
 
@@ -330,7 +342,7 @@ export default function ProductDetail() {
 
     }, []);
 
-
+    //console.log(infoProduct)
     return (
         <>
             <div className="card mb-3 mt-4 no-gutters" >
@@ -370,7 +382,7 @@ export default function ProductDetail() {
                                         <h5 className="card-title">{data.name}
                                         </h5>
                                         <p className="card-text">
-                                            Giá hiện tại: {data.start_cost} <br />
+                                            Giá hiện tại: {data.current_cost} <br />
                                             {validUser ?
                                                 (data.buy_now ?
                                                     <>

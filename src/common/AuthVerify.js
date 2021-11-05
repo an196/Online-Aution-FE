@@ -2,6 +2,8 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import { NotifyHelper } from "../helper/NotifyHelper";
+import { useHistory } from "react-router";
+
 
 const parseJwt = (token) => {
     try {
@@ -12,18 +14,23 @@ const parseJwt = (token) => {
 };
 
 const AuthVerify = (props) => {
+    const history = useHistory();
     props.history.listen(() => {
 
         if (localStorage.x_accessToken) {
             const user = jwt_decode(localStorage.x_accessToken);
             if (user) {
                 if (new Date(user.exp) * 1000 <  Date.now()) {
-                    console.log("user");
-                    console.log(user.exp);
-                    console.log(Date.now());
-                    // localStorage.removeItem("x_accessToken");
-                    // localStorage.removeItem("x_refreshToken");
-                    props.logOut();
+                    // console.log("user");
+                    // console.log(user.exp);
+                    // console.log(Date.now());
+                    localStorage.removeItem("x_accessToken");
+                    localStorage.removeItem("x_refreshToken");
+                    NotifyHelper.error("Bạn đã hết phiên hoạt động! Hãy đăng nhập lại", "Thông báo")
+
+                    
+                    history.push("/login")
+                    //props.logOut();
                 }
             }
         }

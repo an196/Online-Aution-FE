@@ -43,7 +43,7 @@ export function sortProductAscendingByPrice(data) {
 export function sortProductDescendingByCreateDate(data) {
 
   return data.sort((a, b) => {
-    return (new Date(a.created_at) - new Date(b.created_at))
+    return (new Date(a.start_day) - new Date(b.start_days))
   }).reverse();
 }
 

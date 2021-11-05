@@ -34,6 +34,10 @@ const accountApi = {
         const url = `/bidder/account/requestUpgrade`;
         return axiosClient.post(url,data);
     },
+    refreshToken(){
+        const url = `/refreshToken`;
+        return axiosClient.post(url);
+    },
 }
 
 export default accountApi;

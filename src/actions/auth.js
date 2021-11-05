@@ -1,9 +1,9 @@
 const logout = () => {
-    localStorage.removeItem("x-accessToken");
-    localStorage.removeItem("x-refreshToken");
-
-  };
-
-  export default {
-    logout
-  };
+  if (localStorage.x_accessToken) {
+    localStorage.removeItem("x_accessToken");
+    localStorage.removeItem("x_refreshToken");
+  }
+};
+export default {
+  logout
+};

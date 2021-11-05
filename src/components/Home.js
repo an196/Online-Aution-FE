@@ -12,14 +12,41 @@ import {
 } from '../features/product/productSlice';
 import axios from 'axios';
 import { NotifyHelper } from '../helper/NotifyHelper';
+import jwt_decode from "jwt-decode";
+
 
 export default function Home(props) {
     const topItemRunOut = useSelector(selectRunOutItems);
     const topHighestCost = useSelector(selectTopHighestCost);
     const topHighestAutions = useSelector(selectTopHighestAutions);
     const [watchList, setWatchList] = useState();
-
+    const [isRequest, setIsRequest] = useState(false);
+    
     const dispach = useDispatch();
+
+    //api ------------------------------------------------------------------->
+    function getNewAccessToken() {
+        const config = {
+            headers: {
+                'x-access-token': localStorage.x_accessToken ? localStorage.x_accessToken : null,
+                'x-refresh-token': localStorage.x_refreshToken ? localStorage.x_refreshToken : null
+            }
+        }
+
+        axios
+            .get(`http://localhost:3002/api/accounts/refreshToken`, config)
+            .then(function (res) {
+                //console.log(res.data)
+                if (res.status === 200) {
+                    localStorage.removeItem('x_accessToken');
+                    localStorage.setItem('x_accessToken', res.data.accessToken);
+                }
+
+            })
+            .catch(function (error) {
+                console.log("Đã có lỗi xảy ra", "Thông báo");
+            });
+    }
 
     function getWatchList() {
         let data = {
@@ -47,6 +74,21 @@ export default function Home(props) {
             });
     }
 
+    const _flicker = () => setInterval(async () => {
+        
+
+        if (localStorage.x_accessToken && !isRequest) {
+            const user = jwt_decode(localStorage.x_accessToken);
+            if (new Date(user.exp) * 1000 < Date.now() - 10 * 1000) {
+                setIsRequest(true)
+                await getNewAccessToken();
+
+            }
+        }
+
+
+    }, 1000);
+
     useEffect(() => {
         dispach(getTopItemRunOut());
         dispach(getTopHighestCost());
@@ -58,7 +100,11 @@ export default function Home(props) {
 
     }, [dispach]);
 
+    // useEffect(() => {
+    //     _flicker();
+    // }, []);
 
+  
 
     return (
         <div className="container mt-4" >
