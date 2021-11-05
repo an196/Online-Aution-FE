@@ -15,55 +15,55 @@ const initialState = {
 
 export const getTopItemRunOut = createAsyncThunk("product/getTopItemRunOut",
     async () => {
-        const response = await productApi.getTopItemRunOut(); 
-        if(response.status === 200)
+        const response = await productApi.getTopItemRunOut();
+        if (response.status === 200)
             return response.data;
         return 0;
-});
+    });
 
 export const getTopHighestCost = createAsyncThunk("product/getTopHighestCost",
     async () => {
         const response = await productApi.getTopHighestCost();
-        if(response.status === 200)
+        if (response.status === 200)
             return response.data;
         return 0;
-});
+    });
 
 export const getTopHighestAutions = createAsyncThunk("product/getTopHighestAutions",
     async () => {
         const response = await productApi.getTopHighestAutions();
-        if(response.status === 200)
+        if (response.status === 200)
             return response.data;
         return 0;
-});
+    });
 
 export const getInfoProduct = createAsyncThunk("product/getInfoProduct",
     async (id) => {
         const response = await productApi.getInfoProduct(id);
-        if(response.status === 200){
+        if (response.status === 200) {
             //console.log(response.data)
             return response.data;
         }
-        
-            
+
+
         return 0;
-});
+    });
 
 export const getProductsByCategory = createAsyncThunk("product/getProductsByCategory",
     async (id) => {
-        const response = await productApi.getProductsByCategory(id); 
-        if(response.status === 200)
+        const response = await productApi.getProductsByCategory(id);
+        if (response.status === 200)
             return response.data;
         return 0;
-});
+    });
 
 export const getSearchResult = createAsyncThunk("product/getSearchResult",
     async (search) => {
-        const response = await productApi.getSearchResult(search); 
-        if(response.status === 200)
+        const response = await productApi.getSearchResult(search);
+        if (response.status === 200)
             return response.data;
         return 0;
-});
+    });
 
 
 export const productSlice = createSlice({
@@ -72,8 +72,19 @@ export const productSlice = createSlice({
     reducers: {
         setInfoProduct: (state, action) => {
             state.infoProduct = action.payload.infoProduct;
-            state.relationProduct =  action.payload.relation_product;
+            state.relationProduct = action.payload.relation_product;
             state.infoAuctioneers = action.payload.infoAuctioneers;
+        },
+        setSearchResult: (state, action) => {
+            state.searchResult = action.payload;
+        },
+        sortProductDescendingByCreateDate: (state, action) => {
+            state.searchResult = state.searchResult.sort((a, b) => {
+                return (new Date(a.start_day) - new Date(b.start_day))
+            }).reverse();
+        },
+        sortProductAscendingByPrice: (state, action) => {
+            state.searchResult = state.searchResult.sort((a, b) => a.start_cost - b.start_cost);
         },
     },
     extraReducers: (builder) => {
@@ -104,7 +115,11 @@ export const productSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setInfoProduct} = productSlice.actions;
+export const { setInfoProduct, 
+    setSearchResult,
+    sortProductAscendingByPrice,
+    sortProductDescendingByCreateDate
+} = productSlice.actions;
 export const selectRunOutItems = state => state.product.runOutItems;
 export const selectTopHighestCost = state => state.product.topHighestCost;
 export const selectTopHighestAutions = state => state.product.topHighestAutions;

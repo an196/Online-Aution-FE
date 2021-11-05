@@ -132,7 +132,7 @@ export default function Category(props) {
             });
     }
 
-
+    console.log(products)
     return (
         <div className="container mt-4" fluid>
             <Row>

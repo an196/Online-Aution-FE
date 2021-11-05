@@ -1,14 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Pagination, Row } from 'react-bootstrap';
+import { Pagination, Row, Col, Form } from 'react-bootstrap';
 import ProductCard from './ProductCard';
 import { useDispatch, useSelector } from "react-redux";
-import { getSearchResult, selectSearchResult } from '../features/product/productSlice';
+import { getSearchResult, 
+    selectSearchResult,
+    setSearchResult,
+    sortProductDescendingByCreateDate,
+    sortProductAscendingByPrice 
+} from '../features/product/productSlice';
 import { useLocation } from "react-router-dom";
+
 
 export default function Category(props) {
     const searchResult = useSelector(selectSearchResult);
-    const dispath = useDispatch();
+    const dispatch = useDispatch();
     const location = useLocation();
+    const [selectedSort, setSelectedSort] = useState();
 
     //get query params
     const search = window.location.search;
@@ -27,6 +34,9 @@ export default function Category(props) {
     //data to show
     const [data, setData] = useState([]);
 
+
+    //api ---------------------------------------------------------------------------------------------------------------------------->
+    
 
     //handle -------------------------------------------------------------------------------------------------------------------------->
     function handlePreviousPage() {
@@ -59,11 +69,32 @@ export default function Category(props) {
         }
     }
 
+
+    function handleSort(event) {
+        console.log(event.target.value);
+        const selected = event.target.value;
+
+
+        if (selected === 'ascending') {
+
+            setSearchResult(dispatch(sortProductAscendingByPrice()));
+
+        }
+        else if (selected === 'newest') {
+            setSearchResult(dispatch(sortProductDescendingByCreateDate()));
+
+        }
+        //console.log(products)
+        setSelectedSort(selected);
+        setCurentPage(1);
+    }
+
+    
     // effect ------------------------------------------------------------------------------------------------------------------------->
     useEffect(() => {
-        dispath(getSearchResult(searchText));
+        dispatch(getSearchResult(searchText));
 
-    }, [dispath, location]);
+    }, [dispatch, location]);
 
     useEffect(() => {
         if (searchResult) {
@@ -92,7 +123,21 @@ export default function Category(props) {
     console.log(searchResult)
     return (
         <div className="container mt-4" >
-            <h5 className='mb-4'>Kết quả tìm kiếm: {searchText ? searchText : null}</h5>
+            <Row>
+                <Col md={6}>
+                    <h5 className='mb-4'>Kết quả tìm kiếm: {searchText ? searchText : null}</h5>
+                </Col>
+                <Col></Col>
+                <Col md={3}>
+                    <Form.Select size="sm" onChange={handleSort}>
+                        <option value="newest">Mới nhất</option>
+                        <option value="ascending">Giá tăng dần</option>
+                    </Form.Select>
+                </Col>
+
+            </Row>
+
+            {/* <h5 className='mb-4'>Kết quả tìm kiếm: {searchText ? searchText : null}</h5> */}
             <Row xs={1} md={5} className="g-4 "  >
                 {data ? data.map((item) => (
                     <ProductCard key={item.auction_id} item={item} />
