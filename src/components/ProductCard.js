@@ -79,6 +79,7 @@ export default function ProductCard({ item }) {
         start_cost: formatPrice(item.start_cost),
         buy_now: formatPrice(item.buy_now),
         created_at: formatDateTime(item.created_at),
+        start_day: formatDateTime(item.start_day),
         end_day: formatEndDay(item.end_day),
         image: item.image ? item.image : defaultImg
     };
@@ -124,7 +125,8 @@ export default function ProductCard({ item }) {
 
     useEffect(() => {
         if (item) {
-            if ((new Date() - new Date(item.created_at)) < timeLimit.NewProduct) {
+            if (new Date().getTime() - (new Date(item.start_day)) < timeLimit.NewProduct) {
+               
                 setIsNewProduct(true);
             }
         }
@@ -162,7 +164,7 @@ export default function ProductCard({ item }) {
                             <br />
                             Mua Ngay: {data.buy_now}
                             <br />
-                            Ngày đăng: <br />{data.created_at}
+                            Bắt đầu: <br />{data.start_day}
                             <br />
                             {/* <a role='text' style={{ textDecoration: 'none' }} className="text-danger">Hạn: {data.end_day}</a> */}
                             {ReactHtmlParser(data.end_day)}

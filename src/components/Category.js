@@ -4,7 +4,7 @@ import { useParams } from 'react-router';
 import {
     selectCategoryName,
 } from '../features/product/productSlice';
-import { formatDateTime, formatProductName, sortProductAscendingByPrice, sortProductDescendingByCreateDate } from '../utils/utils';
+import { formatDateTime, formatProductName, sortProductAscendingByPrice, sortProductDescendingByStartDate } from '../utils/utils';
 import ProductCard from './ProductCard';
 import { useDispatch, useSelector } from "react-redux";
 import { selectWatchList, getWatchList } from '../features/User/UserSlice';
@@ -93,7 +93,7 @@ export default function Category(props) {
 
         }
         else if (selected === 'newest') {
-            setProducts(sortProductDescendingByCreateDate(products));
+            setProducts(sortProductDescendingByStartDate(products));
 
         }
         console.log(products)
