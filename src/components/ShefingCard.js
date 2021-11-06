@@ -99,27 +99,9 @@ export default function AuctionHistoryCard({ item }) {
 
                                 <Col className='p-0'>   <Link to={`/user/update-post-product?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Cập nhật</Link> </Col>
                             </Row>
-                            {/* <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <Link to={`/user/update-post-product?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Cập nhật</Link> */}
-
-                                <Col className='p-0'>   <Link to={`/user/update-post-product?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Cập nhật</Link> </Col>
-                            </Row>
-                            {/* <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <Link to={`/user/update-post-product?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Cập nhật</Link> */}
 
                         </Card.Text>
-                        {/* <Row >
-                            {
-                                validUser ?
-                                    <p role='button' className='d-flex justify-content-center' onClick={handleLike}>
-                                        {like ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart />}
-                                    </p>
-                                    : null
-                            }
-
-                        </Row> */}
+                       
                     </Card.Body>
                 </Card>
             </div>
