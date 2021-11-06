@@ -13,7 +13,6 @@ import {
 import axios from 'axios';
 import { NotifyHelper } from '../helper/NotifyHelper';
 import jwt_decode from "jwt-decode";
-import api from '../api/api';
 
 export default function Home(props) {
     const topItemRunOut = useSelector(selectRunOutItems);

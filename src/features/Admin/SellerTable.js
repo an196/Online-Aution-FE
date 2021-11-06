@@ -51,15 +51,11 @@ export default function UserTable() {
                     NotifyHelper.success(res.data.message, "Thông báo")
                     setReload(!reload);
                 }
-
-
             })
             .catch(function (error) {
                 NotifyHelper.error(error, "Thông báo");
                 console.log(error)
             });
-
-
     }
 
 

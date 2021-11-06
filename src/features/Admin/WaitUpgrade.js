@@ -13,8 +13,6 @@ export default function WaitUpgrade() {
     const [toggleCleared, setToggleCleared] = React.useState(false);
 
    
-
-
     const handleRowSelected = React.useCallback(state => {
         setSelectedRows(state.selectedRows);
     }, []);
