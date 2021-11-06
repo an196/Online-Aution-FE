@@ -20,16 +20,16 @@ const AuthVerify = (props) => {
         if (localStorage.x_accessToken) {
             const user = jwt_decode(localStorage.x_accessToken);
             if (user) {
-                if (new Date(user.exp) * 1000 <  Date.now()) {
+                if (new Date(user.exp) * 1000 <  Date.now() +1000*115 ) {
                     // console.log("user");
                     // console.log(user.exp);
                     // console.log(Date.now());
-                    localStorage.removeItem("x_accessToken");
-                    localStorage.removeItem("x_refreshToken");
-                    NotifyHelper.error("Bạn đã hết phiên hoạt động! Hãy đăng nhập lại", "Thông báo")
+                    // localStorage.removeItem("x_accessToken");
+                    // localStorage.removeItem("x_refreshToken");
+                    //NotifyHelper.error("Bạn đã hết phiên hoạt động! Hãy đăng nhập lại", "Thông báo")
 
                     
-                    history.push("/login")
+                    // history.push("/login")
                     //props.logOut();
                 }
             }

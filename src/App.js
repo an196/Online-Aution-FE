@@ -38,56 +38,15 @@ import eventBus from './common/EvenBus';
 import AuthVerify from './common/AuthVerify';
 import { useEffect, useCallback, useState } from 'react';
 import logout from '../src/actions/auth';
-import jwt_decode from "jwt-decode";
-import axios from 'axios';
 
 function App() {
   const history = createBrowserHistory();
-  const [isRequest, setIsRequest] = useState(false);
-
-
-  const _flicker = () => setInterval(async () => {
-
-
-    if (localStorage.x_accessToken && !isRequest) {
-      const user = jwt_decode(localStorage.x_accessToken);
-      if (new Date(user.exp) * 1000 < Date.now() - 10 * 1000) {
-        setIsRequest(true)
-        await getNewAccessToken();
-
-      }
-    }
-
-
-  }, 1000);
-
+  
   const logOut = () => {
     logout();
   };
 
-  //api ------------------------------------------------------------------->
-  function getNewAccessToken() {
-    const config = {
-      headers: {
-        'x-access-token': localStorage.x_accessToken ? localStorage.x_accessToken : null,
-        'x-refresh-token': localStorage.x_refreshToken ? localStorage.x_refreshToken : null
-      }
-    }
-
-    axios
-      .get(`http://localhost:3002/api/accounts/refreshToken`, config)
-      .then(function (res) {
-        //console.log(res.data)
-        if (res.status === 200) {
-          localStorage.removeItem('x_accessToken');
-          localStorage.setItem('x_accessToken', res.data.accessToken);
-        }
-
-      })
-      .catch(function (error) {
-        console.log("Đã có lỗi xảy ra", "Thông báo");
-      });
-  }
+  
 
   //effect -------------------------------------------------------------------------------------->
   useEffect(() => {
@@ -99,10 +58,6 @@ function App() {
     return () => {
       eventBus.remove("logout");
     };
-  }, []);
-
-  useEffect(() => {
-    _flicker();
   }, []);
 
   return (

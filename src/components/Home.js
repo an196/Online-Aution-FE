@@ -13,99 +13,22 @@ import {
 import axios from 'axios';
 import { NotifyHelper } from '../helper/NotifyHelper';
 import jwt_decode from "jwt-decode";
-
+import api from '../api/api';
 
 export default function Home(props) {
     const topItemRunOut = useSelector(selectRunOutItems);
     const topHighestCost = useSelector(selectTopHighestCost);
     const topHighestAutions = useSelector(selectTopHighestAutions);
-    const [watchList, setWatchList] = useState();
-    const [isRequest, setIsRequest] = useState(false);
-    
     const dispach = useDispatch();
 
-    //api ------------------------------------------------------------------->
-    function getNewAccessToken() {
-        const config = {
-            headers: {
-                'x-access-token': localStorage.x_accessToken ? localStorage.x_accessToken : null,
-                'x-refresh-token': localStorage.x_refreshToken ? localStorage.x_refreshToken : null
-            }
-        }
-
-        axios
-            .get(`http://localhost:3002/api/accounts/refreshToken`, config)
-            .then(function (res) {
-                //console.log(res.data)
-                if (res.status === 200) {
-                    localStorage.removeItem('x_accessToken');
-                    localStorage.setItem('x_accessToken', res.data.accessToken);
-                }
-
-            })
-            .catch(function (error) {
-                console.log("Đã có lỗi xảy ra", "Thông báo");
-            });
-    }
-
-    function getWatchList() {
-        let data = {
-        };
-
-        const config = {
-            headers: {
-                'x-access-token': localStorage.x_accessToken,
-                'x-refresh-token': localStorage.x_refreshToken
-            }
-        }
-
-        axios
-            .get("http://localhost:3002/api/bidder/watch_list", config)
-            .then(function (res) {
-                //console.log(res.data.watch_list);
-                if (res.status === 200) {
-                    setWatchList(res.data.watch_list);
-                    //console.log(res.data.watch_list);
-                }
-
-            })
-            .catch(function (error) {
-                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
-            });
-    }
-
-    const _flicker = () => setInterval(async () => {
-        
-
-        if (localStorage.x_accessToken && !isRequest) {
-            const user = jwt_decode(localStorage.x_accessToken);
-            if (new Date(user.exp) * 1000 < Date.now() - 10 * 1000) {
-                setIsRequest(true)
-                await getNewAccessToken();
-
-            }
-        }
-
-
-    }, 1000);
 
     useEffect(() => {
         dispach(getTopItemRunOut());
         dispach(getTopHighestCost());
         dispach(getTopHighestAutions());
 
-        if (localStorage.x_accessToken) {
-            getWatchList();
-        }
-
     }, [dispach]);
-
-    // useEffect(() => {
-    //     _flicker();
-    // }, []);
-
-  
-
+    
     return (
         <div className="container mt-4" >
             <Row xs={1}>

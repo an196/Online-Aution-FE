@@ -7,6 +7,10 @@ const adminApi = {
         const url = `/${prefix}/product`;
         return axiosClient.get(url);
     },
+    getAllProduct(){
+        const url = `/${prefix}/product?condition_end_day=true`;
+        return axiosClient.get(url);
+    },
     getAccount(){
         const url = `/${prefix}/account`;
         return axiosClient.get(url);

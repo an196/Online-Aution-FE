@@ -54,17 +54,7 @@ export default function AuctionHistoryCard({ item }) {
         image: item.image ? item.image : defaultImg
     };
 
-    // function handleLike() {
-    //     if (like) {
-    //         setlike(false);
-    //         dispatch(removeWatchList(id));
-    //     }
-    //     else {
-    //         dispatch(addWatchList(id));
-    //         setlike(true);
-    //     }
-    // }
-
+   
 
     return (
         <Col>{data ?
