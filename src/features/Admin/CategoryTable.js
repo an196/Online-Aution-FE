@@ -2,7 +2,6 @@ import { Col, Row, Form, Button, Container } from 'react-bootstrap';
 import { FaUser, FaRegTrashAlt, FaPencilAlt } from 'react-icons/fa';
 import AdminNav from '../../components/AdminNav';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { NotifyHelper } from '../../helper/NotifyHelper';
 import DataTable from 'react-data-table-component';
 import Footer from '../../components/Footer';
@@ -72,7 +71,7 @@ export default function CategoryTable() {
 
     function addCategory(data) {
         axiosClient
-            .post(`/admin/category`)
+            .post(`/admin/category`, data)
             .then(function (res) {
                 console.log(res.data)
                 if (res.status === 200) {
@@ -89,17 +88,8 @@ export default function CategoryTable() {
     }
 
     function updateCategory(data) {
-
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .patch(`http://localhost:3002/api/admin/category`, data, config)
+        axiosClient
+            .patch(`/admin/category`, data)
             .then(function (res) {
                 console.log(res.data)
                 if (res.status === 200) {

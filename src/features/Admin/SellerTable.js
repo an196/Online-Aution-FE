@@ -12,6 +12,7 @@ import DataTable from 'react-data-table-component';
 import memoize from 'memoize-one';
 import axios from 'axios';
 import { NotifyHelper } from '../../helper/NotifyHelper';
+import axiosClient from '../../api/axiosClient';
 
 export default function UserTable() {
     const [ sellers, setSellers ] = useState();
@@ -23,16 +24,8 @@ export default function UserTable() {
 
     //call api ------------------------------------------------------------------------------------------------->
     function getAccount() {
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .get(`http://localhost:3002/api/admin/account`, config)
+        axiosClient
+            .get(`/admin/account`)
             .then(function (res) {
                 console.log(res.data)
                 if (res.status === 200) {
@@ -50,33 +43,19 @@ export default function UserTable() {
     }
 
     function inferiorAccount(id) {
-        console.log(id)
-        const data = {};
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .patch(`http://localhost:3002/api/admin/account/inferior?account_id=${id}`, data, config)
+        axiosClient
+            .patch(`/admin/account/inferior?account_id=${id}`)
             .then(function (res) {
                 console.log(res)
                 if (res.status === 200) {
                     NotifyHelper.success(res.data.message, "Thông báo")
                     setReload(!reload);
                 }
-
-
             })
             .catch(function (error) {
                 NotifyHelper.error(error, "Thông báo");
                 console.log(error)
             });
-
-
     }
 
 
