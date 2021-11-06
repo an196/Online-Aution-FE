@@ -53,8 +53,6 @@ export default function BidderTable() {
                 NotifyHelper.error(error, "Thông báo");
                 console.log(error)
             });
-
-
     }
     
 
