@@ -53,17 +53,8 @@ export default function CategoryTable() {
     }
 
     function deleteCategory(id) {
-
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .delete(`http://localhost:3002/api/admin/category?category_id=${id}`, config)
+        axiosClient
+            .delete(`/admin/category?category_id=${id}`, )
             .then(function (res) {
                 console.log(res.data)
                 if (res.status === 200) {
