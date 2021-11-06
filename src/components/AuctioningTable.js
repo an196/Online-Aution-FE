@@ -9,7 +9,7 @@ import {
     selectInfoAuctioneers,
 } from '../features/product/productSlice';
 import { formatDateTime, formatPrice } from '../utils/utils';
-
+import api from "../api/axiosClient"
 
 
 export default function AuctioningTable() {

@@ -13,6 +13,7 @@ const initialState = {
     watchList: [],
     getReviews: [],
     isRequestUpgrade: boolean,
+    access_token: "",
 }
 
 export const getProfile = createAsyncThunk("user/getProfile",
@@ -78,6 +79,18 @@ export const upgradeAccount = createAsyncThunk("user/upgradeAccount",
     }
 );
 
+export const refreshToken = createAsyncThunk("user/refreshToken",
+    async () => {
+        const response = await accountApi.refreshToken();
+      
+        if (response.status === 200) {
+           
+            return response.data;
+        }
+        return 0;
+    }
+);
+
 
 
 export const userSlice = createSlice({
@@ -122,6 +135,10 @@ export const userSlice = createSlice({
             .addCase(upgradeAccount.fulfilled, (state, { payload }) => {
                 state.requesting = true;
             })
+            .addCase(refreshToken.fulfilled, (state, { payload }) => {
+                state.requesting = true;
+                state.access_token = payload.accessToken;
+            })
     },
 })
 
@@ -135,4 +152,5 @@ export const selectProfile = state => state.user.profile;
 export const selectWatchList = state => state.user.watchList;
 export const selectReviews = state => state.user.getReviews;
 export const selectRequestUpgrade = state => state.user.isRequestUpgrade;
+export const selectAccessToken = state => state.user.access_token;
 export default userSlice.reducer;

@@ -5,11 +5,12 @@ import { NotifyHelper } from '../../helper/NotifyHelper';
 const initialState = {
     products: [],
     accounts: [],
-    bidders:[],
+    bidders: [],
     sellers: [],
     removeResult: 0,
     waitUpgrade: [],
     temp: null,
+    allProducts: [],
 }
 
 export const getProduct = createAsyncThunk("admin/getProduct",
@@ -69,6 +70,17 @@ export const inferiorAccount = createAsyncThunk("admin/inferiorAccount",
         return 0;
     });
 
+export const getAllProduct = createAsyncThunk("admin/getAllProduct",
+    async () => {
+        const response = await adminApi.getAllProduct();
+        if (response.status === 200) {
+            
+            return response.data;
+        }
+        
+        return 0;
+    });
+
 export const adminSlice = createSlice({
     name: 'admin',
     initialState,
@@ -99,10 +111,13 @@ export const adminSlice = createSlice({
                 state.waitUpgrade = payload;
             })
             .addCase(upgradeAccount.fulfilled, (state, { payload }) => {
-                
+
             })
             .addCase(inferiorAccount.fulfilled, (state, { payload }) => {
-               
+
+            })
+            .addCase(getAllProduct.fulfilled, (state, { payload }) => {
+                state.allProducts = payload;
             })
     },
 })
@@ -110,6 +125,7 @@ export const adminSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { remove, removeWaitAccount, refreshAccount } = adminSlice.actions;
 export const selectProducts = state => state.admin.products;
+export const selectAllProducts = state => state.admin.allProducts;
 export const selectAccounts = state => state.admin.accounts;
 export const selectSellers = state => state.admin.sellers;
 export const selectBidders = state => state.admin.bidders;

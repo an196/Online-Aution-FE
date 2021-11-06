@@ -96,6 +96,13 @@ export default function AuctionHistoryCard({ item }) {
                                         </Col>
                                 }
 
+
+                                <Col className='p-0'>   <Link to={`/user/update-post-product?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Cập nhật</Link> </Col>
+                            </Row>
+                            {/* <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <Link to={`/user/update-post-product?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Cập nhật</Link> */}
+
                                 <Col className='p-0'>   <Link to={`/user/update-post-product?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Cập nhật</Link> </Col>
                             </Row>
                             {/* <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>

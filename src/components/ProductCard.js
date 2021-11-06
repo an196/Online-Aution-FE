@@ -16,6 +16,7 @@ import { useHistory } from 'react-router';
 import axios from 'axios';
 import { NotifyHelper } from '../helper/NotifyHelper';
 import { timeLimit } from '../helper/timeLimitHelper';
+import api from '../api/api';
 
 const styles = {
     container: {
@@ -104,11 +105,23 @@ export default function ProductCard({ item }) {
                 'x-refresh-token': localStorage.x_refreshToken
             }
         }
+        // api
+        //     .get("http://localhost:3002/api/bidder/watch_list", config)
+        //     .then(function (res) {
 
-        axios
-            .get("http://localhost:3002/api/bidder/watch_list", config)
+        //         if (res.status === 200) {
+        //             setWatchList(res.data.watch_list);
+        //             if (res.data.watch_list.some(item => id === item.product_id))
+        //                 setlike(true);
+        //         }
+
+        //     })
+        //     .catch(function (error) {
+        //         NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
+        //     });
+        api
+            .get("/bidder/watch_list")
             .then(function (res) {
-
                 if (res.status === 200) {
                     setWatchList(res.data.watch_list);
                     if (res.data.watch_list.some(item => id === item.product_id))
@@ -135,15 +148,6 @@ export default function ProductCard({ item }) {
             setValidUser(true);
         }
     }, [dispatch])
-
-    // useEffect(() => {
-    //     const _flicker = setInterval(setFlicker(!flicker), 2000);
-    //     return () => clearInterval(_flicker);
-    // })
-
-    useEffect(() => {
-    }, [isNewProduct,data])
-
 
 
     return (

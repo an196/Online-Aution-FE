@@ -1,6 +1,6 @@
 import { Button } from 'react-bootstrap';
 import AdminNav from '../../components/AdminNav';
-import { selectProducts, getProduct, removeProduct, remove } from './AdminSlice';
+import { selectProducts, getProduct, removeProduct, remove, selectAllProducts,getAllProduct } from './AdminSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
@@ -8,10 +8,11 @@ import { BsFillTrashFill } from 'react-icons/bs';
 import axios from 'axios';
 import { NotifyHelper } from '../../helper/NotifyHelper';
 import Footer from '../../components/Footer';
+import axiosClient from '../../api/axiosClient';
 
 export default function ProductTable() {
     const [products, setProducts] = useState();
-    const [allProducts, setAllProducts] = useState();
+    const allProducts = useSelector(selectAllProducts);
     const [reload, setReload] = useState(false);
     const dispatch = useDispatch();
     const [selectedRows, setSelectedRows] = useState([]);
@@ -100,27 +101,14 @@ export default function ProductTable() {
     ];
     //call api ------------------------------------------------------------------------------------------------->
     function handleDelete(id) {
-        console.log(id)
-        const data = {};
-
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .patch(`http://localhost:3002/api/admin/product/removeProduct?id=${id}`, data, config)
+        axiosClient
+            .patch(`/admin/product/removeProduct?id=${id}`)
             .then(function (res) {
                 console.log(res)
                 if (res.status === 200) {
                     NotifyHelper.success(res.data.message, "Thông báo")
                     setReload(!reload);
                 }
-
-
             })
             .catch(function (error) {
                 NotifyHelper.error(error, "Thông báo");
@@ -129,16 +117,8 @@ export default function ProductTable() {
     }
 
     function getProduct() {
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .get(`http://localhost:3002/api/admin/product`,  config)
+        axiosClient
+            .get(`/admin/product`)
             .then(function (res) {
                 console.log(res.data)
                 if (res.status === 200) {
@@ -154,37 +134,9 @@ export default function ProductTable() {
 
 
     }
-
-    function getAllProduct() {
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .get(`http://localhost:3002/api/admin/product?condition_end_day=true`,  config)
-            .then(function (res) {
-                console.log(res.data)
-                if (res.status === 200) {
-                   setAllProducts(res.data)
-                }
-
-
-            })
-            .catch(function (error) {
-                NotifyHelper.error(error, "Thông báo");
-                console.log(error)
-            });
-
-
-    }
-
     useEffect(() => {
        getProduct();
-       getAllProduct()
+       dispatch(getAllProduct());
     }, [reload]);
 
     //console.log(products)

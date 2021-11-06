@@ -12,54 +12,23 @@ import {
 } from '../features/product/productSlice';
 import axios from 'axios';
 import { NotifyHelper } from '../helper/NotifyHelper';
+import jwt_decode from "jwt-decode";
+import api from '../api/api';
 
 export default function Home(props) {
     const topItemRunOut = useSelector(selectRunOutItems);
     const topHighestCost = useSelector(selectTopHighestCost);
     const topHighestAutions = useSelector(selectTopHighestAutions);
-    const [watchList, setWatchList] = useState();
-
     const dispach = useDispatch();
 
-    function getWatchList() {
-        let data = {
-        };
-
-        const config = {
-            headers: {
-                'x-access-token': localStorage.x_accessToken,
-                'x-refresh-token': localStorage.x_refreshToken
-            }
-        }
-
-        axios
-            .get("http://localhost:3002/api/bidder/watch_list", config)
-            .then(function (res) {
-                console.log(res.data.watch_list);
-                if (res.status === 200) {
-                    setWatchList(res.data.watch_list);
-                    console.log(res.data.watch_list);
-                }
-
-            })
-            .catch(function (error) {
-                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
-            });
-    }
 
     useEffect(() => {
         dispach(getTopItemRunOut());
         dispach(getTopHighestCost());
         dispach(getTopHighestAutions());
 
-        if (localStorage.x_accessToken) {
-            getWatchList();
-        }
-
     }, [dispach]);
-
-
-
+    
     return (
         <div className="container mt-4" >
             <Row xs={1}>

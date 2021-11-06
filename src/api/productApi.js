@@ -24,7 +24,7 @@ const productApi = {
         return axiosClient.get(url);
     },
     getSearchResult(search){
-        const url = `/${prefix}//search?textSearch=${search}`;
+        const url = `/${prefix}/search?textSearch=${search}`;
         return axiosClient.get(url);
     },
 }
