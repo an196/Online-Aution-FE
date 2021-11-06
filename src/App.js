@@ -80,7 +80,7 @@ function App() {
           </Route>
           <Route path="/product/detail" exact component={ProductDetailPage}>
           </Route>
-          <Route path="/category/:id" exact exact component={CategoryPage}>
+          <Route path="/category/:id" exact  component={CategoryPage}>
           </Route>
           <PrivateRoute path="/user/dashboard" exact>
             <UserDashboard />

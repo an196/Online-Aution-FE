@@ -21,12 +21,12 @@ export function formatPrice(price) {
 }
 
 export function formatDateTime(dateTime) {
-  
+
   return dateTime ? dateFormat(dateTime, "dd/mm/yyyy HH:MM:ss") : "Không có";
 }
 
 export function formatDateTimeToPost(dateTime) {
-  
+
   return dateFormat(dateTime, "yyyy-mm-dd HH:MM:ss");
 }
 
@@ -44,6 +44,12 @@ export function sortProductDescendingByCreateDate(data) {
 
   return data.sort((a, b) => {
     return (new Date(a.start_day) - new Date(b.start_days))
+  }).reverse();
+}
+
+export function sortProductDescendingByStartDate(data) {
+  return data.sort((a, b) => {
+    return (new Date(a.start_day) - new Date(b.start_day))
   }).reverse();
 }
 
@@ -74,7 +80,7 @@ const remainTime = function (time) {
     const end_day = hour.toString() + ' giờ '
       + minute.toString() + ' phút '
       + second.toString() + ' giây';
-    
+
     //return  `<a   color="red" role='text' >${end_day}</a>`
     return `Còn:<br /> ${end_day}`;
 
