@@ -58,12 +58,15 @@ export default function ProductDetail() {
     const [winner, setWinner] = useState();
     const [evaluated, setEvaluated] = useState();
     const [data, setData] = useState();
+    const [validatedAuction, setValidatedAuction] = useState(false);
 
     //ower
     const [owner, setOwner] = useState();
 
     //evaluation
     const [show, setShow] = useState(false);
+    const [showAcceptAuctionModal, setShowAcceptAuctionModal] = useState(false);
+    const handleCloseAcceptAuctionModal = () => setShowAcceptAuctionModal(false);
     const [message, setMessage] = useState();
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -80,7 +83,7 @@ export default function ProductDetail() {
     const [autionHistoryList, setAutionHistoryList] = useState();
 
     // current cost
-    const [currentCost,setCurrentCost] = useState();
+    const [currentCost, setCurrentCost] = useState();
 
     //socket
     const host = "http://localhost:3002";
@@ -211,6 +214,7 @@ export default function ProductDetail() {
                 if (res.status === 200) {
                     setInfoProduct(res.data.infoProduct)
                     setRealationProduct(res.data.relation_product)
+                    const sCost = res.data.infoProduct.current_cost + res.data.infoProduct.step_cost;
                     setData({
                         ...res.data.infoProduct,
                         created_at: formatDateTime(res.data.infoProduct.created_at),
@@ -219,10 +223,10 @@ export default function ProductDetail() {
                         start_cost: formatPrice(res.data.infoProduct.start_cost),
                         current_cost: formatPrice(res.data.infoProduct.current_cost),
                         end_day: formatEndDay(res.data.infoProduct.end_day),
+                        suggest_cost: formatPrice(sCost)
                     })
 
-                    // const cCost = res.data.infoProduct.current_cost ? res.data.infoProduct.current_cost : res.data.infoProduct.start_cost
-                    // setCurrentCost(cCost);
+
                 }
 
             })
@@ -233,12 +237,13 @@ export default function ProductDetail() {
     //hanlde ----------------------------------------------------------------------------------------->
 
 
-    function handleAution() {
+    function actionAuction() {
+        setShowAcceptAuctionModal(false);
         if (socketRef.current.connected) {
             // thông tin đấu giá gửi lên server
             const auctionCost = infoProduct.current_cost ? infoProduct.current_cost : infoProduct.start_cost;
-            socketRef.current.emit("dau_gia_san_pham", { product_id: Number(id), cost: auctionCost + infoProduct.step_cost*2});
-            console.log( auctionCost + infoProduct.step_cost)
+            socketRef.current.emit("dau_gia_san_pham", { product_id: Number(id), cost: auctionCost + infoProduct.step_cost });
+            //console.log(auctionCost + infoProduct.step_cost)
         } else {
             // console.log("không thể kết nối đến server");
             NotifyHelper.error("Có lỗi đã xảy ra", 'Thông báo');
@@ -264,15 +269,25 @@ export default function ProductDetail() {
         setIsThumbsUp(!isThumbsUp);
     }
 
+    function handleAuction(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+
+        const form = e.currentTarget;
+        if (form.checkValidity()) {
+            setShowAcceptAuctionModal(true)
+        }
+        setValidatedAuction(true);
+    }
+
     //-------------------------------------------------------------------------------------------------------------------->
     useEffect(() => {
         if (id > 0)
             getInfoProduct();
     }, [location, autionHistoryList]);
 
-    useEffect(() => {
-       
-    }, [infoProduct]);
+
 
     useEffect(() => {
         if (localStorage.x_accessToken && data) {
@@ -292,6 +307,7 @@ export default function ProductDetail() {
 
     useEffect(() => {
         if (localStorage.x_accessToken) {
+
             socketRef.current = socketIOClient.connect('http://localhost:3002', {
                 query: {
                     token: localStorage.x_accessToken ? localStorage.x_accessToken : null
@@ -315,7 +331,7 @@ export default function ProductDetail() {
                 if (localStorage.x_accessToken && res.account_id === jwt_decode(localStorage.x_accessToken).account_id) {
                     if (res.status === 200) {
                         NotifyHelper.success(res.message, 'Thông báo')
-                        
+
                     }
                     else {
                         NotifyHelper.error(res.message, 'Thông báo')
@@ -335,12 +351,25 @@ export default function ProductDetail() {
                 }
             });
 
+            socketRef.current.on("thong_tin_dau_gia", (data) => {
+                console.log(data);
+                setAutionHistoryList(data)
+            });
+
+
+            if (socketRef.current.connected)
+                socketRef.current.emit("lay_thong_tin_dau_gia", { product_id: 2 });
+
             return () => {
                 socketRef.current.disconnect();
             };
         }
 
     }, []);
+
+
+    useEffect(() => {
+    }, [infoProduct]);
 
     //console.log(infoProduct)
     return (
@@ -402,14 +431,36 @@ export default function ProductDetail() {
                                             {/* Kết thúc: <a role='text' style={{ textDecoration: 'none' }} className="text-danger">{data.end_day}</a> */}
                                             {ReactHtmlParser(data.end_day)}
                                         </p>
+
                                         {validUser ?
                                             <>
-                                                <Button className='mb-2' onClick={handleAution} variant="warning"> <ImHammer2 /> &nbsp;Đấu giá
-                                                </Button>
-                                                &nbsp;&nbsp;&nbsp;&nbsp;
                                                 {/* <Button className='mb-2' variant="info" onClick={() => setModalShow(true)}> <AiOutlineHistory /> &nbsp;Lịch sử
                                                 </Button> */}
+                                                <Col md={4}>
+                                                    <span><i>Giá đề xuất: {data.suggest_cost}</i>   </span>
+                                                    <Form className='p-2' noValidate validated={validatedAuction} onSubmit={handleAuction} method="post" >
+                                                        <Form.Group as={Col} controlId="validationCustom01">
+                                                            <Form.Label column="sm">Ra giá đấu giá</Form.Label>
+                                                            <Form.Control size="sm"
+                                                                required
+                                                                type="number"
+                                                                defaultValue=""
+                                                                name="auctionPrice"
+                                                                min={100000}
+                                                                max={100000000}
+                                                            // onChange={handleEmail}
+                                                            />
+                                                            <Form.Control.Feedback type="invalid">
+                                                                Thấp nhất: 100,000 và  cao nhất: 100,000,000
+                                                            </Form.Control.Feedback>
+                                                            <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
+                                                        </Form.Group>
+                                                        <Button className='mb-2 mt-2' type='submit' variant="warning"> <ImHammer2 /> &nbsp;Đấu giá
+                                                        </Button>
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    </Form>
 
+                                                </Col>
                                             </>
                                             : null}
                                         <br /><br />
@@ -561,6 +612,25 @@ export default function ProductDetail() {
                     <Button variant="primary" type='submit' onClick={handleSubmit}>
                         Gửi
                     </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal
+                show={showAcceptAuctionModal}
+                onHide={handleCloseAcceptAuctionModal}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Thông báo</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                   Bạn xác nhận đấu giá
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseAcceptAuctionModal}>
+                        Đóng
+                    </Button>
+                    <Button variant="primary" onClick={actionAuction} >Xác nhận</Button>
                 </Modal.Footer>
             </Modal>
         </>

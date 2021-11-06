@@ -28,6 +28,8 @@ export function parseJwt(token) {
 axiosClient.interceptors.request.use(
   (config) => {
     const token = localStorage.x_accessToken ? localStorage.x_accessToken: null;
+    const refresh = localStorage.x_refreshToken ? localStorage.x_refreshToken: null;
+
     if (token) {
       // config.headers["Authorization"] = 'Bearer ' + token;  // for Spring Boot back-end
       config.headers["x-access-token"] = token;
@@ -46,15 +48,17 @@ axiosClient.interceptors.response.use(
   },
   async (err) => {
     const originalConfig = err.config;
-
+    console.log("here")
     if (originalConfig.url !== "/login" && err.response) {
       // Access Token was expired
-      if (err.response.status === 401 && !originalConfig._retry) {
+      if (err.response.status === 400 && !originalConfig._retry) {
+        
         originalConfig._retry = true;
 
         try {
           const rs = await axiosClient.post("/accounts/refreshToken", {
-            refreshToken: localStorage.x_refreshToken,
+            "x-refresh-token": localStorage.x_refreshToken,
+            'x-access-token': localStorage.x_accessToken,
           });
 
           const { accessToken } = rs.data.accessToken;
