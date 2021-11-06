@@ -8,9 +8,9 @@ import {  Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import React, { useEffect,useState } from 'react';
 import DataTable  from 'react-data-table-component';
-import memoize from 'memoize-one';
 import axios from 'axios';
 import { NotifyHelper } from '../../helper/NotifyHelper';
+import axiosClient from '../../api/axiosClient';
 
 export default function BidderTable() {
     const sellers = useSelector(selectSellers);
@@ -21,16 +21,8 @@ export default function BidderTable() {
 
     //call api ------------------------------------------------------------------------------------------------->
     function getAccount() {
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .get(`http://localhost:3002/api/admin/account`,  config)
+        axiosClient
+            .get(`/admin/account`,  )
             .then(function (res) {
                 console.log(res.data)
                 if (res.status === 200) {
