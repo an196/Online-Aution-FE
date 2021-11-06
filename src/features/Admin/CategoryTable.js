@@ -71,17 +71,8 @@ export default function CategoryTable() {
     }
 
     function addCategory(data) {
-
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .post(`http://localhost:3002/api/admin/category`, data, config)
+        axiosClient
+            .post(`/admin/category`)
             .then(function (res) {
                 console.log(res.data)
                 if (res.status === 200) {
