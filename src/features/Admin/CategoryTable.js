@@ -2,7 +2,6 @@ import { Col, Row, Form, Button, Container } from 'react-bootstrap';
 import { FaUser, FaRegTrashAlt, FaPencilAlt } from 'react-icons/fa';
 import AdminNav from '../../components/AdminNav';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { NotifyHelper } from '../../helper/NotifyHelper';
 import DataTable from 'react-data-table-component';
 import Footer from '../../components/Footer';
