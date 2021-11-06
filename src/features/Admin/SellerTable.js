@@ -43,18 +43,8 @@ export default function UserTable() {
     }
 
     function inferiorAccount(id) {
-        console.log(id)
-        const data = {};
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .patch(`http://localhost:3002/api/admin/account/inferior?account_id=${id}`, data, config)
+        axiosClient
+            .patch(`/admin/account/inferior?account_id=${id}`)
             .then(function (res) {
                 console.log(res)
                 if (res.status === 200) {
