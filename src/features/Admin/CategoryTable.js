@@ -72,7 +72,7 @@ export default function CategoryTable() {
 
     function addCategory(data) {
         axiosClient
-            .post(`/admin/category`)
+            .post(`/admin/category`, data)
             .then(function (res) {
                 console.log(res.data)
                 if (res.status === 200) {
@@ -89,17 +89,8 @@ export default function CategoryTable() {
     }
 
     function updateCategory(data) {
-
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .patch(`http://localhost:3002/api/admin/category`, data, config)
+        axiosClient
+            .patch(`/admin/category`, data)
             .then(function (res) {
                 console.log(res.data)
                 if (res.status === 200) {
