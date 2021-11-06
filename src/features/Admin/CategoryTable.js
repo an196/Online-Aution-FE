@@ -6,6 +6,7 @@ import axios from 'axios';
 import { NotifyHelper } from '../../helper/NotifyHelper';
 import DataTable from 'react-data-table-component';
 import Footer from '../../components/Footer';
+import axiosClient from '../../api/axiosClient';
 
 export default function CategoryTable() {
     const [categories, setCategories] = useState();
@@ -19,16 +20,8 @@ export default function CategoryTable() {
 
     //call api ------------------------------------------------------------------------------------------------->
     function getCategories() {
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .get(`http://localhost:3002/api/admin/category`, config)
+        axiosClient
+            .get(`/admin/category`, )
             .then(function (res) {
                 console.log(res.data)
                 if (res.status === 200) {
@@ -44,16 +37,8 @@ export default function CategoryTable() {
     }
 
     function getType() {
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .get(`http://localhost:3002/api/types`, config)
+        axiosClient
+            .get(`/types`)
             .then(function (res) {
                 if (res.status === 200) {
                     setTypes(res.data);
@@ -68,17 +53,8 @@ export default function CategoryTable() {
     }
 
     function deleteCategory(id) {
-
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .delete(`http://localhost:3002/api/admin/category?category_id=${id}`, config)
+        axiosClient
+            .delete(`/admin/category?category_id=${id}`, )
             .then(function (res) {
                 console.log(res.data)
                 if (res.status === 200) {
@@ -95,17 +71,8 @@ export default function CategoryTable() {
     }
 
     function addCategory(data) {
-
-        let headers = {};
-        headers['x-access-token'] = localStorage.x_accessToken ? localStorage.x_accessToken : null;
-        headers['x-refresh-token'] = localStorage.x_refreshToken ? localStorage.x_refreshToken : null;
-
-        let config = {
-            headers: { ...headers }
-        }
-
-        axios
-            .post(`http://localhost:3002/api/admin/category`, data, config)
+        axiosClient
+            .post(`/admin/category`)
             .then(function (res) {
                 console.log(res.data)
                 if (res.status === 200) {
