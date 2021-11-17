@@ -18,6 +18,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import { TimePicker } from 'antd';
 import moment from 'moment';
 import { modules, formats } from '../../utils/quillConfig';
+import Footer from '../../components/Footer';
+
 const schema = yup.object().shape({
     productName: yup.string().required(),
 
@@ -393,6 +395,7 @@ export default function PostProduct() {
                             </Row>
                         </Form>
                     </Container>
+                    <Footer/>
                 </Col>
                 <Col></Col>
             </Row>
