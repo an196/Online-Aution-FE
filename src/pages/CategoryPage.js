@@ -10,7 +10,7 @@ export default function HomePage(props) {
         <Container>
         <Row>
             <Col></Col>
-            <Col xs={8}>
+            <Col xs={8} >
             <NavigationBar/>
             <Category/>
             <Footer/>

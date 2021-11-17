@@ -47,7 +47,7 @@ const styles = {
     }
 }
 
-export default function ProductDetail() {
+export default function ProductDetail({props, }) {
     const [infoProduct, setInfoProduct] = useState();
     const [realationProduct, setRealationProduct] = useState();
     const dispatch = useDispatch();

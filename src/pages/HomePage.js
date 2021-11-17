@@ -8,8 +8,8 @@ export default function HomePage(props) {
     return (
         <Container>
             <Row>
-                <Col></Col>
-                <Col xs={8}>
+                <Col ></Col>
+                <Col xs={8} >
                 <NavigationBar/>
                 <Home/>
                 <Footer/>

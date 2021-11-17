@@ -72,13 +72,13 @@ export default function NavigationBar() {
                 <Form className="d-flex justify-content-around" onSubmit={handleSearch}>
                     <FormControl
                         type="search"
-                        placeholder="Search"
+                        placeholder="Tìm kiếm"
                         className="mr-2"
                         aria-label="Search"
                         name='search'
                     />
                     <div style={{ width: 10 }}></div>
-                    <Button variant="outline-success" type='submit'>Search</Button>
+                    <Button variant="outline-success" type='submit'>Tìm</Button>
                 </Form>
                 
                 <LinkContainer to='/' onClick={handleClick} ><Nav.Link ><FaShoppingCart  className='m-2'/></Nav.Link></LinkContainer>
