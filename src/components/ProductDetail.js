@@ -47,7 +47,7 @@ const styles = {
     }
 }
 
-export default function ProductDetail() {
+export default function ProductDetail({props, }) {
     const [infoProduct, setInfoProduct] = useState();
     const [realationProduct, setRealationProduct] = useState();
     const dispatch = useDispatch();
@@ -174,7 +174,7 @@ export default function ProductDetail() {
             description: message,
             score: isThumbsUp ? 1 : -1
         };
-
+        console.log(data)
         const config = {
             headers: {
                 'x-access-token': localStorage.x_accessToken,
@@ -214,14 +214,14 @@ export default function ProductDetail() {
                 if (res.status === 200) {
                     setInfoProduct(res.data.infoProduct)
                     setRealationProduct(res.data.relation_product)
-                    const sCost = res.data.infoProduct.current_cost + res.data.infoProduct.step_cost;
+                    const sCost = res.data.infoProduct.current_cost? res.data.infoProduct.current_cost: res.data.infoProduct.start_cost + res.data.infoProduct.step_cost;
                     setData({
                         ...res.data.infoProduct,
                         created_at: formatDateTime(res.data.infoProduct.created_at),
                         start_day: formatDateTime(res.data.infoProduct.start_day),
                         buy_now: formatPrice(res.data.infoProduct.buy_now),
                         start_cost: formatPrice(res.data.infoProduct.start_cost),
-                        current_cost: formatPrice(res.data.infoProduct.current_cost),
+                        current_cost: res.data.infoProduct.current_cost ? formatPrice(res.data.infoProduct.current_cost): formatPrice(res.data.infoProduct.start_cost),
                         end_day: formatEndDay(res.data.infoProduct.end_day),
                         suggest_cost: formatPrice(sCost)
                     })
@@ -246,7 +246,7 @@ export default function ProductDetail() {
             //console.log(auctionCost + infoProduct.step_cost)
         } else {
             // console.log("không thể kết nối đến server");
-            NotifyHelper.error("Có lỗi đã xảy ra", 'Thông báo');
+            NotifyHelper.error("Phiên hoạt động đáu giá của bạn đã hết hạn! Cần đăng nhập lại để thựch hiện thao tác", 'Thông báo');
         }
     }
 
@@ -256,7 +256,7 @@ export default function ProductDetail() {
             socketRef.current.emit("mua_ngay", { product_id: Number(id), cost: infoProduct.buy_now });
         } else {
             // console.log("không thể kết nối đến server");
-            NotifyHelper.error("Có lỗi đã xảy ra", 'Thông báo');
+            NotifyHelper.error("Phiên hoạt động đáu giá của bạn đã hết hạn! Cần đăng nhập lại để thựch hiện thao tác", 'Thông báo');
         }
     }
 
@@ -279,6 +279,12 @@ export default function ProductDetail() {
             setShowAcceptAuctionModal(true)
         }
         setValidatedAuction(true);
+    }
+
+    function handleRejectTransaction(){
+        setMessage("Không thanh toán sản phẩm");
+        setIsThumbsUp(false);
+        handleSubmit();
     }
 
     //-------------------------------------------------------------------------------------------------------------------->
@@ -322,7 +328,6 @@ export default function ProductDetail() {
                     }
                     else {
                         NotifyHelper.error(res.message, 'Thông báo')
-
                     }
                 }
             });
@@ -494,10 +499,24 @@ export default function ProductDetail() {
                                                 </Button>
                                                 : null
                                         }
+                                         {
+                                            !evaluated ?
+                                                <Button className="col-md-2 m-3" size="sm"
+                                                    onClick={() => {
+                                                        setAccountId(data.bidder_id);
+                                                        setAuctionId(data.auction_id);
+                                                        handleRejectTransaction();
+                                                    }}
+                                                    variant="primary">
+                                                    Từ chối GD
+                                                </Button>
+                                                : null
+                                        }
 
                                     </Row>
                                     : null
                                 }
+                               
                                 {
                                     winner ?
                                         <Row className='m-3'>
@@ -505,7 +524,7 @@ export default function ProductDetail() {
                                             <span>Id: {data.bidder_id}</span>
                                             <span>Tên: {data.bidder_name}</span>
                                             {
-                                                evaluated ?
+                                                !evaluated ?
                                                     <Button className="col-md-2 m-3" size="sm"
                                                         onClick={() => {
                                                             setShow(true);
@@ -551,6 +570,7 @@ export default function ProductDetail() {
                             <AuctionHistoryDetail />
                         </Col>
                     </Row> */}
+                     
                 </div>
 
             </div>

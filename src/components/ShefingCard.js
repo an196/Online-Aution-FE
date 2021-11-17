@@ -39,9 +39,7 @@ export default function AuctionHistoryCard({ item }) {
     const defaultImg = '../../public/images.png/100px250';
     //const [like, setlike] = useState();
     const dispatch = useDispatch();
-
     const history = useHistory();
-
 
     const id = item.product_id;
     const data = {
@@ -95,13 +93,9 @@ export default function AuctionHistoryCard({ item }) {
                                         : <Col className='pl-2'>
                                         </Col>
                                 }
-
-
                                 <Col className='p-0'>   <Link to={`/user/update-post-product?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Cập nhật</Link> </Col>
                             </Row>
-
                         </Card.Text>
-                       
                     </Card.Body>
                 </Card>
             </div>

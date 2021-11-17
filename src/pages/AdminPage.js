@@ -5,7 +5,7 @@ import Dashboard from '../features/Admin/Dashboard';
 
 export default function AdminPage(props) {
     return (
-        <div className = 'container'>
+        <div className = 'container' >
             <AdminNav/>
             <Dashboard/>
             <Footer/>

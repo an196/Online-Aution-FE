@@ -16,7 +16,7 @@ export function formatProductName(name) {
 }
 
 export function formatPrice(price) {
-  return price ? price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + '₫' : null;
+  return price ? price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + '₫' : "Không có";
 
 }
 
