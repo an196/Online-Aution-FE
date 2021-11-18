@@ -62,6 +62,7 @@ axiosClient.interceptors.response.use(
           });
 
           const { accessToken } = rs.data.accessToken;
+          localStorage.removeItem("x_accessToken");
           localStorage.setItem('x_accessToken', accessToken);
 
           return axiosClient(originalConfig);

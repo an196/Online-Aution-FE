@@ -117,6 +117,7 @@ export const getSoldProducts = createAsyncThunk("user/getSoldProducts",
     }
 );
 
+
 export const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -171,6 +172,7 @@ export const userSlice = createSlice({
                 state.requesting = true;
                 state.soldProducts = payload;
             })
+           
     },
 })
 

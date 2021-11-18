@@ -74,12 +74,24 @@ export const getAllProduct = createAsyncThunk("admin/getAllProduct",
     async () => {
         const response = await adminApi.getAllProduct();
         if (response.status === 200) {
-            
+
             return response.data;
         }
-        
+
         return 0;
     });
+
+export const resetPassWord = createAsyncThunk("user/resetPassWord",
+    async (id) => {
+        const response = await adminApi.resetPassWord(id);
+
+        if (response.status === 200) {
+            NotifyHelper.success(response.data.message);
+            return 1;
+        }
+        return 0;
+    }
+);
 
 export const adminSlice = createSlice({
     name: 'admin',
@@ -118,6 +130,9 @@ export const adminSlice = createSlice({
             })
             .addCase(getAllProduct.fulfilled, (state, { payload }) => {
                 state.allProducts = payload;
+            })
+            .addCase(resetPassWord.fulfilled, (state, { payload }) => {
+               
             })
     },
 })

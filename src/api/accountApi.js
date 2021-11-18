@@ -46,6 +46,7 @@ const accountApi = {
         const url = `/seller/product/listProductHasBidder`;
         return axiosClient.get(url);
     },
+   
 }
 
 export default accountApi;
