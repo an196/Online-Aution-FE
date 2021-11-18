@@ -59,6 +59,7 @@ export default function ProductDetail({props, }) {
     const [evaluated, setEvaluated] = useState();
     const [data, setData] = useState();
     const [validatedAuction, setValidatedAuction] = useState(false);
+    const [auctionPrice, setAuctionPrice] = useState();
 
     //ower
     const [owner, setOwner] = useState();
@@ -214,7 +215,8 @@ export default function ProductDetail({props, }) {
                 if (res.status === 200) {
                     setInfoProduct(res.data.infoProduct)
                     setRealationProduct(res.data.relation_product)
-                    const sCost = res.data.infoProduct.current_cost? res.data.infoProduct.current_cost: res.data.infoProduct.start_cost + res.data.infoProduct.step_cost;
+                    const cCost = res.data.infoProduct.current_cost ? res.data.infoProduct.current_cost : res.data.infoProduct.start_cost;
+                    const sCost = cCost  + res.data.infoProduct.step_cost;
                     setData({
                         ...res.data.infoProduct,
                         created_at: formatDateTime(res.data.infoProduct.created_at),
@@ -240,10 +242,8 @@ export default function ProductDetail({props, }) {
     function actionAuction() {
         setShowAcceptAuctionModal(false);
         if (socketRef.current.connected) {
-            // thông tin đấu giá gửi lên server
-            const auctionCost = infoProduct.current_cost ? infoProduct.current_cost : infoProduct.start_cost;
-            socketRef.current.emit("dau_gia_san_pham", { product_id: Number(id), cost: auctionCost + infoProduct.step_cost });
-            //console.log(auctionCost + infoProduct.step_cost)
+            const auctionCost = auctionPrice? auctionPrice : 0;
+            socketRef.current.emit("dau_gia_san_pham", { product_id: Number(id), cost: auctionCost });
         } else {
             // console.log("không thể kết nối đến server");
             NotifyHelper.error("Phiên hoạt động đáu giá của bạn đã hết hạn! Cần đăng nhập lại để thựch hiện thao tác", 'Thông báo');
@@ -276,7 +276,8 @@ export default function ProductDetail({props, }) {
 
         const form = e.currentTarget;
         if (form.checkValidity()) {
-            setShowAcceptAuctionModal(true)
+            setShowAcceptAuctionModal(true);
+            setAuctionPrice(e.target.auctionPrice.value);
         }
         setValidatedAuction(true);
     }
