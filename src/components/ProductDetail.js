@@ -1,12 +1,12 @@
 
 import { useState, useEffect, useRef } from 'react';
-import { Image, Row, Col, Button, Modal, Form, FormControl } from 'react-bootstrap';
+import { Image, Row, Col, Button, Modal, Form, FormControl, Carousel } from 'react-bootstrap';
 import { AiFillHeart, AiOutlineHeart, AiOutlineShoppingCart, AiOutlineHistory } from "react-icons/ai";
 import { ImHammer2 } from "react-icons/im";
 import AutionHistory from './AuctioningTable';
 import ProductCard from './ProductCard';
 import ReactHtmlParser from "react-html-parser";
-import { formatDateTime, formatProductName, formatPrice, formatEndDay } from '../utils/utils';
+import { formatDateTime, formatProductName, formatPrice, formatEndDay,formatBiddertName } from '../utils/utils';
 import { addWatchList, removeWatchList } from '../features/User/UserSlice';
 import {
     selectRelationProduct,
@@ -47,7 +47,7 @@ const styles = {
     }
 }
 
-export default function ProductDetail({props, }) {
+export default function ProductDetail({ props, }) {
     const [infoProduct, setInfoProduct] = useState();
     const [realationProduct, setRealationProduct] = useState();
     const dispatch = useDispatch();
@@ -175,7 +175,7 @@ export default function ProductDetail({props, }) {
             description: message,
             score: isThumbsUp ? 1 : -1
         };
-        console.log(data)
+        //console.log(data)
         const config = {
             headers: {
                 'x-access-token': localStorage.x_accessToken,
@@ -216,16 +216,17 @@ export default function ProductDetail({props, }) {
                     setInfoProduct(res.data.infoProduct)
                     setRealationProduct(res.data.relation_product)
                     const cCost = res.data.infoProduct.current_cost ? res.data.infoProduct.current_cost : res.data.infoProduct.start_cost;
-                    const sCost = cCost  + res.data.infoProduct.step_cost;
+                    const sCost = cCost + res.data.infoProduct.step_cost;
                     setData({
                         ...res.data.infoProduct,
                         created_at: formatDateTime(res.data.infoProduct.created_at),
                         start_day: formatDateTime(res.data.infoProduct.start_day),
                         buy_now: formatPrice(res.data.infoProduct.buy_now),
                         start_cost: formatPrice(res.data.infoProduct.start_cost),
-                        current_cost: res.data.infoProduct.current_cost ? formatPrice(res.data.infoProduct.current_cost): formatPrice(res.data.infoProduct.start_cost),
+                        current_cost: res.data.infoProduct.current_cost ? formatPrice(res.data.infoProduct.current_cost) : formatPrice(res.data.infoProduct.start_cost),
                         end_day: formatEndDay(res.data.infoProduct.end_day),
-                        suggest_cost: formatPrice(sCost)
+                        suggest_cost: formatPrice(sCost),
+                        holder: formatBiddertName(res.data.infoProduct.bidder_name)
                     })
 
 
@@ -242,7 +243,7 @@ export default function ProductDetail({props, }) {
     function actionAuction() {
         setShowAcceptAuctionModal(false);
         if (socketRef.current.connected) {
-            const auctionCost = auctionPrice? auctionPrice : 0;
+            const auctionCost = auctionPrice ? auctionPrice : 0;
             socketRef.current.emit("dau_gia_san_pham", { product_id: Number(id), cost: auctionCost });
         } else {
             // console.log("không thể kết nối đến server");
@@ -282,7 +283,7 @@ export default function ProductDetail({props, }) {
         setValidatedAuction(true);
     }
 
-    function handleRejectTransaction(){
+    function handleRejectTransaction() {
         setMessage("Không thanh toán sản phẩm");
         setIsThumbsUp(false);
         handleSubmit();
@@ -349,7 +350,7 @@ export default function ProductDetail({props, }) {
             });
 
             socketRef.current.on("cap_nhat_giao_dien_xem_chi_tiet_san_pham_nguoi_ban", (res) => {
-                console.log(res)
+                //console.log(res)
                 if (localStorage.x_accessToken && res.account_id === jwt_decode(localStorage.x_accessToken).account_id) {
                     setAutionHistoryList(res.info_auction_detail)
 
@@ -358,7 +359,7 @@ export default function ProductDetail({props, }) {
             });
 
             socketRef.current.on("thong_tin_dau_gia", (data) => {
-                console.log(data);
+                //console.log(data);
                 setAutionHistoryList(data)
             });
 
@@ -388,7 +389,37 @@ export default function ProductDetail({props, }) {
                                 <Row >
                                     <title>Placeholder</title>
 
-                                    <Image src={data.image ? data.image[0] : ''} style={styles.cardImage} />
+                                    {/* <Image src={data.image ? data.image[0] : ''} style={styles.cardImage} /> */}
+                                    <Carousel>
+                                        <Carousel.Item interval={500}>
+                                            <img
+                                                className="d-block w-100"
+                                                src={data.image ? data.image[0] : ''}
+                                                alt="First slide"
+                                            />
+                                        </Carousel.Item>
+                                        <Carousel.Item interval={1000}>
+                                            <img
+                                                className="d-block w-100"
+                                                src={data.image ? data.image[1] : ''}
+                                                alt="First slide"
+                                            />
+                                        </Carousel.Item>
+                                        <Carousel.Item interval={500}>
+                                            <img
+                                                className="d-block w-100"
+                                                src={data.image ? data.image[2] : ''}
+                                                alt="Second slide"
+                                            />
+                                        </Carousel.Item>
+                                        <Carousel.Item>
+                                            <img
+                                                className="d-block w-100"
+                                                src={data.image ? data.image[3] : ''}
+                                                alt="Third slide"
+                                            />
+                                        </Carousel.Item>
+                                    </Carousel>
                                 </Row>
                                 <div style={{ height: 10 }}></div>
                                 <Row xs={1} md={3} className="m-1">
@@ -418,6 +449,7 @@ export default function ProductDetail({props, }) {
                                         </h5>
                                         <p className="card-text">
                                             Giá hiện tại: {data.current_cost} <br />
+                                            Người giữ giá: {data.holder? data.holder : "Chưa có"}<br />
                                             {validUser ?
                                                 (data.buy_now ?
                                                     <>
@@ -500,7 +532,7 @@ export default function ProductDetail({props, }) {
                                                 </Button>
                                                 : null
                                         }
-                                         {
+                                        {
                                             !evaluated ?
                                                 <Button className="col-md-2 m-3" size="sm"
                                                     onClick={() => {
@@ -517,7 +549,7 @@ export default function ProductDetail({props, }) {
                                     </Row>
                                     : null
                                 }
-                               
+
                                 {
                                     winner ?
                                         <Row className='m-3'>
@@ -571,7 +603,7 @@ export default function ProductDetail({props, }) {
                             <AuctionHistoryDetail />
                         </Col>
                     </Row> */}
-                     
+
                 </div>
 
             </div>
@@ -645,7 +677,7 @@ export default function ProductDetail({props, }) {
                     <Modal.Title>Thông báo</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                   Bạn xác nhận đấu giá
+                    Bạn xác nhận đấu giá
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseAcceptAuctionModal}>

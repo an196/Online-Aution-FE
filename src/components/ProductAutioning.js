@@ -80,7 +80,7 @@ export default function AutionProducts() {
     useEffect(() => {
         getAuctionning();
     }, []);
-
+    console.log(auctionningProducts)
     return (
         <>
             <div className="card mb-3 mt-4 no-gutters" >

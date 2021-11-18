@@ -31,7 +31,11 @@ import { store } from './app/store';
 import { Provider } from 'react-redux';
 import UpdateProfile from './features/User/UpdateProfile';
 import UpadtePostProduct from './features/User/UpdatePostProduct';
-
+import OtpResetPasswordPage from './pages/OtpResetPasswordPage';
+import InputEmailPage from './pages/InputEmailPage';
+import InputNewPasswordPage from './pages/InputNewPasswordPage';
+import WonProducts from './features/User/WonProducts';
+import SoldProducts from './features/User/SoldProducts';
 
 // common --------------------------------------------------------------------------------->
 import eventBus from './common/EvenBus';
@@ -76,6 +80,15 @@ function App() {
           <Route path="/signup/otp" exact>
             <OtpPage />
           </Route>
+          <Route path="/otp-reset-password/:email" exact>
+            <OtpResetPasswordPage />
+          </Route>
+          <Route path="/input-new-password/:accountid" exact>
+            <InputNewPasswordPage />
+          </Route>
+          <Route path="/input-email" exact>
+            <InputEmailPage />
+          </Route>
           <Route path="/product/search" exact component={SearchResultPage}>
           </Route>
           <Route path="/product/detail" exact component={ProductDetailPage}>
@@ -102,6 +115,12 @@ function App() {
           </PrivateRoute>
           <PrivateRoute path="/user/post" exact>
             <PostProduct />
+          </PrivateRoute>
+          <PrivateRoute path="/user/win-products" exact>
+            <WonProducts/>
+          </PrivateRoute>
+          <PrivateRoute path="/user/sold-products" exact>
+            <SoldProducts/>
           </PrivateRoute>
           <PrivateRoute path="/user/update-profile" exact>
             <UpdateProfile />
