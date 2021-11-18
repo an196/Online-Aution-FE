@@ -15,7 +15,8 @@ const initialState = {
     isRequestUpgrade: boolean,
     access_token: "",
     wonProducts: [],
-    soldProducts: []
+    soldProducts: [],
+    publicReviews: [],
 }
 
 export const getProfile = createAsyncThunk("user/getProfile",
@@ -59,6 +60,16 @@ export const removeWatchList = createAsyncThunk("user/removeWatchList",
 );
 
 export const getReviews = createAsyncThunk("user/getReviews",
+    async (id) => {
+        const response = await accountApi.getReviews(id);
+        if (response.status === 200) {
+            return response.data;
+        }
+        return 0;
+    }
+);
+
+export const getPublicReviews = createAsyncThunk("user/getPublicReviews",
     async (id) => {
         const response = await accountApi.getReviews(id);
         if (response.status === 200) {
@@ -172,7 +183,10 @@ export const userSlice = createSlice({
                 state.requesting = true;
                 state.soldProducts = payload;
             })
-           
+            .addCase(getPublicReviews.fulfilled, (state, { payload }) => {
+                state.requesting = true;
+                state.publicReviews = payload;
+            })
     },
 })
 
@@ -189,4 +203,5 @@ export const selectRequestUpgrade = state => state.user.isRequestUpgrade;
 export const selectAccessToken = state => state.user.access_token;
 export const selectWonProducts = state => state.user.wonProducts;
 export const selectSoldProducts = state => state.user.soldProducts;
+export const selectPublicReviews = state => state.user.publicReviews;
 export default userSlice.reducer;

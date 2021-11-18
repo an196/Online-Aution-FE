@@ -1,12 +1,12 @@
 
 import { useState, useEffect, useRef } from 'react';
-import { Image, Row, Col, Button, Modal, Form, FormControl, Carousel } from 'react-bootstrap';
+import { Image, Row, Col, Button, Modal, Form, FormControl, Carousel, Table } from 'react-bootstrap';
 import { AiFillHeart, AiOutlineHeart, AiOutlineShoppingCart, AiOutlineHistory } from "react-icons/ai";
 import { ImHammer2 } from "react-icons/im";
 import AutionHistory from './AuctioningTable';
 import ProductCard from './ProductCard';
 import ReactHtmlParser from "react-html-parser";
-import { formatDateTime, formatProductName, formatPrice, formatEndDay,formatBiddertName } from '../utils/utils';
+import { formatDateTime, formatProductName, formatPrice, formatEndDay, formatBiddertName } from '../utils/utils';
 import { addWatchList, removeWatchList } from '../features/User/UserSlice';
 import {
     selectRelationProduct,
@@ -115,8 +115,6 @@ export default function ProductDetail({ props, }) {
 
     //call api --------------------------------------------------------------------------------------->
     function getWatchList() {
-        let data = {
-        };
 
         const config = {
             headers: {
@@ -129,6 +127,7 @@ export default function ProductDetail({ props, }) {
             .get("http://localhost:3002/api/bidder/watch_list", config)
             .then(function (res) {
                 if (res.status === 200) {
+
                     setWatchList(res.data.watch_list);
                     if (res.data.watch_list.some(item => Number(id) === item.product_id))
                         setlike(true);
@@ -136,7 +135,7 @@ export default function ProductDetail({ props, }) {
 
             })
             .catch(function (error) {
-                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
+                NotifyHelper.error(error, "Thông báo");
             });
     }
 
@@ -163,7 +162,7 @@ export default function ProductDetail({ props, }) {
 
             })
             .catch(function (error) {
-                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
+                NotifyHelper.error(error.message, "Thông báo");
             });
     }
 
@@ -211,12 +210,13 @@ export default function ProductDetail({ props, }) {
         axios
             .get(`http://localhost:3002/api/products/info/${id}`, config)
             .then(function (res) {
-                //console.log(res.data)
+                console.log(res.data)
                 if (res.status === 200) {
                     setInfoProduct(res.data.infoProduct)
                     setRealationProduct(res.data.relation_product)
                     const cCost = res.data.infoProduct.current_cost ? res.data.infoProduct.current_cost : res.data.infoProduct.start_cost;
                     const sCost = cCost + res.data.infoProduct.step_cost;
+
                     setData({
                         ...res.data.infoProduct,
                         created_at: formatDateTime(res.data.infoProduct.created_at),
@@ -226,7 +226,7 @@ export default function ProductDetail({ props, }) {
                         current_cost: res.data.infoProduct.current_cost ? formatPrice(res.data.infoProduct.current_cost) : formatPrice(res.data.infoProduct.start_cost),
                         end_day: formatEndDay(res.data.infoProduct.end_day),
                         suggest_cost: formatPrice(sCost),
-                        holder: formatBiddertName(res.data.infoProduct.bidder_name)
+                        holder: res.data.infoProduct.bidder_name ? formatBiddertName(res.data.infoProduct.bidder_name) : "Chưa có"
                     })
 
 
@@ -234,6 +234,7 @@ export default function ProductDetail({ props, }) {
 
             })
             .catch(function (error) {
+                console.log(error.message)
                 NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
             });
     }
@@ -291,7 +292,8 @@ export default function ProductDetail({ props, }) {
 
     //-------------------------------------------------------------------------------------------------------------------->
     useEffect(() => {
-        if (id > 0)
+
+        if (id && id > 0)
             getInfoProduct();
     }, [location, autionHistoryList]);
 
@@ -301,13 +303,10 @@ export default function ProductDetail({ props, }) {
         if (localStorage.x_accessToken && data) {
             setValidUser(true);
             getWatchList();
-
-
             jwt_decode(localStorage.x_accessToken).account_id === data.seller_id ? setOwner(true) : setOwner(false);
             jwt_decode(localStorage.x_accessToken).account_id === data.bidder_id ? setWinner(true) : setWinner(false);
             if (data.compare_day < 0) {
                 getEvaluationBidder(data.bidder_id);
-
             }
         }
 
@@ -376,9 +375,8 @@ export default function ProductDetail({ props, }) {
 
 
     useEffect(() => {
-    }, [infoProduct]);
+    }, [infoProduct, watchList]);
 
-    //console.log(infoProduct)
     return (
         <>
             <div className="card mb-3 mt-4 no-gutters" >
@@ -449,7 +447,7 @@ export default function ProductDetail({ props, }) {
                                         </h5>
                                         <p className="card-text">
                                             Giá hiện tại: {data.current_cost} <br />
-                                            Người giữ giá: {data.holder? data.holder : "Chưa có"}<br />
+                                            Người giữ giá: {data.holder ? data.holder : "Chưa có"}<br />
                                             {validUser ?
                                                 (data.buy_now ?
                                                     <>
@@ -460,7 +458,8 @@ export default function ProductDetail({ props, }) {
 
                                                 : null}
                                             <br />
-                                            Người bán: {data.seller_name} &nbsp;&nbsp;&nbsp;&nbsp;  Đánh giá: {data.evaluation_score} điểm
+                                            Người bán: {data.seller_name} &nbsp;&nbsp;&nbsp;&nbsp;  
+                                            Đánh giá: <a href={`/reviews/${data.seller_id}`}>{data.evaluation_score}</a> điểm
                                             <br />
                                             {/* Đăng: {data.created_at}
                                             <br /> */}
@@ -603,7 +602,7 @@ export default function ProductDetail({ props, }) {
                             <AuctionHistoryDetail />
                         </Col>
                     </Row> */}
-
+                    
                 </div>
 
             </div>
