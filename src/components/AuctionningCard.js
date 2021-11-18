@@ -1,4 +1,4 @@
-import { Col} from 'react-bootstrap';
+import { Col, Badge } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card'
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { Link, Redirect } from 'react-router-dom';
@@ -10,9 +10,15 @@ import {
 } from '../utils/utils';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
+import jwt_decode from 'jwt-decode';
+import { useEffect, useState } from 'react';
 
 const styles = {
+    container: {
+        position: 'relative',
+        textAlign: 'center',
 
+    },
     card: {
         //backgroundColor: '#B7E0F2',
         borderRadius: 5,
@@ -32,13 +38,18 @@ const styles = {
     cardText: {
         fontSize: '0.6rem'
     },
+    winner: {
+        position: 'absolute',
+        top: '0.8rem',
+        left: '0.8rem',
+    }
 }
 
 export default function AuctionHistoryCard({ item }) {
     const defaultImg = '../../public/images.png/100px250';
     //const [like, setlike] = useState();
     const dispatch = useDispatch();
-   
+    const [owner, setOwner] = useState(false);
     const history = useHistory();
 
 
@@ -53,23 +64,27 @@ export default function AuctionHistoryCard({ item }) {
         image: item.image ? item.image : defaultImg
     };
 
-    // function handleLike() {
-    //     if (like) {
-    //         setlike(false);
-    //         dispatch(removeWatchList(id));
-    //     }
-    //     else {
-    //         dispatch(addWatchList(id));
-    //         setlike(true);
-    //     }
-    // }
-
+    useEffect(() => {
+        if (localStorage.x_accessToken) {
+            const userId = jwt_decode(localStorage.x_accessToken).account_id;
+            if (userId === item.bidder_id) {
+                setOwner(true)
+            }
+        }
+    }, []);
 
     return (
         <Col>{data ?
             <div>
                 <Card style={styles.card}>
-                    <Card.Img variant="top" src={data.image} style={styles.cardImage} />
+                    <div style={styles.container}>
+                        <Card.Img variant="top" src={data.image} style={styles.cardImage} />
+                        {owner ?
+                            <Badge pill bg="warning" text="dark" style={styles.winner}>
+                                Đang giữ giá
+                            </Badge>
+                            : null}
+                    </div>
                     <Card.Body style={styles.cardBody}>
                         <Card.Title style={styles.cardTitle} className='mt-1'> {data.name} &nbsp;&nbsp;&nbsp;&nbsp;
                         </Card.Title>
@@ -85,25 +100,12 @@ export default function AuctionHistoryCard({ item }) {
                             <br />
                             Ngày đăng: {data.start_day}
                             <br />
-                            <a role='text' style={{ textDecoration: 'none' }} className="text-danger">Hạn: {data.end_day}</a>
+                            Hạn: {data.end_day}
                             <br />
                             Lượt đấu giá: {data.count_auction}
                             <br />
                             <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
-
-
-
                         </Card.Text>
-                        {/* <Row >
-                            {
-                                validUser ?
-                                    <p role='button' className='d-flex justify-content-center' onClick={handleLike}>
-                                        {like ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart />}
-                                    </p>
-                                    : null
-                            }
-
-                        </Row> */}
                     </Card.Body>
                 </Card>
             </div>

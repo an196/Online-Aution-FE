@@ -8,7 +8,7 @@ import { selectUser, setUser, refresh } from "../features/User/UserSlice";
 import { Link } from "react-router-dom";
 import { NotifyHelper } from "../helper/NotifyHelper";
 import { withRouter } from 'react-router-dom';
-import { GoogleLogin,GoogleLogout } from 'react-google-login';
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
 
 function Login(props) {
 
@@ -181,11 +181,11 @@ function Login(props) {
         const rs = JSON.stringify(response)
         console.log(rs.email);
     }
-    
-    
+
+
 
     useEffect(() => {
-       
+
     }, [dispatch])
 
     return (
@@ -239,7 +239,14 @@ function Login(props) {
                                         <Link to='/signup'> <Button type="submit" className='col-md-12'>Đăng ký</Button></Link>
                                     </Form.Group>
                                 </Row>
-                                <Link to='/' style={{ fontSize: '0.72rem', textDecoration: 'underline' }}>Quay về trang chủ</Link>
+                                <Row >
+                                    <Col>
+                                        <Link to='/' style={{ fontSize: '0.72rem', textDecoration: 'underline' }}>Quay về trang chủ</Link>
+                                    </Col>
+                                    <Col>
+                                        <Link to='/input-email' style={{ fontSize: '0.72rem', textDecoration: 'underline' }}>Quên mật khẩu?</Link>
+                                    </Col>
+                                </Row>
                             </Form>
                             <hr />
                             <h6 className='d-flex justify-content-center'>Đăng nhập với google</h6>

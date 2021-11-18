@@ -38,6 +38,15 @@ const accountApi = {
         const url = `/refreshToken`;
         return axiosClient.post(url);
     },
+    getWonProducts(){
+        const url = `/bidder/product/won_list`;
+        return axiosClient.get(url);
+    },
+    getSoldProducts(){
+        const url = `/seller/product/listProductHasBidder`;
+        return axiosClient.get(url);
+    },
+   
 }
 
 export default accountApi;

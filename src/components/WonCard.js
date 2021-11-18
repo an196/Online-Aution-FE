@@ -8,6 +8,7 @@ import {
     formatDateTime,
     formatProductName,
     formatPrice,
+    formatEndDay,
 } from '../utils/utils';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -35,7 +36,7 @@ const styles = {
     },
 }
 
-export default function AuctionHistoryCard({ item }) {
+export default function WonCard({ item }) {
     const defaultImg = '../../public/images.png/100px250';
     //const [like, setlike] = useState();
     const dispatch = useDispatch();
@@ -50,7 +51,7 @@ export default function AuctionHistoryCard({ item }) {
         current_cost: formatPrice(item.current_cost),
         buy_now: formatPrice(item.buy_now),
         start_day: formatDateTime(item.start_day),
-        end_day: formatDateTime(item.end_day),
+        end_day: formatEndDay(item.end_day),
         image: item.image ? item.image : defaultImg
     };
 
@@ -74,8 +75,6 @@ export default function AuctionHistoryCard({ item }) {
                                 </>
                             }
                             <br />
-                            Người thắng: {data.bidder_name}
-                            <br />
                             Ngày đăng: {data.start_day}
                             <br />
                             Hạn: {data.end_day}
@@ -83,19 +82,7 @@ export default function AuctionHistoryCard({ item }) {
                             Lượt đấu giá: {data.count_auction}
                             <br />
                             <Link to={`/product/detail?productid=${data.product_id}`} style={{ fontSize: '0.6rem' }}>Xem chi tiết</Link>
-
-
-
                         </Card.Text>
-                        {/* <Row >
-                            {
-                                validUser ?
-                                    <p role='button' className='d-flex justify-content-center' onClick={handleLike}>
-                                        {like ? <AiFillHeart style={{ color: 'red' }} /> : <AiOutlineHeart />}
-                                    </p>
-                                    : null
-                            }
-                        </Row> */}
                     </Card.Body>
                 </Card>
             </div>

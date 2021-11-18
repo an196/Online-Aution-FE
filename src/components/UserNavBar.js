@@ -40,6 +40,11 @@ export default function UserNavBar(props) {
                         <LinkContainer to="/user/favorite"><Nav.Link > Ưa thích</Nav.Link></LinkContainer>
                         <LinkContainer to="/user/aution-history" ><Nav.Link > Lịch sử đấu giá</Nav.Link></LinkContainer>
                         <LinkContainer to="/user/aution"><Nav.Link > Đấu giá</Nav.Link></LinkContainer>
+                        <LinkContainer to="/user/win-products"><Nav.Link > Thắng</Nav.Link></LinkContainer>
+                        {!buyer?
+                            <LinkContainer to="/user/sold-products"><Nav.Link >Đã bán</Nav.Link></LinkContainer>
+                            :null
+                        }
                         <LinkContainer to="/user/review"><Nav.Link > Đánh giá</Nav.Link></LinkContainer>
                         {!buyer?
                             <LinkContainer to="/user/post"><Nav.Link > Đăng bài</Nav.Link></LinkContainer>

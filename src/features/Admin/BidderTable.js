@@ -2,7 +2,8 @@ import AdminNav from '../../components/AdminNav';
 import { 
     refreshAccount,
     selectSellers, 
-    upgradeAccount
+    upgradeAccount,
+    resetPassWord,
 } from './AdminSlice';
 import {  Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,6 +19,8 @@ export default function BidderTable() {
     const [selectedRows, setSelectedRows] = useState([]);
     const [toggleCleared, setToggleCleared] = useState(false);
     const [reload, setReload] = useState(false);
+
+    const dispatch = useDispatch();
 
     //call api ------------------------------------------------------------------------------------------------->
     function getAccount() {
@@ -81,13 +84,24 @@ export default function BidderTable() {
 
 
     function clickHandler(e){
-        console.log(e)
+        //console.log(e)
         upgradeAccount(e);
+    }
+
+    function handleReserPassword(e){
+        console.log(e)
+        dispatch(resetPassWord(e));
     }
 
     const columns=[
         {
             cell: (row) => row.role_id === 1? <button onClick={()=>clickHandler(row.account_id)}>Nâng cấp</button>: null,
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+        },
+        {
+            cell: (row) => row.role_id === 1? <button onClick={()=>handleReserPassword(row.account_id)}>Reset MK</button>: null,
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,

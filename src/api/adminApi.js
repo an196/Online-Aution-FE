@@ -31,7 +31,13 @@ const adminApi = {
         const url = `/${prefix}/product/removeProduct?id=${id}`;
         return axiosClient.patch(url);
     },
-
+    resetPassWord(id){
+        const data ={
+            account_id : Number(id) 
+        }
+        const url = `/accounts/reset_password`;
+        return axiosClient.patch(url, data);
+    },
 }
 
 export default adminApi;

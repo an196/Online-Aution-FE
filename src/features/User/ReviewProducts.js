@@ -8,44 +8,45 @@ import jwt_decode from 'jwt-decode';
 import Footer from '../../components/Footer';
 import axios from 'axios';
 import { NotifyHelper } from '../../helper/NotifyHelper';
+import { getReviews,selectReviews } from './UserSlice';
 
 export default function ReviewProduct() {
-    const [reviews, setReviews] = useState();
+    const reviews = useSelector(selectReviews);
     const dispatch = useDispatch();
     const [buyer, setBuyer] = useState(true);
     const userId = jwt_decode(localStorage.x_accessToken).account_id;
 
 
-    function getReviews() {
-        let data = {
-        };
+    // function getReviews() {
+    //     let data = {
+    //     };
 
-        const config = {
-            headers: {
-                'x-access-token': localStorage.x_accessToken,
-                'x-refresh-token': localStorage.x_refreshToken
-            }
-        }
+    //     const config = {
+    //         headers: {
+    //             'x-access-token': localStorage.x_accessToken,
+    //             'x-refresh-token': localStorage.x_refreshToken
+    //         }
+    //     }
 
-        axios
-            .get(`http://localhost:3002/api/evaluation_historys/${userId}`, config)
-            .then(function (res) {
-                console.log(res);
-                if (res.status === 200) {
-                    setReviews(res.data);
+    //     axios
+    //         .get(`http://localhost:3002/api/evaluation_historys/${userId}`, config)
+    //         .then(function (res) {
+    //             console.log(res);
+    //             if (res.status === 200) {
+    //                 setReviews(res.data);
 
-                }
+    //             }
 
-            })
-            .catch(function (error) {
-                NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
-            });
-    }
+    //         })
+    //         .catch(function (error) {
+    //             NotifyHelper.error("Đã có lỗi xảy ra", "Thông báo");
+    //         });
+    // }
 
     useEffect(() => {
 
         if (Number(userId)) {
-            getReviews();
+           dispatch(getReviews(userId));
         }
 
         if (localStorage.x_accessToken) {
@@ -53,8 +54,9 @@ export default function ReviewProduct() {
         }
     }, []);
 
-    //console.log(reviews)
-    //console.log(userId)
+    useEffect(() => {
+    }, [reviews]);
+    
     return (
         <Container>
             <Row>
