@@ -31,7 +31,7 @@ export default function AuctionHistoryDetail() {
     useEffect(() => {
         dispatch(getInfoProduct(id));
     }, [dispatch]);
-
+    
     console.log(infoAuctioneers)
     return (
 
@@ -51,7 +51,7 @@ export default function AuctionHistoryDetail() {
                             <tr key={item.auction_detail_id}>
                                 <td>{formatDateTime(item.created_at)}</td>
                                 <td>{formatPrice(item.cost)}</td>
-                                <td>{formatBiddertName(item.bidder_name) }</td>
+                                <td><a href={`/reviews/${item.bidder_id}`}>{formatBiddertName(item.bidder_name) }</a></td>
                             </tr>)
 
                         )) : null}

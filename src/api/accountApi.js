@@ -46,7 +46,13 @@ const accountApi = {
         const url = `/seller/product/listProductHasBidder`;
         return axiosClient.get(url);
     },
-   
+    getPublicReviews(accountId){
+        const data ={
+            account_id: accountId
+        }
+        const url = `/evaluation_historys`;
+        return axiosClient.get(url, data);
+    },
 }
 
 export default accountApi;

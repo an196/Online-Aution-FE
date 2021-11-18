@@ -1,30 +1,22 @@
 
 import { Tabs, Tab, Col, Row, Container } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
-import Review from '../../components/Review';
-import UserNavBar from '../../components/UserNavBar';
+import Review from '../components/Review';
 import { useSelector, useDispatch } from "react-redux";
 import jwt_decode from 'jwt-decode';
-import Footer from '../../components/Footer';
-import axios from 'axios';
-import { NotifyHelper } from '../../helper/NotifyHelper';
-import { getReviews,selectReviews } from './UserSlice';
+import Footer from '../components/Footer';
+import { getPublicReviews, selectPublicReviews } from '../features/User/UserSlice';
+import NavigationBar from '../components/NavigationBar';
 
-export default function ReviewProduct() {
-    const reviews = useSelector(selectReviews);
+export default function ViewInfoReviewPage() {
+    const reviews = useSelector(selectPublicReviews);
     const dispatch = useDispatch();
-    const [buyer, setBuyer] = useState(true);
-    const userId = jwt_decode(localStorage.x_accessToken).account_id;
 
     useEffect(() => {
 
-        if (Number(userId)) {
-           dispatch(getReviews(userId));
-        }
-
-        if (localStorage.x_accessToken) {
-            jwt_decode(localStorage.x_accessToken).role_id === 2 ? setBuyer(false) : setBuyer(true);
-        }
+        
+           dispatch(getPublicReviews(1));
+        
     }, []);
 
     return (
@@ -32,7 +24,7 @@ export default function ReviewProduct() {
             <Row>
                 <Col></Col>
                 <Col xs={8}>
-                    <UserNavBar />
+                    <NavigationBar />
                     <h5 className="d-flex justify-content-center mt-4">Các đánh giá!</h5>
                     {
                         reviews && reviews.length > 0 ?

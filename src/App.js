@@ -34,6 +34,7 @@ import UpadtePostProduct from './features/User/UpdatePostProduct';
 import OtpResetPasswordPage from './pages/OtpResetPasswordPage';
 import InputEmailPage from './pages/InputEmailPage';
 import InputNewPasswordPage from './pages/InputNewPasswordPage';
+import ViewInfoReviewPage from './pages/ViewInfoReviewPage';
 import WonProducts from './features/User/WonProducts';
 import SoldProducts from './features/User/SoldProducts';
 
@@ -42,6 +43,7 @@ import eventBus from './common/EvenBus';
 import AuthVerify from './common/AuthVerify';
 import { useEffect, useCallback, useState } from 'react';
 import logout from '../src/actions/auth';
+
 
 function App() {
   const history = createBrowserHistory();
@@ -88,6 +90,9 @@ function App() {
           </Route>
           <Route path="/input-email" exact>
             <InputEmailPage />
+          </Route>
+          <Route path="/reviews/:accountid" exact>
+            <ViewInfoReviewPage />
           </Route>
           <Route path="/product/search" exact component={SearchResultPage}>
           </Route>
