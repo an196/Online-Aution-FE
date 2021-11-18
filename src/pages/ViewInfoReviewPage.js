@@ -7,15 +7,18 @@ import jwt_decode from 'jwt-decode';
 import Footer from '../components/Footer';
 import { getPublicReviews, selectPublicReviews } from '../features/User/UserSlice';
 import NavigationBar from '../components/NavigationBar';
+import { useParams } from 'react-router';
 
 export default function ViewInfoReviewPage() {
     const reviews = useSelector(selectPublicReviews);
     const dispatch = useDispatch();
 
+    const { accountid } = useParams();
+
     useEffect(() => {
 
         
-           dispatch(getPublicReviews(1));
+           dispatch(getPublicReviews(accountid));
         
     }, []);
 
