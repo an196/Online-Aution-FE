@@ -33,6 +33,7 @@ axiosClient.interceptors.request.use(
     if (token) {
       // config.headers["Authorization"] = 'Bearer ' + token;  // for Spring Boot back-end
       config.headers["x-access-token"] = token;
+      config.headers["x-refresh-token"] = refresh;
         // for Node.js Express back-end
     }
     return config;
