@@ -48,7 +48,6 @@ axiosClient.interceptors.response.use(
   },
   async (err) => {
     const originalConfig = err.config;
-    console.log("here")
     if (originalConfig.url !== "/login" && err.response) {
       // Access Token was expired
       if (err.response.status === 400 && !originalConfig._retry) {
@@ -62,7 +61,6 @@ axiosClient.interceptors.response.use(
           });
 
           const { accessToken } = rs.data.accessToken;
-          localStorage.removeItem("x_accessToken");
           localStorage.setItem('x_accessToken', accessToken);
 
           return axiosClient(originalConfig);
