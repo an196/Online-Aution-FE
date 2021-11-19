@@ -500,7 +500,7 @@ export default function ProductDetail({ props, }) {
                                                             </Form.Control.Feedback>
                                                             <Form.Control.Feedback>Tốt!</Form.Control.Feedback>
                                                         </Form.Group>
-                                                        <Button className='mb-2 mt-2' type='submit' variant="warning"> <ImHammer2 /> &nbsp;Đấu giá
+                                                        <Button  disabled={isEndday} className='mb-2 mt-2' type='submit' variant="warning"> <ImHammer2 /> &nbsp;Đấu giá
                                                         </Button>
                                                         &nbsp;&nbsp;&nbsp;&nbsp;
                                                     </Form>
