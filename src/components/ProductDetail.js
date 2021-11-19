@@ -86,6 +86,9 @@ export default function ProductDetail({ props, }) {
     // current cost
     const [currentCost, setCurrentCost] = useState();
 
+    //endday
+    const [isEndday, setEndday] = useState();
+
     //socket
     const host = "http://localhost:3002";
     const [connect, setConnect] = useState(true);
@@ -228,8 +231,12 @@ export default function ProductDetail({ props, }) {
                         suggest_cost: formatPrice(sCost),
                         holder: res.data.infoProduct.bidder_name ? formatBiddertName(res.data.infoProduct.bidder_name) : "Chưa có"
                     })
-
-
+                    const isEndAuction = Date.now() - new Date(res.data.infoProduct.end_day).getTime()
+                    if(isEndAuction < 0){
+                        setEndday(false)
+                    }else{
+                        setEndday(true)
+                    }
                 }
 
             })
@@ -451,7 +458,8 @@ export default function ProductDetail({ props, }) {
                                             {validUser ?
                                                 (data.buy_now ?
                                                     <>
-                                                        <Button className='m-2 ' onClick={handleBuynow} variant="success"> <AiOutlineShoppingCart></AiOutlineShoppingCart>&nbsp; Mua ngay
+                                                        <Button className='m-2 ' onClick={handleBuynow} variant="success" disabled={isEndday}> 
+                                                        <AiOutlineShoppingCart></AiOutlineShoppingCart>&nbsp; Mua ngay
                                                         </Button> {data.buy_now}
                                                     </>
                                                     : null)

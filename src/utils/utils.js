@@ -54,9 +54,12 @@ export function sortProductDescendingByStartDate(data) {
 }
 
 export function formatEndDay(dateTime) {
+  
   const maxDiff = 1000 *60*60*24*3; // miliseconds
   //const diff = 50000 ;
   const diff = new Date(dateTime) - new Date();
+  if(diff < 0)
+    return 'Sản phẩm đã kết thúc đấu giá: <br />' + formatDateTime(dateTime);
   return diff > maxDiff ? 'Kết thúc: <br />' + formatDateTime(dateTime) : remainTime(diff);
 
 }
@@ -68,7 +71,7 @@ const stringToDate = function (dateString) {
 
 const remainTime = function (time) {
   const days = 84600;
-
+  
   if (time > days) {
     const end_day = new Date(time).getDay() - 1 + ' ngày';
     return `Còn: <br /> ${end_day}`;
