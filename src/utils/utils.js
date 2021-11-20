@@ -76,7 +76,7 @@ const remainTime = function (time) {
     console.log( new Date(time) );
     const day = 1000 *60*60*24;
     const end_day =  Math.ceil(time/day) + ' ngày';
-    return `Còn: <br /> ${end_day}`;
+    return `Còn: ${end_day}`;
   }
   else {
     const hour = new Date(time).getHours();
