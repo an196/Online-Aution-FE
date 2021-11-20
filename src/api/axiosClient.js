@@ -43,36 +43,37 @@ axiosClient.interceptors.request.use(
   }
 );
 
-axiosClient.interceptors.response.use(
-  (res) => {
-    return res;
-  },
-  async (err) => {
-    const originalConfig = err.config;
-    if (originalConfig.url !== "/login" && err.response) {
-      // Access Token was expired
-      if (err.response.status === 400 && !originalConfig._retry) {
+// axiosClient.interceptors.response.use(
+//   (res) => {
+//     return res;
+//   },
+//   async (err) => {
+//     const originalConfig = err.config;
+//     if (originalConfig.url !== "/login" && err.response) {
+//       // Access Token was expired
+//       if (err.response.status === 400 && !originalConfig._retry) {
         
-        originalConfig._retry = true;
+//         originalConfig._retry = true;
 
-        try {
-          const rs = await axiosClient.post("/accounts/refreshToken", {
-            "x-refresh-token": localStorage.x_refreshToken,
-            'x-access-token': localStorage.x_accessToken,
-          });
+//         try {
+//           const rs = await axiosClient.post("/accounts/refreshToken", {
+//             "x-refresh-token": localStorage.x_refreshToken,
+//             'x-access-token': localStorage.x_accessToken,
+//           });
+         
+//           const { accessToken,refreshToken } = rs.data.accessToken;
+//           localStorage.setItem('x_accessToken', accessToken);
+//           localStorage.setItem('x_refreshToken', refreshToken);
 
-          const { accessToken } = rs.data.accessToken;
-          localStorage.setItem('x_accessToken', accessToken);
+//           return axiosClient(originalConfig);
+//         } catch (_error) {
+//           return Promise.reject(_error);
+//         }
+//       }
+//     }
 
-          return axiosClient(originalConfig);
-        } catch (_error) {
-          return Promise.reject(_error);
-        }
-      }
-    }
-
-    return Promise.reject(err);
-  }
-);
+//     return Promise.reject(err);
+//   }
+// );
 
 export default axiosClient;

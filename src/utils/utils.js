@@ -73,7 +73,9 @@ const remainTime = function (time) {
   const days = 84600;
   
   if (time > days) {
-    const end_day = new Date(time).getDay() - 1 + ' ngày';
+    console.log( new Date(time) );
+    const day = 1000 *60*60*24;
+    const end_day =  Math.ceil(time/day) + ' ngày';
     return `Còn: <br /> ${end_day}`;
   }
   else {
