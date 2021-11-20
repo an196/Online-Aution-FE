@@ -347,7 +347,7 @@ export default function ProductDetail({ props, }) {
                 if (localStorage.x_accessToken && res.account_id === jwt_decode(localStorage.x_accessToken).account_id) {
                     if (res.status === 200) {
                         NotifyHelper.success(res.message, 'Thông báo')
-
+                        setIsRefresh(!isRefresh);
                     }
                     else {
                         NotifyHelper.error(res.message, 'Thông báo')
@@ -362,8 +362,7 @@ export default function ProductDetail({ props, }) {
                 //console.log(res)
                 if (localStorage.x_accessToken && res.account_id === jwt_decode(localStorage.x_accessToken).account_id) {
                     setAutionHistoryList(res.info_auction_detail)
-
-                    console.log(res.info_auction_detail)
+                    setIsRefresh(!isRefresh);
                 }
             });
 
