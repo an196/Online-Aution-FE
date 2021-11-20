@@ -43,7 +43,7 @@ import eventBus from './common/EvenBus';
 import AuthVerify from './common/AuthVerify';
 import { useEffect, useCallback, useState } from 'react';
 import logout from '../src/actions/auth';
-
+import jwt_decode from 'jwt-decode';
 
 function App() {
   const history = createBrowserHistory();
@@ -56,6 +56,16 @@ function App() {
 
   //effect -------------------------------------------------------------------------------------->
   useEffect(() => {
+    if (localStorage.x_accessToken) {
+      const user = jwt_decode(localStorage.x_accessToken);
+      if (user) {
+          if (new Date(user.exp) * 1000 <  Date.now()) {
+              localStorage.removeItem("x_accessToken");
+              localStorage.removeItem("x_refreshToken");
+              
+          }
+      }
+  }
     eventBus.on("logout", () => {
       logOut();
     });
