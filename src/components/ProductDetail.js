@@ -49,6 +49,7 @@ const styles = {
 
 export default function ProductDetail({ props, }) {
     const [infoProduct, setInfoProduct] = useState();
+    const [isRefresh, setIsRefresh] = useState(false);
     const [realationProduct, setRealationProduct] = useState();
     const dispatch = useDispatch();
     const location = useLocation();
@@ -302,9 +303,11 @@ export default function ProductDetail({ props, }) {
 
         if (id && id > 0)
             getInfoProduct();
-    }, [location, autionHistoryList]);
+    }, [location, autionHistoryList, isRefresh]);
 
-
+    useEffect(() => {
+        getInfoProduct();
+    }, [ isRefresh]);
 
     useEffect(() => {
         if (localStorage.x_accessToken && data) {
@@ -331,8 +334,8 @@ export default function ProductDetail({ props, }) {
             socketRef.current.on("ket_qua_dau_gia_nguoi_mua", (res) => {
                 if (localStorage.x_accessToken && res.account_id === jwt_decode(localStorage.x_accessToken).account_id) {
                     if (res.status === 200) {
-
                         NotifyHelper.success(res.message, 'Thông báo')
+                        setIsRefresh(!isRefresh);
                     }
                     else {
                         NotifyHelper.error(res.message, 'Thông báo')
